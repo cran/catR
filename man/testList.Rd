@@ -30,9 +30,9 @@
  It mainly serves as an initial check for the \code{\link{randomCAT}} function. 
 
  The four types of lists are: \code{"start"} with the parameters for selecting the first items; \code{"test"} with
- the options of the adaptive test (i.e. provisional ability estimator and related information); \code{"stop"} with the 
- options setting the stopping rule; and \code{"final"} with the options for final ability estimation. See the help file 
- of \code{\link{randomCAT}} for further details about the different lists, their allowed arguments and their contents.
+ the options of the adaptive test (i.e. method for next item selection, provisional ability estimator and related information);
+ \code{"stop"} with the options setting the stopping rule; and \code{"final"} with the options for final ability estimation. 
+ See the help file of \code{\link{randomCAT}} for further details about the different lists, their allowed arguments and their contents.
 
  The function returns an \code{"ok"} message if the arguments of \code{list} match the requirement of the
  corresponding \code{type}. Otherwise, a message is returned with information about list - type mismatch. This will be the case
@@ -45,7 +45,6 @@
  }
  Each mismatch yields a different output message to help in debugging the problem.
  }
-
 
 
 \author{
@@ -71,7 +70,7 @@
  testList(start, type="start")
  
  # Creation and test of a 'test' list
- test <- list(method="WL")
+ test <- list(method="WL", itemSelect="Owen")
  testList(test, type="test")
 
 # Creation and test of a 'stop' list

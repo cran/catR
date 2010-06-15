@@ -6,7 +6,7 @@ if (is.null(names(list))==TRUE) res<-list(test=FALSE,message=paste("list '",depa
 else{ 
 elements<-switch(type,
 start=c("fixItems","seed","nrItems","theta","bw","range"),
-test=c("method","priorDist","priorPar","range","D","eapPar"),
+test=c("method","priorDist","priorPar","range","D","eapPar","itemSelect"),
 stop=c("rule","thr","alpha"),
 final=c("method","priorDist","priorPar","range","D","alpha","eapPar"))
 if (is.null(elements)==TRUE) res<-list(test=FALSE,message=paste("invalid 'type' argument ('",type,"' is not allowed)",sep=""))
@@ -40,6 +40,7 @@ priorNames<-c("priorDist")
 parNames<-c("priorPar","range")
 ruleNames<-c("rule")
 eapNames<-c("eapPar")
+itemSelectNames<-c("itemSelect")
 i<-0
 repeat{
 i<-i+1
@@ -51,8 +52,9 @@ sum(names(list)[i]==metNames),
 sum(names(list)[i]==priorNames),
 sum(names(list)[i]==parNames),
 sum(names(list)[i]==ruleNames),
-sum(names(list)[i]==eapNames))
-ind<-(1:9)[vect==1]
+sum(names(list)[i]==eapNames),
+sum(names(list)[i]==itemSelectNames))
+ind<-(1:10)[vect==1]
 prov<-switch(ind,
 '1'=ifelse(is.null(list[[i]]),TRUE,ifelse(is.numeric(list[[i]]),ifelse(max(abs(list[[i]]-round(list[[i]])))<=0.0001,TRUE,FALSE),FALSE)),
 '2'=ifelse(is.null(list[[i]]),TRUE,ifelse(is.numeric(list[[i]]),ifelse(length(list[[i]])==1,TRUE,FALSE),FALSE)),
@@ -62,7 +64,8 @@ prov<-switch(ind,
 '6'=(is.list(list[[i]])==FALSE &length(list[[i]])==1 & sum(list[[i]]==c("norm","unif","Jeffreys"))==1),
 '7'=(is.numeric(list[[i]]) & length(list[[i]])==2),
 '8'=(is.list(list[[i]])==FALSE & length(list[[i]])==1 & sum(list[[i]]==c("length","precision","classification"))==1),
-'9'=(is.list(list[[i]])==FALSE & length(list[[i]])==3 & is.numeric(list[[i]])==TRUE & abs(list[[i]][3]-round(list[[i]][3]))<=0.0001)
+'9'=(is.list(list[[i]])==FALSE & length(list[[i]])==3 & is.numeric(list[[i]])==TRUE & abs(list[[i]][3]-round(list[[i]][3]))<=0.0001),
+'10'=(is.list(list[[i]])==FALSE & length(list[[i]])==1 & sum(list[[i]]==c("info","Owen"))==1)
 )
 if (prov==FALSE){
 res$test<-FALSE
@@ -75,7 +78,8 @@ res$message<-switch(ind,
 '6'=paste("element '",names(list)[i],"' of ",deparse(substitute(list))," must be either 'norm', 'unif'or 'Jeffreys'",sep=""),
 '7'=paste("element '",names(list)[i],"' of ",deparse(substitute(list))," must be a vector of two numeric values",sep=""),
 '8'=paste("element '",names(list)[i],"' of ",deparse(substitute(list))," must be either 'length', 'precision' or 'classification'",sep=""),
-'9'=paste("element '",names(list)[i],"' of ",deparse(substitute(list))," must be a vector of two numeric and one integer components",sep="") 
+'9'=paste("element '",names(list)[i],"' of ",deparse(substitute(list))," must be a vector of two numeric and one integer components",sep=""), 
+'10'=paste("element '",names(list)[i],"' of ",deparse(substitute(list))," must be either 'info' or 'Owen'",sep="")
 )
 break
 }
