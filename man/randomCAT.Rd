@@ -15,8 +15,9 @@
  	start=list(fixItems=NULL, seed=NULL, nrItems=1, theta=0, 
  	bw=4, range=c(-4,4)), test=list(method="BM", 
  	priorDist="norm", priorPar=c(0,1), range=c(-4,4), D=1, 
- 	eapPar=c(-4,4,20)), stop=list(rule="length", thr=20,
-	alpha=0.05), final=list(method="BM", priorDist="norm",
+ 	eapPar=c(-4,4,20), itemSelect="info"), 
+	stop=list(rule="length", thr=20, alpha=0.05), 
+	final=list(method="BM", priorDist="norm",
 	priorPar=c(0,1), range=c(-4,4),D=1, eapPar=c(-4,4,20), 
 	alpha=0.05))
  \method{print}{cat}(x, ...)
@@ -28,7 +29,7 @@
  \item{itemBank}{an item bank, i.e. a list of class \code{itBank}, typically an output of the function \code{createItemBank}.}
  \item{maxItems}{numeric: the maximal number of items to be administered (default is 50).}
  \item{start}{a list with the options for starting the adaptive test. See \bold{Details}.}
- \item{test}{a list with the options for provisional ability estimation. See \bold{Details}.}
+ \item{test}{a list with the options for provisional ability estimation and next item selection. See \bold{Details}.}
  \item{stop}{a list with the options of the stopping rule. See \bold{Details}.}
  \item{final}{a list with the options for final ability estimation. See \bold{Details}.}
  \item{x}{an object of class "cat", typically an output of \code{randomCAT} function.}
@@ -62,6 +63,7 @@
  \item{provPar}{the value of the \code{test$priorPar} argument (or its default value if missing).}
  \item{provRange}{the value of the \code{test$range} argument (or its default value if missing).}
  \item{provD}{the value of the \code{test$D} argument (or its default value if missing).}
+ \item{itemSelect}{the value of the \code{test$itemSelect} argument (or its default value if missing).}
  \item{stopRule}{the value of the \code{stop$rule} argument (or its default value if missing).}
  \item{stopThr}{the value of the \code{stop$thr} argument (or its default value if missing).}
  \item{stopAlpha}{the value of the \code{stop$alpha} argument (or its default value if missing).}
@@ -124,9 +126,11 @@ The function \code{print.cat} returns similar (but differently organized) result
  \item{eapPar}{numeric: vector of three components, holding respectively the values of the arguments \code{lower}, 
                \code{upper} and \code{nqp} of the \code{\link{eapEst}} command. Default vector is (-4, 4, 20). 
                Ignored if \code{method} is not \code{"EAP"}.}
+ \item{itemSelect}{character: the rule for next item selecion, with values \code{"info"} (default) for maximum information criterion
+			 or \code{"Owen"} for Owen's procedure. See \code{\link{nextItem}} for further details.}
  }
- These arguments are passed to the functions \code{\link{thetaEst}} and \code{\link{semTheta}} to estimate the ability
- level and the standard error of this estimate. 
+ These arguments are passed to the functions \code{\link{thetaEst}} (or \code{\link{eapEst}}) and \code{\link{semTheta}} (or\code{\link{eapSem}})
+ to estimate the ability level and the standard error of this estimate. 
 
  The \code{stop} list can contain one or several of the following arguments:
  \itemize{
@@ -149,11 +153,12 @@ The function \code{print.cat} returns similar (but differently organized) result
  as well as the additional \code{alpha} argument. The latter specifies the \eqn{\alpha} level of the final confidence interval
  of ability, which is computed as
  \deqn{[\hat{\theta}-z_{1-\alpha/2} \; se(\hat{\theta}) ; \hat{\theta}+z_{1-\alpha/2} \; se(\hat{\theta})]}
- where \eqn{\hat{\theta}} and \eqn{se(\hat{\theta})} are respectively the ability estimate and its standard error.
+ where \eqn{\hat{\theta}} and \eqn{se(\hat{\theta})} are respectively the ability estimate and its standard error. Note that the
+ argument \code{itemSelect} of the \code{test} list is not allowed into the \code{final} list.
 
- Note that if some arguments of these lists are missing, they are automatically set to their default value. The contents
+ If some arguments of these lists are missing, they are automatically set to their default value. The contents
  of the lists is checked with the \code{\link{testList}} function, and the adaptive test is generated only if the lists
- are adequately defined. 
+ are adequately defined. Othgerwise, a message error is printed.
 
  The function \code{plot.cat} represents the set of provisional and final ability estimates througghout the test. Corresponding
  confidence intervals (with confidence level defined by the argument \code{alpha}) are also drawn if \code{ci=TRUE} (which
@@ -178,6 +183,9 @@ The function \code{print.cat} returns similar (but differently organized) result
 
  Lord, F.M. (1980). \emph{Applications of item response theory to practical testing problems}.
  Hillsdale, NJ: Lawrence Erlbaum.
+
+ Owen, R. J. (1975). A Bayesian sequential procedure for quantal response in the context of adaptive mental testing. 
+ \emph{Journal of the American Statistical Association, 70}, 351-356.
 
  Warm, T.A. (1989). Weighted likelihood estimation of ability in item response models. \emph{Psychometrika, 54}, 427-450.
 }
@@ -207,7 +215,8 @@ The function \code{print.cat} returns similar (but differently organized) result
  start<-list(nrItems=5, theta=0, bw=2)
 
  # Creation of 'test' and 'final' lists: weighted likelihood
- # estimation of ability (both provisional and final)
+ # estimation of ability (both provisional and final), and
+ # maximum information criterion for next item selection
  test<-list(method="WL")
  final<-test
 

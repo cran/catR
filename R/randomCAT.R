@@ -1,4 +1,4 @@
-randomCAT<-function(trueTheta,itemBank,maxItems=50,start=list(fixItems=NULL,seed=NULL,nrItems=1,theta=0,bw=4,range=c(-4,4)),test=list(method="BM",priorDist="norm",priorPar=c(0,1),range=c(-4,4),D=1,eapPar=c(-4,4,20)),stop=list(rule="length",thr=20,alpha=0.05),final=list(method="BM",priorDist="norm",priorPar=c(0,1),range=c(-4,4),D=1,eapPar=c(-4,4,20),alpha=0.05)){
+randomCAT<-function(trueTheta,itemBank,maxItems=50,start=list(fixItems=NULL,seed=NULL,nrItems=1,theta=0,bw=4,range=c(-4,4)),test=list(method="BM",priorDist="norm",priorPar=c(0,1),range=c(-4,4),D=1,eapPar=c(-4,4,20),itemSelect="info"),stop=list(rule="length",thr=20,alpha=0.05),final=list(method="BM",priorDist="norm",priorPar=c(0,1),range=c(-4,4),D=1,eapPar=c(-4,4,20),alpha=0.05)){
 if (testList(start,type="start")$test==FALSE) stop(testList(start,type="start")$message,call.=FALSE)
 if (testList(test,type="test")$test==FALSE) stop(testList(test,type="test")$message,call.=FALSE)
 if (testList(stop,type="stop")$test==FALSE) stop(testList(stop,type="stop")$message,call.=FALSE)
@@ -12,7 +12,7 @@ startList$range[1]<-start$range[1]
 startList$range[2]<-start$range[2]
 }
 start<-startList
-testList<-list(method=NULL,priorDist=NULL,priorPar=c(0,1),range=c(-4,4),D=1,eapPar=c(-4,4,20))
+testList<-list(method=NULL,priorDist=NULL,priorPar=c(0,1),range=c(-4,4),D=1,eapPar=c(-4,4,20),itemSelect="info")
 testList$method<-ifelse(is.null(test$method),"BM",test$method)
 testList$priorDist<-ifelse(is.null(test$priorDist),"norm",test$priorDist)
 if(is.null(test$priorPar)==FALSE){
@@ -29,6 +29,7 @@ testList$eapPar[1]<-test$eapPar[1]
 testList$eapPar[2]<-test$eapPar[2]
 testList$eapPar[3]<-test$eapPar[3]
 }
+testList$itemSelect<-ifelse(is.null(test$itemSelect),"info",test$itemSelect)
 test<-testList
 stopList<-list(rule=NULL,thr=20,alpha=0.05)
 stopList$rule<-ifelse(is.null(stop$rule),"length",stop$rule)
@@ -73,7 +74,7 @@ class(RES)<-"cat"
 }
 else{
 repeat{
-pr<-nextItem(itemBank,thProv,out=ITEMS)
+pr<-nextItem(itemBank,thProv,out=ITEMS,method=test$itemSelect)
 ITEMS<-c(ITEMS,pr$item)
 PAR<-rbind(PAR,pr$par)
 PATTERN<-c(PATTERN,rbinom(1,1,Pi(trueTheta,rbind(pr$par),D=test$D)$Pi))
@@ -88,7 +89,7 @@ seFinal<-semTheta(finalEst,PAR,x=PATTERN,D=final$D,method=final$method,priorDist
 confIntFinal<-c(finalEst-qnorm(1-final$alpha/2)*seFinal,finalEst+qnorm(1-final$alpha/2)*seFinal)
 if ((stop$rule=="length" & length(ITEMS)<stop$thr) | (stop$rule=="precision" & seProv>stop$thr) | (stop$rule=="classification" & thProv-qnorm(1-stop$alpha/2)*seProv<stop$thr & thProv+qnorm(1-stop$alpha/2)*seProv>stop$thr)) endWarning<-TRUE
 else endWarning<-FALSE
-RES<-list(trueTheta=trueTheta,maxItems=maxItems,testItems=ITEMS,itemPar=PAR,pattern=PATTERN,thetaProv=TH,seProv=SETH,thFinal=finalEst,seFinal=seFinal,ciFinal=confIntFinal,startFixItems=start$fixItems,startSeed=start$seed,startNrItems=start$nrItems,startTheta=start$theta,startBw=start$bw,startbOpt=pr0$bOpt,startRange=start$range,provMethod=test$method,provDist=test$priorDist,provPar=test$priorPar,provRange=test$range,provD=test$D,stopRule=stop$rule,stopThr=stop$thr,stopAlpha=stop$alpha,endWarning=endWarning,finalMethod=final$method,finalDist=final$priorDist,finalPar=final$priorPar,finalRange=final$range,finalD=final$D,finalAlpha=final$alpha)
+RES<-list(trueTheta=trueTheta,maxItems=maxItems,testItems=ITEMS,itemPar=PAR,pattern=PATTERN,thetaProv=TH,seProv=SETH,thFinal=finalEst,seFinal=seFinal,ciFinal=confIntFinal,startFixItems=start$fixItems,startSeed=start$seed,startNrItems=start$nrItems,startTheta=start$theta,startBw=start$bw,startbOpt=pr0$bOpt,startRange=start$range,provMethod=test$method,provDist=test$priorDist,provPar=test$priorPar,provRange=test$range,provD=test$D,itemSelect=test$itemSelect,stopRule=stop$rule,stopThr=stop$thr,stopAlpha=stop$alpha,endWarning=endWarning,finalMethod=final$method,finalDist=final$priorDist,finalPar=final$priorPar,finalRange=final$range,finalD=final$D,finalAlpha=final$alpha)
 class(RES)<-"cat"
 }
 return(RES)
@@ -136,7 +137,8 @@ met1bis<-paste(met1bis," and ",x$startbOpt[length(x$startbOpt)],sep="")
 cat(met1bis,"\n")
 }
 cat("\n","Adaptive test parameters:","\n")
-cat("   Next item selection method: maximum information","\n")
+itemSel<-switch(x$itemSelect,info="maximum information criterion",Owen="Owen's approximate Bayes procedure")
+cat("   Next item selection method:",itemSel,"\n")
 met2<-switch(x$provMethod,
 BM="Bayes modal (MAP) estimator",
 WL="Weighted likelihood estimator",

@@ -1,0 +1,23 @@
+        **************************************************
+        *                                                *
+        *  Changes and Developments in the catR Package  *
+        *                                                *
+        **************************************************
+
+
+------------------------------------
+- Changes in catR 1.1 (2010-06-15) -
+------------------------------------
+
+MAJOR UPDATES
+
+  o  Owen's procedure has been added as a method for next item
+     selection. 
+
+  o  Consequently, the functions 'nextItem', 'testList', 
+     'randomCAT' and 'print.cat' have been updated.
+
+
+MINOR UPDATES
+
+  o  Several typos have been fixed in the help manual.
