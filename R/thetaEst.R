@@ -1,6 +1,6 @@
-thetaEst<-function(it,x,D=1,method="BM",priorDist="norm",priorPar=c(0,1),range=c(-4,4),eapPar=c(-4,4,20)){
+thetaEst<-function(it,x,D=1,method="BM",priorDist="norm",priorPar=c(0,1),range=c(-4,4),parInt=c(-4,4,33)){
 if (method=="EAP"){
-res<-eapEst(it,x,D=D,priorDist=priorDist,priorPar=priorPar,lower=eapPar[1],upper=eapPar[2],nqp=eapPar[3])
+res<-eapEst(it,x,D=D,priorDist=priorDist,priorPar=priorPar,lower=parInt[1],upper=parInt[2],nqp=parInt[3])
 }
 else{
 ## function J(th) and first derivative

@@ -10,7 +10,7 @@
 
 \usage{
  eapEst(it, x, D=1, priorDist="norm", priorPar=c(0,1),
- 	lower=-4, upper=4, nqp=20)
+ 	lower=-4, upper=4, nqp=33)
  }
 
 \arguments{
@@ -23,7 +23,7 @@
                See \bold{Details}.}
  \item{lower}{numeric: the lower bound for numercal integration (default is -4).}
  \item{upper}{numeric: the upper bound for numercal integration (default is 4).}
- \item{nqp}{numeric: the number of quadrature points (default is 20).}
+ \item{nqp}{numeric: the number of quadrature points (default is 33).}
 }
 
 \value{
@@ -41,9 +41,10 @@
  \code{priorDist="norm"}), or the range for defining the prior uniform distribution (if \code{priorDist="unif"}). This argument
  is ignored if \code{priorDist="Jeffreys"}.
  
- The required integrals are approximated by numerical adaptive quadarture using the \code{\link{integrate}} function. Arguments \code{lower},
- \code{upper} and \code{nqp} define respectively the lower and upper bounds for numerical integration, and the number of quadrature points. By
- default, the numerical integration runs with 20 quadrature points on the range [-4; 4].
+ The required integrals are approximated by numerical adaptive quadrature. This is achieved by using the \code{\link{integrate.xy}} function of the package \code{sfsmisc}.
+ Arguments \code{lower}, \code{upper} and \code{nqp} define respectively the lower and upper bounds for numerical integration, and the number 
+ of quadrature points. By default, the numerical integration runs with 33 quadrature points on the range [-4; 4], that is, a sequence of values from 
+ -4 to 4 by steps of 0.25.
  }
 
 \references{
@@ -67,7 +68,7 @@
  }
 
 \seealso{
-\code{\link{thetaEst}}
+\code{\link{thetaEst}}, \code{\link{integrate.xy}}
 } 
 
 \examples{

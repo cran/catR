@@ -10,7 +10,7 @@
 
 \usage{
  createItemBank(items=100, model="4PL", thMin=-4, thMax=4,
-	 step=0.01, seed=1)
+	 step=0.01, seed=1, D=1)
  }
 
 \arguments{
@@ -21,13 +21,14 @@
  \item{thMax}{numeric: the upper bound for the fine grid of ability levels (default is 4). See \bold{Details}.} 
  \item{step}{numeric: the step value for the fine grid of ability levels (default is 0.01). See \bold{Details}.}
  \item{seed}{numeric: the random seed number for the generation of item parameters (default is 1). See \code{\link{set.seed}} for further details.}
+ \item{D}{numeric: the metric constant. Default is \code{D=1} (for logistic metric); \code{D=1.702} yields approximately the normal metric (Haley, 1952).} 
 }
 
 \value{
  A list of class "itBank" with three arguments:
  \item{itemPar}{the matrix of item parameters, either provided by \code{items} or generated.}
  \item{theta}{a vector with the ability levels of the fine grid, defined by arguments \code{thMin}, \code{thMax} and \code{step}.}
- \item{infoTab}{a matrix of item information functions, evaluated for each ability level (one row per ability level) 
+ \item{infoTab}{a matrix of Fisher information functions, evaluated for each ability level (one row per ability level) 
                 and each item (one column per item).}
  }
  
@@ -41,9 +42,9 @@
  fixed to zero if \code{model} is either \code{"1PL"} or \code{"2PL"}; and discrimination parameters \eqn{a_i} are
  fixed to 1 if \code{model="1PL"}. The random generation of item parameters can be controlled by the \code{seed} argument.
  
- The item bank consists of a matrix of item information functions (Baker, 1992), evaluated for each itelm in the bank
- and at each value of a sequence of ability levels. These abilities are ranging from \code{thMin} to \code{thMax} by 
- steps of \code{step} units. 
+ The item bank consists of the(\code{infoTab}) matrix, which holds Fisher information functions (Baker, 1992), evaluated for each
+ item in the bank and at each value of a sequence of ability levels. These abilities are ranging from \code{thMin} to \code{thMax}
+ by steps of \code{step} units. 
 
  The returned list contains in addition the sequence of ability levels and the matrix of item parameters.
 }
@@ -53,6 +54,9 @@
 
  Barton, M.A., and Lord, F.M. (1981). An upper asymptote for the three-parameter logistic item-response model.
  Research Bulletin 81-20. Princeton, NJ: Educational Testing Service.
+
+ Haley, D.C. (1952). Estimation of the dosage mortality relationship when the dose is subject to error. 
+ Technical report no 15. Palo Alto, CA: Applied Mathematics and Statistics Laboratory, Stanford University. 
 }
 
 \author{

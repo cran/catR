@@ -40,8 +40,8 @@
  \itemize{
  \item{\code{list} is not a list, or has no argument names,}
  \item{\code{list} has too many arguments for the \code{type} specified,}
- \item{one of the argument names is incorrect,}
- \item{the contents of an argument is not adequate (e.g. character instead of numeric).}
+ \item{at least one of the argument names is incorrect,}
+ \item{the content of at least one argument is not adequate (e.g. character instead of numeric).}
  }
  Each mismatch yields a different output message to help in debugging the problem.
  }
@@ -62,7 +62,7 @@
 \dontrun{
 
  # Creation and test of a 'start' list
- start <- list(nrItems=3, theta=0, bw=2)
+ start <- list(nrItems=3, theta=0, halfRange=2)
  testList(start, type="start")
 
  # Modification of the list to introduce a mistake
