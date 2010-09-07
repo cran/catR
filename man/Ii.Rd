@@ -4,7 +4,7 @@
 \title{Item information functions, first and second derivatives (4PL)}
 
 \description{
- This command returns the item information functions for a given matrix of item parameters of the 4PL model 
+ This command returns the Fisher information functions for a given matrix of item parameters of the 4PL model 
  and a given ability value. Numerical values of the first and second derivatives of the item information functions
  are also returned.
  }
@@ -59,7 +59,8 @@
  data(tcals)
  tcals <- as.matrix(tcals)
  
- # Response probabilities and derivatives (various th and D values)
+ # Item information functions and derivatives
+ # (various th and D values)
  Ii(th=0, tcals)
  Ii(th=0, tcals, D=1.702)
  Ii(th=1, tcals)

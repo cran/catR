@@ -12,7 +12,7 @@
 \usage{
  thetaEst(it, x, D=1, method="BM", priorDist="norm", 
  	priorPar=c(0,1), range=c(-4,4), 
- 	eapPar=c(-4,4,20))
+ 	parInt=c(-4,4,33))
  }
 
 \arguments{
@@ -23,12 +23,12 @@
  \item{method}{character: the ability estimator. Possible values are \code{"BM"} (default), \code{"ML"} and \code{"WL"}. See \bold{Details}.}
  \item{priorDist}{character: specifies the prior distribution. Possible values are \code{"norm"} (default), \code{"unif"} and \code{"Jeffreys"}.
  Ignored if \code{method} is neither \code{"BM"} nor \code{"EAP"}. See \bold{Details}.}
- \item{priorPar}{numeric: vector of two components specifying the prior parameters (default is \code{c(0,1)}). Ignored if \code{method} is neither \code{"BM"}
+ \item{priorPar}{numeric: vector of two components specifying the prior parameters (default is \code{c(0,1)}) of the prior ability distribution. Ignored if \code{method} is neither \code{"BM"}
  nor \code{"EAP"}, or if \code{priorDist="Jeffreys"}. See \bold{Details}.}
  \item{range}{numeric: vector of two components specifying the range wherein the ability estimate must be looked for (default is \code{c(-4,4)}).
  	Ignored if \code{method=="EAP"}.}
- \item{eapPar}{numeric: vector of three components, holding respectively the values of the arguments \code{lower}, \code{upper} and \code{nqp} of the
- \code{\link{eapEst}} command. Default vector is (-4, 4, 20). Ignored if \code{method} is not \code{"EAP"}.}
+ \item{parInt}{numeric: vector of three components, holding respectively the values of the arguments \code{lower}, \code{upper} and \code{nqp} of the
+ \code{\link{eapEst}} command. Default vector is (-4, 4, 33). Ignored if \code{method} is not \code{"EAP"}.}
 }
 
 \value{
@@ -50,7 +50,7 @@
  is ignored if \code{priorDist="Jeffreys"}.
 
  The \code{eapPar} argument sets the range and the number of quadrature points for numerical integration in the EAP process. By default, it takes
- the vector value (-4, 4, 20), that is, 20 quadrature points on the range [-4; 4]. See \code{\link{eapEst}} for further details. 
+ the vector value (-4, 4, 33), that is, 33 quadrature points on the range [-4; 4] (or, by steps of 0.25). See \code{\link{eapEst}} for further details. 
 
  The \code{range} argument permits to limit the interval of investigation for the ML, BM and WL ability estimates (in particular, to avoid
  infinite ability estimates). The default \code{range} is [-4, 4].

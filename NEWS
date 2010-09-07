@@ -6,6 +6,68 @@
 
 
 ------------------------------------
+- Changes in catR 1.2 (2010-09-07) -
+------------------------------------
+
+MAJOR UPDATES
+
+  o  Several procedures for next item selection have been
+     added. First, Maximum Likelihood Weighted Information
+     (MLWI) and Maximum Posterior Weighted Information (MPWI)
+     are now available. The command 'MWI' has been developed
+     for that purpose.
+
+  o  Second, Maximum Expected Information (MEI) has been
+     implemented for next item selection. The function 'MEI'
+     was developed for computing MEI values.
+
+  o  The MEI criterion required the creation of the 'OIi'
+     command for computing observed information function. 
+
+  o  The Maximum Expected Posterior Variance (MEPV) is also
+     available. The command 'EPV' computes expected posterior
+     variances and is used within the 'nextItem' function.
+
+  o  Finally, the completely random selection of the next 
+     item is also possible right now.
+
+  o  The functions 'eapEst' and 'eapSem' have been modified
+     to speed up their computation. The approximation of the
+     integrals is now made by the 'integrate.xy' function 
+     from the package 'sfsmisc'.
+
+  o  The function 'startItems' has been modified. First, the
+     argument 'bw' has been replaced by 'halfRange' and codes
+     now for the half range of the sequence and not the full
+     range (this was misleading). Second, the items can be
+     selected either according to their difficulty level or
+     their information function. This is specified by the
+     'startSelect' argument.
+
+  o  Consequently, the functions 'nextItem', 'testList', 
+     'randomCAT' and 'print.cat' have been updated.
+
+
+MINOR UPDATES
+
+  o  The argument 'eapPar' from functions 'eapEst' and 'eapSem'
+     has been renamed to 'parInt' for consistency with the 
+     'MWI' and 'nextItem' functions. It better refers to the
+     parameters for numerical integration and not only for the
+     EAP method, but also for MLWI and MPWI computation. 
+
+  o  Several typos have been fixed in the help manual.
+
+  o  The 'plot.cat' function has been modified. Now, the 
+     confidence intervals do not appear by default ('ci=FALSE'
+     in the code). Moreover, confidence intervals are displayed
+     with dotted traits, while the true ability level is drawn
+     with a solid horizontal line. Also, any classification
+     level can be specified and drawn by a dashed horizontal
+     trait.
+
+
+------------------------------------
 - Changes in catR 1.1 (2010-06-15) -
 ------------------------------------
 

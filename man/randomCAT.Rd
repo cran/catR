@@ -13,15 +13,15 @@
 \usage{
  randomCAT(trueTheta, itemBank, maxItems=50, 
  	start=list(fixItems=NULL, seed=NULL, nrItems=1, theta=0, 
- 	bw=4, range=c(-4,4)), test=list(method="BM", 
+ 	halfRange=2, startSelect="bOpt"), test=list(method="BM", 
  	priorDist="norm", priorPar=c(0,1), range=c(-4,4), D=1, 
- 	eapPar=c(-4,4,20), itemSelect="info"), 
-	stop=list(rule="length", thr=20, alpha=0.05), 
-	final=list(method="BM", priorDist="norm",
-	priorPar=c(0,1), range=c(-4,4),D=1, eapPar=c(-4,4,20), 
-	alpha=0.05))
+ 	parInt=c(-4,4,33), itemSelect="MFI", infoType="observed"), 
+ 	stop=list(rule="length", thr=20, alpha=0.05), 
+ 	final=list(method="BM", priorDist="norm",
+ 	priorPar=c(0,1), range=c(-4,4),D=1, parInt=c(-4,4,33), 
+ 	alpha=0.05))
  \method{print}{cat}(x, ...)
- \method{plot}{cat}(x, ci=TRUE, alpha=0.05, thr=NULL, ...)
+ \method{plot}{cat}(x, ci=FALSE, alpha=0.05, trueTh=TRUE, classThr=NULL, ...)
  }
 
 \arguments{
@@ -35,7 +35,8 @@
  \item{x}{an object of class "cat", typically an output of \code{randomCAT} function.}
  \item{ci}{logical: should the confidence intervals be plotted for each provisional ability estimate? (default is \code{TRUE}).}
  \item{alpha}{numeric: the significance level for provisional confidence intervals (default is 0.05). Ignored if \code{ci} is \code{FALSE}.}
- \item{thr}{either a numeric value specifying the threshold to be plotted, or \code{NULL} (default) for not displaying any threshold.}
+ \item{trueTh}{logical: should the true ability level be drawn by a horizontal line? (default is TRUE).}
+ \item{classThr}{either a numeric value giving the classification threshold to be displayed, or \code{NULL}.}
  \item{...}{other generic arguments to be passed to \code{print} and \code{plot} functions.}
 }
 
@@ -55,15 +56,16 @@
  \item{startSeed}{the value of the \code{start$seed} argument (or its default value if missing).}
  \item{startNrItems}{the value of the \code{start$nrItems} argument (or its default value if missing).}
  \item{startTheta}{the value of the \code{start$theta} argument (or its default value if missing).}
- \item{startBw}{the value of the \code{start$bw} argument (or its default value if missing).}
- \item{startbOpt}{the value of the \code{start$bOpt} argument (or its default value if missing).}
- \item{startRange}{the value of the \code{start$range} argument (or its default value if missing).}
+ \item{startHalfRange}{the value of the \code{start$halfRange} argument (or its default value if missing).}
+ \item{startThStart}{the starting ability values used for selecting the first items of the test.}
+ \item{startSelect}{the value of the \code{start$startSelect} argument (or its default value if missing).}
  \item{provMethod}{the value of the \code{test$method} argument (or its default value if missing).}
  \item{provDist}{the value of the \code{test$priorDist} argument (or its default value if missing).}
  \item{provPar}{the value of the \code{test$priorPar} argument (or its default value if missing).}
  \item{provRange}{the value of the \code{test$range} argument (or its default value if missing).}
  \item{provD}{the value of the \code{test$D} argument (or its default value if missing).}
  \item{itemSelect}{the value of the \code{test$itemSelect} argument (or its default value if missing).}
+ \item{infoType}{the value of the \code{test$infoType} argument (or its default value if missing).}
  \item{stopRule}{the value of the \code{stop$rule} argument (or its default value if missing).}
  \item{stopThr}{the value of the \code{stop$thr} argument (or its default value if missing).}
  \item{stopAlpha}{the value of the \code{stop$alpha} argument (or its default value if missing).}
@@ -98,10 +100,10 @@ The function \code{print.cat} returns similar (but differently organized) result
  \item{\code{nrItems}: the number of first items to be selected (default is 1). Ignored if \code{fixItems} is not \code{NULL}.}
  \item{\code{theta}: the central initial ability value, used to define the range of ability levels for selecting the first items 
 	(default is 0). Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}. See \code{\link{startItems}} for further details.}
- \item{\code{bw}: the bandwidth value, used to define the range of ability levels for selecting the first items 
-	(default is 4). Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}. See \code{\link{startItems}} for further details.}
- \item{\code{range}: the maximal range of difficulty levels, specified as a vector of two numeric values (default is \code{c(-4,4)}). 
-	Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}. See \code{\link{startItems}} for further details.}
+ \item{\code{halfRange}: the half range of starting ability levels for selecting the first items (default is 2). Ignored if
+       either \code{fixItems} or \code{seed} is not \code{NULL}. See \code{\link{startItems}} for further details.}
+ \item{\code{startSelect}: the method for selecting the first items of the test, with possibme values \code{"bOpt"} (default)
+       and \code{"MFI"}. Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}. See \code{\link{startItems}} for further details.}
  }
  These arguments are passed to the function \code{\link{startItems}} to select the first items of the test.
 
@@ -118,19 +120,27 @@ The function \code{print.cat} returns similar (but differently organized) result
 	the mean and the standard deviation of the prior normal density. If (\code{method="BM"} or \code{method=="EAP"}) and
 	\code{priorDist="unif"}, the components of \code{priorPar} are respectively the lower and upper bound of the prior uniform density.
 	Ignored in all other cases. By default, \code{priorPar} takes the parameters of the prior standard normal distribution (i.e., 
-	\code{priorPar=c(0,1)}).}
+	\code{priorPar=c(0,1)}). In addition, \code{priorPar} also provides the prior parameters for the comoutation of MLWI and MPWI
+      values for next item selection (see \code{\link{nextItem}} for further details).}
  \item{\code{range}: the maximal range of ability levels, set as a vector of two numeric components. The ability estimate
 	will always lie to this interval (set by default to [-4, 4]). Ignored if \code{method=="EAP"}.}
  \item{\code{D}: the value of the metric constant. Default is \code{D=1} for logistic metric. Setting \code{D=1.702}
 	yields approximately the normal metric (Haley, 1952).}
- \item{eapPar}{numeric: vector of three components, holding respectively the values of the arguments \code{lower}, 
-               \code{upper} and \code{nqp} of the \code{\link{eapEst}} command. Default vector is (-4, 4, 20). 
-               Ignored if \code{method} is not \code{"EAP"}.}
- \item{itemSelect}{character: the rule for next item selecion, with values \code{"info"} (default) for maximum information criterion
-			 or \code{"Owen"} for Owen's procedure. See \code{\link{nextItem}} for further details.}
+ \item{\code{parInt}: a numeric vector of three components, holding respectively the values of the arguments \code{lower}, 
+               \code{upper} and \code{nqp} of the \code{\link{eapEst}}, \code{\link{eapSem}} and \code{MWI} commands. It specifies the 
+               range of quadrature points for numerical integration, and is used for computing the EAP estimate, its standard error,
+               and the MLWI and MPWI values for next item selection. Default vector is (-4, 4, 33), thus setting the range from -4 to 4 by
+               steps of 0.25. Ignored if \code{method} is not \code{"EAP"} and if \code{itemSelect} is neither \code{"MLWI"} nor \code{"MPWI"}.}
+ \item{\code{itemSelect}: the rule for next item selecion, with values \code{"MFI"} (default) for maximum Fisher information criterion
+			 ,\code{"Owen"} for Owen's procedure, and \code{"MLWI"} and \code{"MPWI"} for respectively maximum likelihood and posterior
+                   weighted information criterion. For further details, see \code{\link{nextItem}}.}
+ \item{infoType}{character: the type of information function to be used for next item selection. Possible values are \code{"observed"}
+                 (default) for observed information function, and \code{"Fisher"} for Fisher information function. Ignored if \code{itemselect}
+                 is not \code{"MEI"}.}
  }
- These arguments are passed to the functions \code{\link{thetaEst}} (or \code{\link{eapEst}}) and \code{\link{semTheta}} (or\code{\link{eapSem}})
- to estimate the ability level and the standard error of this estimate. 
+ These arguments are passed to the functions \code{\link{thetaEst}} (or \code{\link{eapEst}}) and \code{\link{semTheta}} (or \code{\link{eapSem}})
+ to estimate the ability level and the standard error of this estimate. In addition, some aarguments are passed to \code{\link{nextItem}} to select the 
+ next item appropriately.
 
  The \code{stop} list can contain one or several of the following arguments:
  \itemize{
@@ -154,7 +164,8 @@ The function \code{print.cat} returns similar (but differently organized) result
  of ability, which is computed as
  \deqn{[\hat{\theta}-z_{1-\alpha/2} \; se(\hat{\theta}) ; \hat{\theta}+z_{1-\alpha/2} \; se(\hat{\theta})]}
  where \eqn{\hat{\theta}} and \eqn{se(\hat{\theta})} are respectively the ability estimate and its standard error. Note that the
- argument \code{itemSelect} of the \code{test} list is not allowed into the \code{final} list.
+ argument \code{itemSelect} of the \code{test} list is not used for final estimation of the ability level, and is therefore 
+ not allowed into the \code{final} list.
 
  If some arguments of these lists are missing, they are automatically set to their default value. The contents
  of the lists is checked with the \code{\link{testList}} function, and the adaptive test is generated only if the lists
@@ -162,8 +173,9 @@ The function \code{print.cat} returns similar (but differently organized) result
 
  The function \code{plot.cat} represents the set of provisional and final ability estimates througghout the test. Corresponding
  confidence intervals (with confidence level defined by the argument \code{alpha}) are also drawn if \code{ci=TRUE} (which
- is the default value). In addition, a classification threshold can be displayed by specifying a numeric value to the
- argument \code{thr}. The default value \code{NULL} does not represent any threshold.
+ is not the default value). The true ability level can be drawn by a horizontal solid line by specifying \code{trueTh=TRUE} (which is 
+ the default value); setting it to \code{FALSE} will undo the drawing. Finally, any classification threshold can be additionally 
+ displayed by specifying a numeric value to the argument \code{classThr}. The default value \code{NULL} does not display any threshold.
 }
 
 \references{
@@ -187,6 +199,11 @@ The function \code{print.cat} returns similar (but differently organized) result
  Owen, R. J. (1975). A Bayesian sequential procedure for quantal response in the context of adaptive mental testing. 
  \emph{Journal of the American Statistical Association, 70}, 351-356.
 
+ van der Linden, W. J. (1998). Bayesian item selection criteria for adaptive testing. \emph{Psychometrika, 63}, 201-216.
+
+ Veerkamp, W. J. J., and Berger, M. P. F. (1997). Some new item selection criteria for adaptive testing.
+ \emph{Journal of Educational and Behavioral Statistics, 22}, 203-226.
+
  Warm, T.A. (1989). Weighted likelihood estimation of ability in item response models. \emph{Psychometrika, 54}, 427-450.
 }
 
@@ -199,7 +216,8 @@ The function \code{print.cat} returns similar (but differently organized) result
  }
 
 \seealso{
-\code{\link{testList}}, \code{\link{startItems}}, \code{\link{nextItem}}, \code{\link{thetaEst}}, \code{\link{semTheta}}
+\code{\link{testList}}, \code{\link{startItems}}, \code{\link{nextItem}}, \code{\link{thetaEst}}, \code{\link{semTheta}}, \code{\link{eapEst}},
+\code{\link{eapSem}}, \code{\link{MWI}}, \code{\link{MEI}}
 } 
 
 \examples{
@@ -212,51 +230,60 @@ The function \code{print.cat} returns similar (but differently organized) result
  bank <- createItemBank(tcals)
 
  # Creation of a starting list: 5 items, initial theta 0, bw 2
- start<-list(nrItems=5, theta=0, bw=2)
+ start <- list(nrItems=5, theta=0, halfRange=2)
 
- # Creation of 'test' and 'final' lists: weighted likelihood
- # estimation of ability (both provisional and final), and
- # maximum information criterion for next item selection
- test<-list(method="WL")
- final<-test
+ # Creation of 'test' list: weighted likelihood
+ # estimation of provisional ability, and MEI criterion 
+ # for next item selection
+ test <- list(method="WL", itemSelect="MEI")
+
+ # Creation of 'final' list: EAP estimation of final
+ # ability
+ final <- list(method="EAP")
 
  # Creation of a stopping rule: precision criterion, standard
  # error to be reached 0.3
- stop<-list(rule="precision", thr=0.3)
+ stop <- list(rule="precision", thr=0.3)
 
  # CAT test
- res<-randomCAT(0, bank, start=start, test=test, stop=stop,
+ res <- randomCAT(0, bank, start=start, test=test, stop=stop,
  	final=final)
 
  # New 'test' and 'final' rules (BM and EAP estimation
  # with Jeffreys' prior)
- test2<-list(method="BM", priorDist="Jeffreys")
- final2<-list(method="EAP", priorDist="Jeffreys")
+ test2 <- list(method="BM", priorDist="Jeffreys")
+ final2 <- list(method="EAP", priorDist="Jeffreys")
 
  # New stopping rule: classification criterion, with 
  # classification threshold 0 and alpha level 0.05
- stop2<-list(rule="classification", thr=0, alpha=0.05)
+ stop2 <- list(rule="classification", thr=0, alpha=0.05)
 
  # CAT test with new 'test', 'stop' and 'final' rules
- res2<-randomCAT(0, bank, start=start, test=test2, stop=stop2,
+ res2 <- randomCAT(0, bank, start=start, test=test2, stop=stop2,
  	final=final2)
 
  # New stopping rule: classification criterion, with 
  # classification threshold 0.5 and alpha level 0.05
- stop3<-list(rule="classification", thr=0.5, alpha=0.05)
+ stop3 <- list(rule="classification", thr=0.5, alpha=0.05)
 
  # CAT test with new 'stop' rule
- res3<-randomCAT(0, bank, start=start, test=test2, stop=stop3,
+ res3 <- randomCAT(0, bank, start=start, test=test2, stop=stop3,
+ 	final=final2)
+
+ # new 'test' and 'stop' rule for next item selection
+ test3 <- list(method="WL", itemSelect="MLWI")
+ stop4 <- list(rule="length",thr=10)
+ res4 <- randomCAT(0, bank, start=start, test=test3, stop=stop4,
  	final=final2)
 
  # Plotting results
  plot(res)
- plot(res, ci=FALSE)
- plot(res, thr=0)
- plot(res, thr=0.5)
+ plot(res, ci=TRUE)
+ plot(res, ci=TRUE, trueTh=FALSE)
+ plot(res, ci=TRUE, classThr=1)
 
- plot(res2,thr=0)
-
- plot(res3, thr=0.5)
+ # With mistake
+ plot(res, ci=0.05)
+ plot(res, classThr=TRUE)
  }
  }

@@ -1,4 +1,4 @@
-eapSem<-function(thEst,it,x,D=1,priorDist="norm",priorPar=c(0,1),lower=-4,upper=4,nqp=20){
+eapSem<-function(thEst,it,x,D=1,priorDist="norm",priorPar=c(0,1),lower=-4,upper=4,nqp=33){
 L<-function(th,it,x) prod(Pi(th,it,D=D)$Pi^x*(1-Pi(th,it,D=D)$Pi)^(1-x))
 g<-function(s){
 res<-NULL
@@ -14,5 +14,8 @@ norm=dnorm(s[i],priorPar[1],priorPar[2])*L(s[i],it,x),
 unif=dunif(s[i],priorPar[1],priorPar[2])*L(s[i],it,x),
 Jeffreys=sqrt(sum(Ii(s[i],it,D=D)$Ii))*L(s[i],it,x))
 return(res)}
-RES<-sqrt(integrate(g,lower=lower,upper=upper,subdivisions=nqp)$value/integrate(h,lower=lower,upper=upper,subdivisions=nqp)$value)
+X<-seq(from=lower,to=upper,length=nqp)
+Y1<-g(X)
+Y2<-h(X)
+RES<-sqrt(integrate.xy(X,Y1)/integrate.xy(X,Y2))
 return(RES)}

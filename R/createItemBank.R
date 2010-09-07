@@ -1,4 +1,4 @@
-createItemBank<-function(items=100,model="4PL",thMin=-4,thMax=4,step=0.01, seed=1){
+createItemBank<-function(items=100,model="4PL",thMin=-4,thMax=4,step=0.01, seed=1, D=1){
 if (is.matrix(items)==TRUE) itemPar<-items
 else{
 set.seed(seed)
@@ -14,7 +14,7 @@ itemPar<-cbind(a,b,c,d)
 colnames(itemPar)<-c("a","b","c","d")
 theta<-seq(from=thMin,to=thMax,by=step)
 infoTab<-matrix(NA,length(theta),nrow(itemPar))
-for (i in 1:length(theta)) infoTab[i,]<-Ii(theta[i],itemPar)$Ii
+for (i in 1:length(theta)) infoTab[i,]<-Ii(theta[i],itemPar,D=D)$Ii
 res<-list(itemPar=itemPar,theta=theta,infoTab=infoTab)
 class(res)<-"itBank"
 return(res)}
