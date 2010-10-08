@@ -102,7 +102,7 @@ The function \code{print.cat} returns similar (but differently organized) result
 	(default is 0). Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}. See \code{\link{startItems}} for further details.}
  \item{\code{halfRange}: the half range of starting ability levels for selecting the first items (default is 2). Ignored if
        either \code{fixItems} or \code{seed} is not \code{NULL}. See \code{\link{startItems}} for further details.}
- \item{\code{startSelect}: the method for selecting the first items of the test, with possibme values \code{"bOpt"} (default)
+ \item{\code{startSelect}: the method for selecting the first items of the test, with possible values \code{"bOpt"} (default)
        and \code{"MFI"}. Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}. See \code{\link{startItems}} for further details.}
  }
  These arguments are passed to the function \code{\link{startItems}} to select the first items of the test.
@@ -131,10 +131,11 @@ The function \code{print.cat} returns similar (but differently organized) result
                range of quadrature points for numerical integration, and is used for computing the EAP estimate, its standard error,
                and the MLWI and MPWI values for next item selection. Default vector is (-4, 4, 33), thus setting the range from -4 to 4 by
                steps of 0.25. Ignored if \code{method} is not \code{"EAP"} and if \code{itemSelect} is neither \code{"MLWI"} nor \code{"MPWI"}.}
- \item{\code{itemSelect}: the rule for next item selecion, with values \code{"MFI"} (default) for maximum Fisher information criterion
-			 ,\code{"Owen"} for Owen's procedure, and \code{"MLWI"} and \code{"MPWI"} for respectively maximum likelihood and posterior
-                   weighted information criterion. For further details, see \code{\link{nextItem}}.}
- \item{infoType}{character: the type of information function to be used for next item selection. Possible values are \code{"observed"}
+ \item{\code{itemSelect}: the rule for next item selecion, with possible values \code{"MFI"} (default) for maximum Fisher information criterion;
+                   \code{"Owen"} for Owen's procedure; \code{"MLWI"} and \code{"MPWI"} for respectively maximum likelihood and posterior
+                   weighted information criterion; \code{"MEPV"} for minimum expected posterior variance; \code{"MEI"} for maximum expected
+                   information; and \code{"random"} for random selection. For further details, see \code{\link{nextItem}}.}
+ \item{\code{infoType}: character: the type of information function to be used for next item selection. Possible values are \code{"observed"}
                  (default) for observed information function, and \code{"Fisher"} for Fisher information function. Ignored if \code{itemselect}
                  is not \code{"MEI"}.}
  }
