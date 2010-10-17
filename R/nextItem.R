@@ -1,6 +1,6 @@
 nextItem<-function (itemBank, theta=0, out = NULL, x=NULL, criterion="MFI", method = "BM", priorDist="norm", priorPar=c(0,1), D=1,range=c(-4,4),parInt=c(-4,4,33),infoType = "observed") 
 {
-crit<-switch(criterion,MFI="MFI",Owen="Owen",MLWI="MLWI",MPWI="MPWI",MEI="MEI",MEPV="MEPV",random="random")
+crit<-switch(criterion,MFI="MFI",Urry="Urry",MLWI="MLWI",MPWI="MPWI",MEI="MEI",MEPV="MEPV",random="random")
 if (is.null(crit)==TRUE) stop("invalid 'criterion' name",call.=FALSE)
 if (crit == "MFI") {
         ind <- (1:length(itemBank$theta))[abs(itemBank$theta - 
@@ -28,7 +28,7 @@ if (crit == "MFI") {
                 1], ], info = max(pr[, 2]), criterion = criterion)
         }
     }
-if (crit == "Owen") {
+if (crit == "Urry") {
             indic <- rep(1, nrow(itemBank$itemPar))
             indic[out] <- 0
             items <- (1:nrow(itemBank$itemPar))[indic == 1]

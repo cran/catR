@@ -132,7 +132,7 @@ The function \code{print.cat} returns similar (but differently organized) result
                and the MLWI and MPWI values for next item selection. Default vector is (-4, 4, 33), thus setting the range from -4 to 4 by
                steps of 0.25. Ignored if \code{method} is not \code{"EAP"} and if \code{itemSelect} is neither \code{"MLWI"} nor \code{"MPWI"}.}
  \item{\code{itemSelect}: the rule for next item selecion, with possible values \code{"MFI"} (default) for maximum Fisher information criterion;
-                   \code{"Owen"} for Owen's procedure; \code{"MLWI"} and \code{"MPWI"} for respectively maximum likelihood and posterior
+                   \code{"Urry"} for Urry's procedure; \code{"MLWI"} and \code{"MPWI"} for respectively maximum likelihood and posterior
                    weighted information criterion; \code{"MEPV"} for minimum expected posterior variance; \code{"MEI"} for maximum expected
                    information; and \code{"random"} for random selection. For further details, see \code{\link{nextItem}}.}
  \item{\code{infoType}: character: the type of information function to be used for next item selection. Possible values are \code{"observed"}
@@ -197,8 +197,7 @@ The function \code{print.cat} returns similar (but differently organized) result
  Lord, F.M. (1980). \emph{Applications of item response theory to practical testing problems}.
  Hillsdale, NJ: Lawrence Erlbaum.
 
- Owen, R. J. (1975). A Bayesian sequential procedure for quantal response in the context of adaptive mental testing. 
- \emph{Journal of the American Statistical Association, 70}, 351-356.
+ Urry, V. W. (1970). \emph{A Monte Carlo investigation of logistic test models.} Unpublished doctoral dissertation. West Lafayette, IN: Purdue University.
 
  van der Linden, W. J. (1998). Bayesian item selection criteria for adaptive testing. \emph{Psychometrika, 63}, 201-216.
 

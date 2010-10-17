@@ -20,7 +20,7 @@
  \item{out}{either a vector of integer values specifying the items previously administered, or \code{NULL} (default).} 
  \item{x}{numeric: the provisional response pattern, with the same length as \code{out} (and \code{NULL} by default).
           Ignored if \code{method} is either \code{"MFI"} or \code{"Owen"}. See \bold{Details}.}
- \item{criterion}{character: the method for next item selection. Possible values are \code{"MFI"} (default), \code{"Owen"}
+ \item{criterion}{character: the method for next item selection. Possible values are \code{"MFI"} (default), \code{"Urry"}
                \code{"MLWI"}, \code{"MPWI"}, \code{"MEI"}, \code{"MEPV"} and \code{random}. See \bold{Details}.}
  \item{method}{character: the ability estimator. Possible values are \code{"BM"} (default), \code{"ML"} and \code{"WL"}. See \bold{Details}.}
  \item{priorDist}{character: the prior ability distribution. Possible values are \code{"norm"} (default) for the normal distribution, and \code{"unif"} for
@@ -52,29 +52,29 @@
  Currently seven methods are available for selecting the next item to be administered in the adaptive test. For a given
  current ability estimate, the next item is selected (among the available items) by using: the maximum Fisher information (MFI) criterion,
  the maximum likelihood weighted information (MLWI) (Veerkamp and Berger, 1997), the maximum posterior weighted information (MPWI)
- (van der Linden, 1998), Owen's procedure (Owen, 1975), the maximum expected information (MEI) criterion (van der Linden, 1998), the minimum 
+ (van der Linden, 1998), Urry's procedure (Urry, 1970), the maximum expected information (MEI) criterion (van der Linden, 1998), the minimum 
  expected posterior variance (MEPV) or by selecting the next item completely randomly among the available items. 
 
  The MFI criterion selects the next item as the one which maximizes the item information function (Baker, 1992). The most informative item
- is selected from the table of item informations provided by the bank of items specified with \code{itemBank}. Owen's procedure consists 
- in selecting as next the item whose difficulty level is closest to the current ability estimate. Under the 1PL model, both Owen and MFI
+ is selected from the table of item informations provided by the bank of items specified with \code{itemBank}. Urry's procedure consists 
+ in selecting as next the item whose difficulty level is closest to the current ability estimate. Under the 1PL model, both Urry and MFI
  methods are equivalent. The MLWI and MPWI criteria select the next item as the one with maximal information, weighted either by the
  likelihood function or the posterior distribution. See the function \code{\link{MWI}} for further details. Finally, the MEI criterion 
  selects the item with maximum expected information, computed with the \code{\link{MEI}} function. 
 
  The method for next item selection is specified by the \code{criterion} argument. Possible values are \code{"MFI"} for maximum Fisher information
- criterion, \code{"Owen"} for Owen's method, \code{"MLWI"} for maximum likelihood weighted information criterion, \code{"MPWI"} for the
+ criterion, \code{"Urry"} for Owen's method, \code{"MLWI"} for maximum likelihood weighted information criterion, \code{"MPWI"} for the
  maximum posterior weighted information criterion, \code{"MEI"} for the maximum expected information criterion, \code{"MEPV"} for minimum expected
  posterior variance, and \code{"random"} for random selection. Other values return an error message.
 
- For MFI, MEI and Owen criteria, the provisional ability estimate must be supplied throught the \code{theta} argument (by default, it is equal to zero).
+ For MFI, MEI and Urry criteria, the provisional ability estimate must be supplied throught the \code{theta} argument (by default, it is equal to zero).
  For MLWI and MPWI criteria, this argument is ignored. 
 
  The available items are those that are not specified in the \code{out} argument. By default, \code{out} is \code{NULL}, which means that all
  items are available.  
 
  For MEI, MEPV, MLWI and MPWI methods, the provisional response pattern must be provided through the \code{x} argument. It must be of 0/1 entries and of
- the same length as the \code{out} argument. It is ignored with MFI and Owen criteria. Moreover, the range of integration (or posterior variance 
+ the same length as the \code{out} argument. It is ignored with MFI and Urry criteria. Moreover, the range of integration (or posterior variance 
  computation) is specified by the triplet \code{parInt}, where the first, second, and third value correspond to the arguments \code{lower}, \code{upper}
  and \code{nqp} of the \code{\link{MWI}} function, respectively. 
 
@@ -97,8 +97,7 @@
 
  Choi, S. W., and Swartz, R. J. (2009). Comparison of CAT item selection criteria for polytomous items. \emph{Applied PScyhological Measurement, 32}, 419-440.
 
- Owen, R. J. (1975). A Bayesian sequential procedure for quantal response in the context of adaptive mental testing. 
- \emph{Journal of the American Statistical Association, 70}, 351-356.
+ Urry, V. W. (1970). \emph{A Monte Carlo investigation of logistic test models.} Unpublished doctoral dissertation. West Lafayette, IN: Purdue University.
 
  van der Linden, W. J. (1998). Bayesian item selection criteria for adaptive testing. \emph{Psychometrika, 63}, 201-216.
 
@@ -143,10 +142,10 @@
  # and items 63 and 10 are removed
  nextItem(bank, 0, out=c(63,10)) # item 62 is selected
 
- ## Owen's method
+ ## Urry's method
 
  # Selecting the next item, current ability estimate is 0
- nextItem(bank, 0, criterion="Owen") # item 24 is selected
+ nextItem(bank, 0, criterion="Urry") # item 24 is selected
 
  # Selecting the next item, current ability estimate is 0
  # and item 24 is removed

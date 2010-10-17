@@ -70,7 +70,7 @@
  testList(start, type="start")
  
  # Creation and test of a 'test' list
- test <- list(method="WL", itemSelect="Owen")
+ test <- list(method="WL", itemSelect="Urry")
  testList(test, type="test")
 
 # Creation and test of a 'stop' list
