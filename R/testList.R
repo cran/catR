@@ -69,7 +69,7 @@ prov<-switch(ind,
 '7'=(is.numeric(list[[i]]) & length(list[[i]])==2),
 '8'=(is.list(list[[i]])==FALSE & length(list[[i]])==1 & sum(list[[i]]==c("length","precision","classification"))==1),
 '9'=(is.list(list[[i]])==FALSE & length(list[[i]])==3 & is.numeric(list[[i]])==TRUE & abs(list[[i]][3]-round(list[[i]][3]))<=0.0001),
-'10'=(is.list(list[[i]])==FALSE & length(list[[i]])==1 & sum(list[[i]]==c("MFI","Owen","MLWI","MPWI","MEI","MEPV","random"))==1),
+'10'=(is.list(list[[i]])==FALSE & length(list[[i]])==1 & sum(list[[i]]==c("MFI","Urry","MLWI","MPWI","MEI","MEPV","random"))==1),
 '11'=(is.list(list[[i]])==FALSE & length(list[[i]])==1 & sum(list[[i]]==c("observed","Fisher"))==1),
 '12'=(is.list(list[[i]])==FALSE & length(list[[i]])==1 & sum(list[[i]]==c("bOpt","MFI"))==1),
 )
@@ -85,7 +85,7 @@ res$message<-switch(ind,
 '7'=paste("element '",names(list)[i],"' of '",deparse(substitute(list)),"' must be a vector of two numeric values",sep=""),
 '8'=paste("element '",names(list)[i],"' of '",deparse(substitute(list)),"' must be either 'length', 'precision'","\n"," or 'classification'",sep=""),
 '9'=paste("element '",names(list)[i],"' of '",deparse(substitute(list)),"' must be a vector of two numeric and","\n"," one integer components",sep=""), 
-'10'=paste("element '",names(list)[i],"' of '",deparse(substitute(list)),"' must be either 'MFI', 'Owen',","\n"," 'MLWI', 'MPWI', 'MEI', 'MEPV' or 'random'",sep=""),
+'10'=paste("element '",names(list)[i],"' of '",deparse(substitute(list)),"' must be either 'MFI', 'Urry',","\n"," 'MLWI', 'MPWI', 'MEI', 'MEPV' or 'random'",sep=""),
 '11'=paste("element '",names(list)[i],"' of '",deparse(substitute(list)),"' must be either 'observed' or 'Fisher'",sep=""),
 '12'=paste("element '",names(list)[i],"' of '",deparse(substitute(list)),"' must be either 'bOpt' or 'MFI'",sep="")
 )

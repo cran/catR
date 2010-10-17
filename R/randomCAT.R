@@ -68,7 +68,7 @@ finalEst<-thetaEst(PAR,PATTERN,D=final$D,method=final$method,priorDist=final$pri
 seFinal<-semTheta(finalEst,PAR,x=PATTERN,D=final$D,method=final$method,priorDist=final$priorDist,priorPar=final$priorPar,parInt=final$parInt)
 confIntFinal<-c(finalEst-qnorm(1-final$alpha/2)*seFinal,finalEst+qnorm(1-final$alpha/2)*seFinal)
 endWarning<-FALSE
-RES<-list(trueTheta=trueTheta,maxItems=maxItems,testItems=ITEMS,itemPar=PAR,pattern=PATTERN,thetaProv=TH,seProv=SETH,thFinal=finalEst,seFinal=seFinal,ciFinal=confIntFinal,startFixItems=start$fixItems,startSeed=start$seed,startNrItems=start$nrItems,startTheta=start$theta,startHalfRange=start$halfRange,startThStart=pr0$thStart,startSelect=start$startSelect,provMethod=test$method,provDist=test$priorDist,provPar=test$priorPar,provRange=test$range,provD=test$D,stopRule=stop$rule,stopThr=stop$thr,stopAlpha=stop$alpha,endWarning=endWarning,finalMethod=final$method,finalDist=final$priorDist,finalPar=final$priorPar,finalRange=final$range,finalD=final$D,finalAlpha=final$alpha)
+RES<-list(trueTheta=trueTheta,maxItems=maxItems,testItems=ITEMS,itemPar=PAR,pattern=PATTERN,thetaProv=TH,seProv=SETH,thFinal=finalEst,seFinal=seFinal,ciFinal=confIntFinal,startFixItems=start$fixItems,startSeed=start$seed,startNrItems=start$nrItems,startTheta=start$theta,startHalfRange=start$halfRange,startThStart=pr0$thStart,startSelect=start$startSelect,provMethod=test$method,provDist=test$priorDist,provPar=test$priorPar,provRange=test$range,provD=test$D,itemSelect=test$itemSelect,infoType=test$infoType,stopRule=stop$rule,stopThr=stop$thr,stopAlpha=stop$alpha,endWarning=endWarning,finalMethod=final$method,finalDist=final$priorDist,finalPar=final$priorPar,finalRange=final$range,finalD=final$D,finalAlpha=final$alpha)
 class(RES)<-"cat"
 }
 else{
@@ -113,12 +113,14 @@ print.cat<-function (x, ...)
             met1 <- "Random selection in item bank"
         else {
             if (x$startSelect == "bOpt") {
-if (x$startNrItems==1) met1 <- "matching item difficulty to starting ability"
-else met1 <- "matching item difficulties to starting abilities"
-}
+                if (x$startNrItems == 1) 
+                  met1 <- "matching item difficulty to starting ability"
+                else met1 <- "matching item difficulties to starting abilities"
+            }
             else {
-                if (x$startNrItems==1) met1 <- "maximum informative item for starting ability"
-else met1 <- "maximum informative items for starting abilities"
+                if (x$startNrItems == 1) 
+                  met1 <- "maximum informative item for starting ability"
+                else met1 <- "maximum informative items for starting abilities"
             }
         }
     }
@@ -127,38 +129,48 @@ else met1 <- "maximum informative items for starting abilities"
     else cat("   Early items selection:", met1, "\n")
     if (is.null(x$startFixItems) == FALSE) {
         if (length(x$startFixItems) == 1) 
-            met1bis <- paste("   Item administered: ", x$startFixItems, sep = "")
+            met1bis <- paste("   Item administered: ", x$startFixItems, 
+                sep = "")
         else {
             met1bis <- paste("   Items administered: ", x$startFixItems[1], 
                 sep = "")
-if (length(x$startFixItems)==2) met1bis <- paste(met1bis," and ", x$startFixItems[2], sep = "")
-else{
-            for (i in 2:(length(x$startFixItems)-1)) met1bis <- paste(met1bis, 
-                ", ", x$startFixItems[i], sep = "")
-            met1bis <- paste(met1bis, " and ", x$startFixItems[length(x$startFixItems)],sep = "")
- }
+            if (length(x$startFixItems) == 2) 
+                met1bis <- paste(met1bis, " and ", x$startFixItems[2], 
+                  sep = "")
+            else {
+                for (i in 2:(length(x$startFixItems) - 1)) met1bis <- paste(met1bis, 
+                  ", ", x$startFixItems[i], sep = "")
+                met1bis <- paste(met1bis, " and ", x$startFixItems[length(x$startFixItems)], 
+                  sep = "")
+            }
         }
         cat(met1bis, "\n")
     }
-
-    if (is.null(x$startFixItems) == TRUE & is.null(x$startSeed) == FALSE) {
+    if (is.null(x$startFixItems) == TRUE & is.null(x$startSeed) == 
+        FALSE) {
         if (x$startNrItems == 1) 
-            met1bis <- paste("   Item administered: ", x$testItems[1], sep = "")
+            met1bis <- paste("   Item administered: ", x$testItems[1], 
+                sep = "")
         else {
-            met1bis <- paste("   Items administered: ", x$testItems[1],sep = "")
-if (x$startNrItems==2) met1bis<-paste(met1bis," and ",x$testItems[2],sep="")
-else{
-            for (i in 2:(x$startNrItems-1)) met1bis <- paste(met1bis, 
-                ", ", x$testItems[i], sep = "")
-            met1bis <- paste(met1bis, " and ", x$testItems[x$startNrItems],sep = "")
-}
+            met1bis <- paste("   Items administered: ", x$testItems[1], 
+                sep = "")
+            if (x$startNrItems == 2) 
+                met1bis <- paste(met1bis, " and ", x$testItems[2], 
+                  sep = "")
+            else {
+                for (i in 2:(x$startNrItems - 1)) met1bis <- paste(met1bis, 
+                  ", ", x$testItems[i], sep = "")
+                met1bis <- paste(met1bis, " and ", x$testItems[x$startNrItems], 
+                  sep = "")
+            }
         }
         cat(met1bis, "\n")
     }
     if (is.null(x$startFixItems) == TRUE & is.null(x$startSeed) == 
         TRUE) {
         if (x$startNrItems == 1) 
-            met1bis <- paste("   Starting ability: ", x$startThStart, sep = "")
+            met1bis <- paste("   Starting ability: ", x$startThStart, 
+                sep = "")
         else {
             met1bis <- paste("   Starting abilities: ", sort(x$startThStart)[1], 
                 sep = "")
@@ -173,18 +185,32 @@ else{
             }
         }
         cat(met1bis, "\n")
-if (is.null(x$startFixItems) == TRUE & is.null(x$startSeed) == TRUE & x$startNrItems > 1) {
-met1ter <- paste("   Order of starting abilities administration: ", x$startThStart[1],sep="")
-for (i in 2:(length(x$startThStart) - 1)) met1ter <- paste(met1ter,", ", x$startThStart[i], sep = "")
-met1ter <- paste(met1ter, " and ", x$startThStart[length(x$startThStart)], sep = "")
-cat(met1ter, "\n")
+        if (is.null(x$startFixItems) == TRUE & is.null(x$startSeed) == 
+            TRUE){
+if (x$startNrItems > 2) {
+            met1ter <- paste("   Order of starting abilities administration: ", 
+                x$startThStart[1], sep = "")
+            for (i in 2:(length(x$startThStart) - 1)) met1ter <- paste(met1ter, 
+                ", ", x$startThStart[i], sep = "")
+            met1ter <- paste(met1ter, " and ", x$startThStart[length(x$startThStart)], 
+                sep = "")
+            cat(met1ter, "\n")
 }
+else{
+if (x$startNrItems == 2) {
+met1ter <- paste("   Order of starting abilities administration: ", 
+                x$startThStart[1]," and ",x$startThStart[2], sep = "")
+            cat(met1ter, "\n")
+}
+}
+        }
     }
     cat("\n", "Adaptive test parameters:", "\n")
     itemSel <- switch(x$itemSelect, MFI = "maximum Fisher information", 
-        Owen = "Owen's approximate Bayes procedure", MLWI = "Maximum likelihood weighted information (MLWI)", 
+        Urry = "Urry's procedure", MLWI = "Maximum likelihood weighted information (MLWI)", 
         MPWI = "Maximum posterior weighted information (MPWI)", 
-        MEI = "Maximum expected information (MEI)", MEPV="Minimum Expected Posterior Variance (MEPV)", random="Random selection")
+        MEI = "Maximum expected information (MEI)", MEPV = "Minimum Expected Posterior Variance (MEPV)", 
+        random = "Random selection")
     cat("   Next item selection method:", itemSel, "\n")
     if (x$itemSelect == "MEI") {
         infTyp <- switch(x$infoType, observed = "observed information function", 
@@ -220,7 +246,9 @@ cat(met1ter, "\n")
     switch(x$stopRule, precision = cat("   Maximum SE value:", 
         round(x$stopThr, 2), "\n"), classification = cat("   Classification threshold:", 
         round(x$stopThr, 2), "\n"))
-    cat("   Maximum test length:", ifelse(x$stopRule=="length",min(c(x$maxItems,x$stopThr)),x$maxItems), "items", "\n")
+    cat("   Maximum test length:", ifelse(x$stopRule == "length", 
+        min(c(x$maxItems, x$stopThr)), x$maxItems), "items", 
+        "\n")
     mat <- rbind(as.character(1:length(x$testItems)), as.character(x$testItems), 
         round(x$pattern, 0))
     nra <- length(x$pattern) - length(x$thetaProv)
@@ -274,6 +302,8 @@ cat(met1ter, "\n")
         cat("   Final subject classification:", mess, "\n", "\n")
     }
 }
+
+
 
 plot.cat<-function(x,ci=FALSE,alpha=0.05,trueTh=TRUE, classThr=NULL, ...){
 res<-x

@@ -6,6 +6,36 @@
 
 
 ------------------------------------
+- Changes in catR 1.4 (2010-10-17) -
+------------------------------------
+
+MINOR UPDATES
+
+  o  The method referred to Owen's rule for selecting items
+     in the starting step and in the adaptative process, was
+     renamed Urry's rule given that this simple method was
+     suggested first by Urry (1970) and that Owen's Bayes
+     method differs from this one. 
+    
+  o  Consequently to the point above, 'Owen' optional value
+     of the 'itemSelect' argument of the 'test' list was 
+     replaced by 'Urry'. 
+
+  o  In addition, the 'nextItem', 'testList', randomCAT' and
+     'print.cat' have been updated by the replacement of
+     'Owen' by 'Urry'. 
+ 
+  o  A minor problem was fixed in the code of the 'randomCAT' 
+     function: the output list was not returning all the
+     required elements (in particular, the value of the
+     'itemSelect' argument).
+
+  o  A minor issue was fixed in the 'print.cat' function: the
+     output was not displayed correctly when only two items
+     are selected at the initial step.
+
+
+------------------------------------
 - Changes in catR 1.3 (2010-10-08) -
 ------------------------------------
 
