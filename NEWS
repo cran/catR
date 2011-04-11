@@ -6,6 +6,32 @@
 
 
 ------------------------------------
+- Changes in catR 1.6 (2011-04-11) -
+------------------------------------
+
+MINOR UPDATES
+
+  o  The 'Pi' functin has been slightly modified to avoid
+     a technical bug: when probabilities Pi equal exactly
+     zero or one, the ability estimates cannot be obtained
+     with 'thetaEst' (the boundary conditions cannot be
+     tested because of NaN values). Many thanks to Pan Tong
+     (University of Texas MD Anderson Cancer Center, USA)
+     who noticed this problem.
+
+
+------------------------------------
+- Changes in catR 1.5 (2010-10-28) -
+------------------------------------
+
+MINOR UPDATES
+
+  o  The help files of the 'thetaEst' and 'semTheta' methods
+     have been updated as some information about the EAP
+     estimation method was missing.
+
+
+------------------------------------
 - Changes in catR 1.4 (2010-10-17) -
 ------------------------------------
 
@@ -15,7 +41,7 @@ MINOR UPDATES
      in the starting step and in the adaptative process, was
      renamed Urry's rule given that this simple method was
      suggested first by Urry (1970) and that Owen's Bayes
-     method differs from this one. 
+     procedure differs from this one. 
     
   o  Consequently to the point above, 'Owen' optional value
      of the 'itemSelect' argument of the 'test' list was 

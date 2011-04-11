@@ -140,7 +140,7 @@ The function \code{print.cat} returns similar (but differently organized) result
                  is not \code{"MEI"}.}
  }
  These arguments are passed to the functions \code{\link{thetaEst}} (or \code{\link{eapEst}}) and \code{\link{semTheta}} (or \code{\link{eapSem}})
- to estimate the ability level and the standard error of this estimate. In addition, some aarguments are passed to \code{\link{nextItem}} to select the 
+ to estimate the ability level and the standard error of this estimate. In addition, some arguments are passed to \code{\link{nextItem}} to select the 
  next item appropriately.
 
  The \code{stop} list can contain one or several of the following arguments:

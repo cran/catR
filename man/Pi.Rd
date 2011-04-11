@@ -34,6 +34,13 @@
  related standard errors. 
  }
 
+\note{
+ Response probabilites exactly equal to zero are returned as \code{1e-10} values, as well as probabilities exactly equal to one which are
+ returned as \code{1-1e-10} values. This is to permit the computation of ability estimates (with the \code{\link{thetaEst}} function) in such extreme cases.
+ Many thanks to Pan Tong (University of Texas MD Anderson Cancer Center, USA) who noticed this problem.
+}
+
+
 \references{
  Barton, M.A., and Lord, F.M. (1981). An upper asymptote for the three-parameter logistic item-response model.
  Research Bulletin 81-20. Princeton, NJ: Educational Testing Service.
