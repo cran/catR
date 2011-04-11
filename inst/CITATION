@@ -3,9 +3,9 @@ citHeader("To cite package 'catR' in publications use:")
 citEntry(entry = "Manual",
 title = "catR: an R package to generate IRT adaptive tests",
 author = personList(as.person("David Magis"),as.person("David Magis")),
-year = "2010",
+year = "2011",
 note = paste("R package version ",packageDescription("catR")$Version,".",sep=""),
-textVersion  = paste("David Magis and Gilles Raiche (2010). ", 
+textVersion  = paste("David Magis and Gilles Raiche (2011). ", 
 "catR: an R package to generate IRT adaptive tests. ",
 "R package version ",packageDescription("catR")$Version,".",sep="")
 )
