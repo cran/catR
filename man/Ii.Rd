@@ -57,7 +57,9 @@
 
  # Loading the 'tcals' parameters 
  data(tcals)
- tcals <- as.matrix(tcals)
+
+ # Selecting item parameters only
+ tcals <- as.matrix(tcals[,1:4])
  
  # Item information functions and derivatives
  # (various th and D values)

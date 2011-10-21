@@ -1,40 +1,41 @@
-randomCAT<-function(trueTheta,itemBank,maxItems=50,start=list(fixItems=NULL,seed=NULL,nrItems=1,theta=0,halfRange=2,startSelect="bOpt"),test=list(method="BM",priorDist="norm",priorPar=c(0,1),range=c(-4,4),D=1,parInt=c(-4,4,33),itemSelect="MFI",infoType="observed"),stop=list(rule="length",thr=20,alpha=0.05),final=list(method="BM",priorDist="norm",priorPar=c(0,1),range=c(-4,4),D=1,parInt=c(-4,4,33),alpha=0.05)){
-if (testList(start,type="start")$test==FALSE) stop(testList(start,type="start")$message,call.=FALSE)
-if (testList(test,type="test")$test==FALSE) stop(testList(test,type="test")$message,call.=FALSE)
-if (testList(stop,type="stop")$test==FALSE) stop(testList(stop,type="stop")$message,call.=FALSE)
-if (testList(final,type="final")$test==FALSE) stop(testList(final,type="final")$message,call.=FALSE)
+randomCAT<-function(trueTheta,itemBank,maxItems=50,cbControl=NULL,start=list(fixItems=NULL,seed=NULL,nrItems=1,theta=0,halfRange=2,startSelect="bOpt"),test=list(method="BM",priorDist="norm",priorPar=c(0,1),range=c(-4,4),D=1,parInt=c(-4,4,33),itemSelect="MFI",infoType="observed",randomesque=1),stop=list(rule="length",thr=20,alpha=0.05),final=list(method="BM",priorDist="norm",priorPar=c(0,1),range=c(-4,4),D=1,parInt=c(-4,4,33),alpha=0.05)){
+if (!testList(start,type="start")$test) stop(testList(start,type="start")$message,call.=FALSE)
+if (!testList(test,type="test")$test) stop(testList(test,type="test")$message,call.=FALSE)
+if (!testList(stop,type="stop")$test) stop(testList(stop,type="stop")$message,call.=FALSE)
+if (!testList(final,type="final")$test) stop(testList(final,type="final")$message,call.=FALSE)
 startList<-list(fixItems=start$fixItems,seed=start$seed,nrItems=NULL,theta=NULL,halfRange=2,startSelect="bOpt")
 startList$nrItems<-ifelse(is.null(start$nrItems),1,start$nrItems)
 startList$theta<-ifelse(is.null(start$theta),0,start$theta)
 startList$halfRange<-ifelse(is.null(start$halfRange),2,start$halfRange)
 startList$startSelect<-ifelse(is.null(start$startSelect),"bOpt",start$startSelect)
 start<-startList
-testList<-list(method=NULL,priorDist=NULL,priorPar=c(0,1),range=c(-4,4),D=1,parInt=c(-4,4,33),itemSelect="MFI")
+testList<-list(method=NULL,priorDist=NULL,priorPar=c(0,1),range=c(-4,4),D=1,parInt=c(-4,4,33),itemSelect="MFI",infoType="observed",randomesque=1)
 testList$method<-ifelse(is.null(test$method),"BM",test$method)
 testList$priorDist<-ifelse(is.null(test$priorDist),"norm",test$priorDist)
-if(is.null(test$priorPar)==FALSE){
+if(!is.null(test$priorPar)){
 testList$priorPar[1]<-test$priorPar[1]
 testList$priorPar[2]<-test$priorPar[2]
 }
-if(is.null(test$range)==FALSE){
+if(!is.null(test$range)){
 testList$range[1]<-test$range[1]
 testList$range[2]<-test$range[2]
 }
 testList$D<-ifelse(is.null(test$D),1,test$D)
-if (is.null(test$parInt)==FALSE){
+if (!is.null(test$parInt)){
 testList$parInt[1]<-test$parInt[1]
 testList$parInt[2]<-test$parInt[2]
 testList$parInt[3]<-test$parInt[3]
 }
 testList$itemSelect<-ifelse(is.null(test$itemSelect),"MFI",test$itemSelect)
 testList$infoType<-ifelse(is.null(test$infoType),"observed",test$infoType)
+testList$randomesque<-ifelse(is.null(test$randomesque),1,test$randomesque)
 test<-testList
 stopList<-list(rule=NULL,thr=20,alpha=0.05)
 stopList$rule<-ifelse(is.null(stop$rule),"length",stop$rule)
 stopList$thr<-ifelse(is.null(stop$thr),20,stop$thr)
 stopList$alpha<-ifelse(is.null(stop$alpha),0.05,stop$alpha)
 stop<-stopList
-if (stop$rule=="length" & stop$thr>maxItems) stop("'maxItems' is larger than test length criterion 'stop$thr'",call.=FALSE)
+if (stop$rule=="length" & stop$thr>maxItems) stop("'maxItems' is smaller than test length criterion 'stop$thr'",call.=FALSE)
 finalList<-list(method=NULL,priorDist=NULL,priorPar=c(0,1),range=c(-4,4),D=1,parInt=c(-4,4,33),alpha=0.05)
 finalList$method<-ifelse(is.null(final$method),"BM",final$method)
 finalList$priorDist<-ifelse(is.null(final$priorDist),"norm",final$priorDist)
@@ -68,12 +69,12 @@ finalEst<-thetaEst(PAR,PATTERN,D=final$D,method=final$method,priorDist=final$pri
 seFinal<-semTheta(finalEst,PAR,x=PATTERN,D=final$D,method=final$method,priorDist=final$priorDist,priorPar=final$priorPar,parInt=final$parInt)
 confIntFinal<-c(finalEst-qnorm(1-final$alpha/2)*seFinal,finalEst+qnorm(1-final$alpha/2)*seFinal)
 endWarning<-FALSE
-RES<-list(trueTheta=trueTheta,maxItems=maxItems,testItems=ITEMS,itemPar=PAR,pattern=PATTERN,thetaProv=TH,seProv=SETH,thFinal=finalEst,seFinal=seFinal,ciFinal=confIntFinal,startFixItems=start$fixItems,startSeed=start$seed,startNrItems=start$nrItems,startTheta=start$theta,startHalfRange=start$halfRange,startThStart=pr0$thStart,startSelect=start$startSelect,provMethod=test$method,provDist=test$priorDist,provPar=test$priorPar,provRange=test$range,provD=test$D,itemSelect=test$itemSelect,infoType=test$infoType,stopRule=stop$rule,stopThr=stop$thr,stopAlpha=stop$alpha,endWarning=endWarning,finalMethod=final$method,finalDist=final$priorDist,finalPar=final$priorPar,finalRange=final$range,finalD=final$D,finalAlpha=final$alpha)
+RES<-list(trueTheta=trueTheta,maxItems=maxItems,testItems=ITEMS,itemPar=PAR,pattern=PATTERN,thetaProv=TH,seProv=SETH,thFinal=finalEst,seFinal=seFinal,ciFinal=confIntFinal,startFixItems=start$fixItems,startSeed=start$seed,startNrItems=start$nrItems,startTheta=start$theta,startHalfRange=start$halfRange,startThStart=pr0$thStart,startSelect=start$startSelect,provMethod=test$method,provDist=test$priorDist,provPar=test$priorPar,provRange=test$range,provD=test$D,itemSelect=test$itemSelect,infoType=test$infoType,randomesque=test$randomesque,cbControl=cbControl,cbGroup=itemBank$cbGroup,stopRule=stop$rule,stopThr=stop$thr,stopAlpha=stop$alpha,endWarning=endWarning,finalMethod=final$method,finalDist=final$priorDist,finalPar=final$priorPar,finalRange=final$range,finalD=final$D,finalAlpha=final$alpha)
 class(RES)<-"cat"
 }
 else{
 repeat{
-pr<-nextItem(itemBank,thProv,out=ITEMS,x=PATTERN,criterion=test$itemSelect,method=test$method,parInt=test$parInt,priorDist=test$priorDist,priorPar=test$priorPar,infoType=test$infoType,D=test$D,range=test$range)
+pr<-nextItem(itemBank,thProv,out=ITEMS,x=PATTERN,criterion=test$itemSelect,method=test$method,parInt=test$parInt,priorDist=test$priorDist,priorPar=test$priorPar,infoType=test$infoType,D=test$D,range=test$range,randomesque=test$randomesque,cbControl=cbControl)
 ITEMS<-c(ITEMS,pr$item)
 PAR<-rbind(PAR,pr$par)
 PATTERN<-c(PATTERN,rbinom(1,1,Pi(trueTheta,rbind(pr$par),D=test$D)$Pi))
@@ -88,7 +89,7 @@ seFinal<-semTheta(finalEst,PAR,x=PATTERN,D=final$D,method=final$method,priorDist
 confIntFinal<-c(finalEst-qnorm(1-final$alpha/2)*seFinal,finalEst+qnorm(1-final$alpha/2)*seFinal)
 if ((stop$rule=="length" & length(ITEMS)<stop$thr) | (stop$rule=="precision" & seProv>stop$thr) | (stop$rule=="classification" & thProv-qnorm(1-stop$alpha/2)*seProv<stop$thr & thProv+qnorm(1-stop$alpha/2)*seProv>stop$thr)) endWarning<-TRUE
 else endWarning<-FALSE
-RES<-list(trueTheta=trueTheta,maxItems=maxItems,testItems=ITEMS,itemPar=PAR,pattern=PATTERN,thetaProv=TH,seProv=SETH,thFinal=finalEst,seFinal=seFinal,ciFinal=confIntFinal,startFixItems=start$fixItems,startSeed=start$seed,startNrItems=start$nrItems,startTheta=start$theta,startHalfRange=start$halfRange,startThStart=pr0$thStart,startSelect=start$startSelect,provMethod=test$method,provDist=test$priorDist,provPar=test$priorPar,provRange=test$range,provD=test$D,itemSelect=test$itemSelect,infoType=test$infoType,stopRule=stop$rule,stopThr=stop$thr,stopAlpha=stop$alpha,endWarning=endWarning,finalMethod=final$method,finalDist=final$priorDist,finalPar=final$priorPar,finalRange=final$range,finalD=final$D,finalAlpha=final$alpha)
+RES<-list(trueTheta=trueTheta,maxItems=maxItems,testItems=ITEMS,itemPar=PAR,pattern=PATTERN,thetaProv=TH,seProv=SETH,thFinal=finalEst,seFinal=seFinal,ciFinal=confIntFinal,startFixItems=start$fixItems,startSeed=start$seed,startNrItems=start$nrItems,startTheta=start$theta,startHalfRange=start$halfRange,startThStart=pr0$thStart,startSelect=start$startSelect,provMethod=test$method,provDist=test$priorDist,provPar=test$priorPar,provRange=test$range,provD=test$D,itemSelect=test$itemSelect,infoType=test$infoType,randomesque=test$randomesque,cbControl=cbControl,cbGroup=itemBank$cbGroup,stopRule=stop$rule,stopThr=stop$thr,stopAlpha=stop$alpha,endWarning=endWarning,finalMethod=final$method,finalDist=final$priorDist,finalPar=final$priorPar,finalRange=final$range,finalD=final$D,finalAlpha=final$alpha)
 class(RES)<-"cat"
 }
 return(RES)
@@ -102,14 +103,14 @@ print.cat<-function (x, ...)
     cat(" True ability level:", round(x$trueTheta, 2), "\n", 
         "\n")
     cat(" Starting parameters:", "\n")
-    if (is.null(x$startFixItems) == TRUE) 
+    if (is.null(x$startFixItems)) 
         nr1 <- x$startNrItems
     else nr1 <- length(x$startFixItems)
     cat("   Number of early items:", nr1, "\n")
-    if (is.null(x$startFixItems) == FALSE) 
+    if (!is.null(x$startFixItems)) 
         met1 <- "Chosen by administrator"
     else {
-        if (is.null(x$startSeed) == FALSE) 
+        if (!is.null(x$startSeed)) 
             met1 <- "Random selection in item bank"
         else {
             if (x$startSelect == "bOpt") {
@@ -127,7 +128,7 @@ print.cat<-function (x, ...)
     if (nr1 == 1) 
         cat("   Early item selection:", met1, "\n")
     else cat("   Early items selection:", met1, "\n")
-    if (is.null(x$startFixItems) == FALSE) {
+    if (!is.null(x$startFixItems)) {
         if (length(x$startFixItems) == 1) 
             met1bis <- paste("   Item administered: ", x$startFixItems, 
                 sep = "")
@@ -146,8 +147,7 @@ print.cat<-function (x, ...)
         }
         cat(met1bis, "\n")
     }
-    if (is.null(x$startFixItems) == TRUE & is.null(x$startSeed) == 
-        FALSE) {
+    if (is.null(x$startFixItems) & !is.null(x$startSeed)) {
         if (x$startNrItems == 1) 
             met1bis <- paste("   Item administered: ", x$testItems[1], 
                 sep = "")
@@ -166,8 +166,7 @@ print.cat<-function (x, ...)
         }
         cat(met1bis, "\n")
     }
-    if (is.null(x$startFixItems) == TRUE & is.null(x$startSeed) == 
-        TRUE) {
+    if (is.null(x$startFixItems) & is.null(x$startSeed)) {
         if (x$startNrItems == 1) 
             met1bis <- paste("   Starting ability: ", x$startThStart, 
                 sep = "")
@@ -185,8 +184,7 @@ print.cat<-function (x, ...)
             }
         }
         cat(met1bis, "\n")
-        if (is.null(x$startFixItems) == TRUE & is.null(x$startSeed) == 
-            TRUE){
+        if (is.null(x$startFixItems) & is.null(x$startSeed)){
 if (x$startNrItems > 2) {
             met1ter <- paste("   Order of starting abilities administration: ", 
                 x$startThStart[1], sep = "")
@@ -249,6 +247,21 @@ met1ter <- paste("   Order of starting abilities administration: ",
     cat("   Maximum test length:", ifelse(x$stopRule == "length", 
         min(c(x$maxItems, x$stopThr)), x$maxItems), "items", 
         "\n")
+    cat("\n", "Item exposure control:", "\n")
+    cat("   Method: 'randomesque'","\n")
+    cat("   Number of 'randomesque' items: ",x$randomesque,"\n",sep="")
+
+    cat("\n", "Content balancing control:", "\n")
+    if (is.null(x$cbControl)) cat("   No control for content balancing","\n")
+    else{
+    cat("   Expected proportions of items per subgroup:","\n","\n")
+    mat<-rbind(round(x$cbControl$props/sum(x$cbControl$props),3))
+    rownames(mat)<-""
+    colnames(mat)<-x$cbControl$names
+    print(format(mat, justify = "right"), quote = FALSE)
+    cat("\n")
+}
+    cat("\n", "Adaptive test details:", "\n")
     mat <- rbind(as.character(1:length(x$testItems)), as.character(x$testItems), 
         round(x$pattern, 0))
     nra <- length(x$pattern) - length(x$thetaProv)
@@ -256,7 +269,6 @@ met1ter <- paste("   Order of starting abilities administration: ",
         c(rep(NA, nra), round(x$seProv, 3)))
     rownames(mat) <- c("Nr", "Item", "Resp.", "Est.", "SE")
     colnames(mat) <- rep("", ncol(mat))
-    cat("\n", "Adaptive test details:", "\n")
     print(format(mat, justify = "right"), quote = FALSE)
     cat("\n")
     if (x$endWarning == TRUE) 
@@ -299,8 +311,33 @@ met1ter <- paste("   Order of starting abilities administration: ",
             else mess <- paste("ability is not different from ", 
                 round(x$stopThr, 2), sep = "")
         }
-        cat("   Final subject classification:", mess, "\n", "\n")
+        cat("   Final subject classification:", mess, "\n")
     }
+    if (!is.null(x$cbControl)){
+    cat("   Proportions of items per subgroup (expected and observed):","\n","\n")
+    mat<-rbind(round(x$cbControl$props/sum(x$cbControl$props),3))
+    nr<-NULL
+    for (i in 1:length(x$cbControl$names)) nr[i]<-length(x$testItems[x$cbGroup[x$testItems]==x$cbControl$names[i]])
+    nr<-nr/sum(nr)
+    mat<-rbind(mat,round(nr,3))
+    rownames(mat)<-c("Exp.","Obs.")
+    colnames(mat)<-x$cbControl$names
+    print(format(mat, justify = "right"), quote = FALSE)
+    cat("\n")
+    cat("   Items administered per subgroup:","\n","\n")
+    for (i in 1:length(x$cbControl$names)) {
+    if (length(x$testItems[x$cbGroup[x$testItems]==x$cbControl$names[i]])==0) mess<-"none"
+    else{
+    its<-sort(x$testItems[x$cbGroup[x$testItems]==x$cbControl$names[i]])
+    mess<-its[1]
+    if (length(its)>1){
+    for (j in 2:length(its)) mess<-paste(mess,", ",its[j],sep="")
+}
+}
+    cat("   ",x$cbControl$names[i],": ",mess,"\n",sep="")
+}
+}
+
 }
 
 

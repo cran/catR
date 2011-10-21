@@ -93,7 +93,9 @@
 
  # Loading the 'tcals' parameters 
  data(tcals)
- tcals <- as.matrix(tcals)
+
+ # Selecting item parameters only
+ tcals <- as.matrix(tcals[,1:4])
  
  # Creation of a response pattern (tcals item parameters,
  # true ability level 0)

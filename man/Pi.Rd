@@ -65,7 +65,9 @@
 
  # Loading the 'tcals' parameters 
  data(tcals)
- tcals <- as.matrix(tcals)
+ 
+ # Selecting item parameters only
+ tcals <- as.matrix(tcals[,1:4])
  
  # Response probabilities and derivatives (various th and D values)
  Pi(th=0, tcals)

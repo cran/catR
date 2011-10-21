@@ -6,6 +6,74 @@
 
 
 ------------------------------------
+- Changes in catR 2.0 (2011-10-21) -
+------------------------------------
+
+MAJOR UPDATES
+
+  o  Several distributions are now available for item
+     parameter generation of the 'createItemBank' function.
+     Possible distributions are: normal and uniform for item
+     difficulties; normal, lognormal and uniform
+     distributions for item discriminations; uniform and 
+     Beta for both item lower and upper asymptotes.
+
+  o  Item exposure control is now feasible with the so-called
+     'randomesque' approach (Kingsbury and Zara, 1989). The 
+     function 'nextItem' and 'randomCAT' hold now the
+     'randomesque' argument that sets the number of optimal
+     items to be selected first, among those the next
+     administered item will be randomly chosen.
+
+  o  Content balancing can now be controlled by specifying
+     subgroups of items in the 'createItemBank' function. The
+     subgroups are coded into a fifth column (after item 
+     parameters) and they are stored in the item bank by
+     setting the new argument 'cb' (for "content balancing")
+     to TRUE. If this fifth column is missing, or if 'cb' is
+     set to FALSE (default), nothing changes from the previous
+     version of catR. See also functions 'nextItem' and 
+     'randomCAT', which were modified for content balancing,
+     as well as the new function 'test.cbList' for testing
+     the format of the 'cbControl' list of 'nextItem'.
+
+  o  Item parameters can now be provided as data frames in 
+     the 'createItemBank' function. This also permits to 
+     include subgroups of items easily.
+
+  o  As a consequence of the previous major update, many help
+     files were updated for comptability with the new function
+     'createItemBank' (i.e. 'tcals' is no longer needed to be
+     converted into a matrix).
+
+  o  The 'tcals' data set was updated by adding a fifth
+     column, holding the subgroups of items as defined by the
+     test. See the help file of 'tcals' for further details.
+
+  o  As a consequence of the previous major update, many help
+     files were updated for compatibility of the new 'tcals'
+     data set (i.e. all examples requiring the matrix of
+     item parameters were slightly modified to remove the
+     'Group' variable).
+
+  o  The 'print.cat' function was updated to display output
+     results of randomesque method for item expoisure control
+     as well as for content balancing (whenever required).
+
+
+MINOR UPDATES
+
+  o  When the 'maxItems' criterion of 'randomCAT' is smaller
+     than the 'stop$thr' argument, an error message is 
+     returned. Previously it contained a mistake, claiming
+     that 'maxItems' is larger than 'stop$thr'. This has 
+     been fixed.
+
+  o  Some typos have been fixed in the help file of 'tcals'
+     data set and 'nextItem' functin.
+
+
+------------------------------------
 - Changes in catR 1.6 (2011-04-11) -
 ------------------------------------
 
