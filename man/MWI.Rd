@@ -88,7 +88,9 @@
 
  # Loading the 'tcals' parameters 
  data(tcals)
- tcals <- as.matrix(tcals)
+
+ # Selecting item parameters only
+ tcals <- as.matrix(tcals[,1:4])
  
  # Item bank creation with 'tcals' item parameters
  bank <- createItemBank(tcals)

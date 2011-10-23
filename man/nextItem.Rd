@@ -5,13 +5,14 @@
 
 \description{
  This command selects the next item to be administered, given the list of previously administered items and the current
- ability estimate, with several possible criteria. 
+ ability estimate, with several possible criteria. Item exposure and content balancing can also be controlled.
  }
 
 \usage{
  nextItem(itemBank, theta, out=NULL, x=NULL, criterion="MFI",
  	method="BM", priorDist="norm", priorPar=c(0,1), D=1,
- 	range=c(-4,4), parInt=c(-4,4,33), infoType="observed") 
+ 	range=c(-4,4), parInt=c(-4,4,33), infoType="observed",
+ 	randomesque=1, cbControl=NULL) 
  }
 
 \arguments{
@@ -36,15 +37,23 @@
                or \code{"Owen"}. See \bold{Details}.}
  \item{infoType}{character: the type of information function to be used. Possible values are \code{"observed"} (default) for observed
                  information function, and \code{"Fisher"} for Fisher information function. Ignored if \code{criterion} is not \code{"MEI"}.}
+ \item{randomesque}{integer: the number of items to be chosen from the next item selection rule, among those the next item to be administered will be
+                   randomly picked up. Default value is 1 and leads to usual selection of the optimal item for the specified \code{criterion}. See \bold{Details}.}
+ \item{cbControl}{either a list of accurate format to control for content balancing, or \code{NULL}. See \bold{Details}.}
 }
 
 \value{
- A list with three arguments:
+ A list with eight arguments:
  \item{item}{the selected item (identified by its number in the item bank).}
  \item{par}{the vector of item parameters of the selected item.}
  \item{info}{the value of the MFI, Fisher's information, the MLWI, the MPWI, the MEI, the EPV,or NA (for \code{"random"} criterion) for the selected 
              item and the current ability estimate.}
  \item{criterion}{the value of the \code{criterion} argument.}
+ \item{randomesque}{the value of the \code{randomesque} argument.}
+ \item{prior.prop}{a vector with empirical proportions of items previously administered for each subgroup of items set by \code{cbControl}.}
+ \item{post.prop}{a vector with empirical proportions of items previously administered, together with the one currently selected, for each subgroup
+                  of items set by \code{cbControl}.}
+ \item{th.prop}{a vector with theoretical proportions given by \code{cbControl$props}.}
  }
  
 
@@ -84,6 +93,34 @@
  Finally, for MEI criterion, the type of information function must be supplied through the \code{infoType} argument. It is equal to 
  \code{"observed"} by default, which refers to the observed information function, and the other possible value is \code{"Fisher"}
  for Fisher information function. See the \code{\link{MEI}} funtion for further details. This argumpent is ignored if \code{criterion} is not \code{"MEI"}.
+
+ Item exposure can be controlled by using the so-called \emph{randomesque} approach (Kingsbury an Zara, 1989), which consists in selecting more than one item
+ as the best items to be administered (according to the specified \code{criterion}). The final item that is administered is randomly chosen among this set of
+ optimal items.  The argument \code{randomesque} controls for the number of optimal items to be selected. The default value is 1, which corresponds to the
+ usual framework of selecting the optimal item for next administration. Note that, for compatibility issues, if the number of remaining items is smaller than
+ \code{randomesque}, the latter is replaced by this number of remaining items.
+
+ Control for content balancing is also possible, given two conditions: (a) the item bank set by \code{itemBank} holds as element \code{$cbGroup} the names of the
+ subgroups of items for content balancing, and (b) the argument \code{cbControl} is a correctly specified list. The correct format for \code{cbControl} is a list
+ with two elements. The first one is called \code{names} and holds the names of the subgroups of items (in the order that is prespecified by the user). The second
+ element is called \code{props} and contains the (theoretical) proportions of items to be administered from eazch subgroup for content balancing. These proportions
+ must be strictly positive but may not sum to one; in this case they are internally normalized to sum to one. Note that if \code{cbControl} is misspecified, then
+ the \code{\link{test.cbList}} will return a warning message and the \code{\link{nextItem}} function will stop. 
+
+ Under content balancing, the selection of the next item is done in several steps.
+ \enumerate{
+ \item{If no item was administered yet, one subgroup is randomly picked up and the optimal item from this subgroup is selected.}
+ \item{If at least one subgroup wasn't targeted yet by item selection, one of these subgroups is randomly picked up and the optimal item
+       from this subgroup is selected.}
+ \item{If at least one item per subgroup was already administered, the empirical relative proportions of items administered per subgroup are computed, and 
+       the subgroup(s) whose difference between empirical and theoretical (i.e. given by \code{cbControl$props}) proportions is (are) selected. The optimal
+       item is then selected from this subgroup for next administration (in case of several such groups, one group is randomly picked up first).}
+ }
+ See Kingsbury and Zara (1989) for further details.
+
+ Three vectors of proportions are returned in the output list: \code{$prior.prop} contains the empirical relative proportions for items already administered (i.e.
+ passed through the \code{out} argument); \code{$post.prop} contains the same empirical relative proportions but including the optimal item that was just selected;
+ and \code{$th.prop} contains the theoretical proportions (i.e. those from \code{cbControl$props} or the normalized values).
 }
 
 \note{
@@ -96,6 +133,8 @@
  Baker, F.B. (1992). \emph{Item response theory: parameter estimation techniques}. New York, NY: Marcel Dekker.
 
  Choi, S. W., and Swartz, R. J. (2009). Comparison of CAT item selection criteria for polytomous items. \emph{Applied PScyhological Measurement, 32}, 419-440.
+
+ Kingsbury, G. G., and Zara, A. R. (1989). Procedures for selecting items for computerized adaptive tests. \emph{Applied Measurement in Education, 2}, 359-375.
 
  Urry, V. W. (1970). \emph{A Monte Carlo investigation of logistic test models.} Unpublished doctoral dissertation. West Lafayette, IN: Purdue University.
 
@@ -116,7 +155,7 @@
  }
 
 \seealso{
-\code{\link{createItemBank}}, \code{\link{MWI}}, \code{\link{MEI}}, \code{\link{thetaEst}}
+\code{\link{createItemBank}}, \code{\link{MWI}}, \code{\link{MEI}}, \code{\link{thetaEst}}, \code{\link{test.cbList}}, \code{\link{randomCAT}}
 } 
 
 \examples{
@@ -124,7 +163,6 @@
 
  # Loading the 'tcals' parameters 
  data(tcals)
- tcals <- as.matrix(tcals)
  
  # Item bank creation with 'tcals' item parameters
  bank <- createItemBank(tcals)
@@ -142,6 +180,10 @@
  # and items 63 and 10 are removed
  nextItem(bank, 0, out=c(63,10)) # item 62 is selected
 
+ # Item exposure control by selecting three items
+ # (selected item will be either 10, 62 or 63)
+ nextItem(bank, 0, randomesque = 3)
+
  ## Urry's method
 
  # Selecting the next item, current ability estimate is 0
@@ -149,7 +191,7 @@
 
  # Selecting the next item, current ability estimate is 0
  # and item 24 is removed
- nextItem(bank, 0, out=24, criterion="Owen")
+ nextItem(bank, 0, out=24, criterion="Urry")
  
  ## MLWI and MPWI methods
 
@@ -184,5 +226,18 @@
  nextItem(bank, out=63, criterion="random") 
  nextItem(bank, out=63, criterion="random")  # may produce a 
                                              # different result
+
+ # Item bank creation for content balancing
+ bank2 <- createItemBank(tcals, cb=TRUE)
+
+ # Creation of the 'cbList' list with arbitrary proportions
+ cbList <- list(names=c("Audio1","Audio2","Written1","Written2",
+                "Written3"), props=c(0.1,0.2,0.2,0.2,0.3))
+
+ # Selecting the next item, MFI criterion, current ability 
+ # estimate is 0, items 12,33,46 and 63 previously administered
+ nextItem(bank2, 0, out=c(12,33,46,63), cbControl=cbList) 
+                                        # item 70 is selected
+
  }
  }

@@ -11,13 +11,13 @@
  }
 
 \usage{
- randomCAT(trueTheta, itemBank, maxItems=50, 
+ randomCAT(trueTheta, itemBank, maxItems=50, cbControl=NULL,
  	start=list(fixItems=NULL, seed=NULL, nrItems=1, theta=0, 
  	halfRange=2, startSelect="bOpt"), test=list(method="BM", 
  	priorDist="norm", priorPar=c(0,1), range=c(-4,4), D=1, 
- 	parInt=c(-4,4,33), itemSelect="MFI", infoType="observed"), 
- 	stop=list(rule="length", thr=20, alpha=0.05), 
- 	final=list(method="BM", priorDist="norm",
+ 	parInt=c(-4,4,33), itemSelect="MFI", infoType="observed",
+ 	randomesque=1), stop=list(rule="length", thr=20,
+ 	alpha=0.05), final=list(method="BM", priorDist="norm",
  	priorPar=c(0,1), range=c(-4,4),D=1, parInt=c(-4,4,33), 
  	alpha=0.05))
  \method{print}{cat}(x, ...)
@@ -28,6 +28,7 @@
  \item{trueTheta}{numeric: the value of the true ability level.}
  \item{itemBank}{an item bank, i.e. a list of class \code{itBank}, typically an output of the function \code{createItemBank}.}
  \item{maxItems}{numeric: the maximal number of items to be administered (default is 50).}
+ \item{cbControl}{either a list of accurate format to control for content balancing, or \code{NULL}. See \bold{Details}.}
  \item{start}{a list with the options for starting the adaptive test. See \bold{Details}.}
  \item{test}{a list with the options for provisional ability estimation and next item selection. See \bold{Details}.}
  \item{stop}{a list with the options of the stopping rule. See \bold{Details}.}
@@ -66,6 +67,9 @@
  \item{provD}{the value of the \code{test$D} argument (or its default value if missing).}
  \item{itemSelect}{the value of the \code{test$itemSelect} argument (or its default value if missing).}
  \item{infoType}{the value of the \code{test$infoType} argument (or its default value if missing).}
+ \item{randomesque}{the value of the \code{test$randomesque} argument (or its default value if missing).}
+ \item{cbControl}{the value of the \code{cbControl} argument (or its default value if missing).}
+ \item{cbGroup}{the value of the \code{itemBank$cbGroup} element of the item bank \code{itemBank}.}
  \item{stopRule}{the value of the \code{stop$rule} argument (or its default value if missing).}
  \item{stopThr}{the value of the \code{stop$thr} argument (or its default value if missing).}
  \item{stopAlpha}{the value of the \code{stop$alpha} argument (or its default value if missing).}
@@ -85,6 +89,10 @@ The function \code{print.cat} returns similar (but differently organized) result
  The \code{randomCAT} function generates an adaptive test using an item bank specified by argument \code{itemBank}, and for
  a given true ability level specified by argument \code{trueTheta}. The maximal length of the test can be fixed through
  the \code{maxItems} argument, with a default value of 50 items. 
+
+ Content balancing can be controlled by the \code{cbControl} argument. See the \code{\link{nextItem}} function for further
+ details on how to specify \code{cbControl} properly and under which conditions it is operational. By default, content balancing
+ is not controlled (see Kingsbury and Zara, 1989, for further details on content balancing).
 
  The test specification is made by means of four lists of options: one list for the selection of the starting items, 
  one list with the options for provisional ability estimation, one list to define the stopping rule, and one list with
@@ -138,6 +146,8 @@ The function \code{print.cat} returns similar (but differently organized) result
  \item{\code{infoType}: character: the type of information function to be used for next item selection. Possible values are \code{"observed"}
                  (default) for observed information function, and \code{"Fisher"} for Fisher information function. Ignored if \code{itemselect}
                  is not \code{"MEI"}.}
+ \item{randomesque}{integer: the number of items to be chosen from the next item selection rule, among those the next item to be administered will be
+                   randomly picked up. Default value is 1 and leads to usual selection of the optimal item (Kingsbury and Zara, 1989).}
  }
  These arguments are passed to the functions \code{\link{thetaEst}} (or \code{\link{eapEst}}) and \code{\link{semTheta}} (or \code{\link{eapSem}})
  to estimate the ability level and the standard error of this estimate. In addition, some arguments are passed to \code{\link{nextItem}} to select the 
@@ -194,6 +204,8 @@ The function \code{print.cat} returns similar (but differently organized) result
  Jeffreys, H. (1946). An invariant form for the prior probability in estimation problems. \emph{Proceedings of the Royal
  Society of London. Series A, Mathematical and Physical Sciences, 186}, 453-461.
 
+ Kingsbury, G. G., and Zara, A. R. (1989). Procedures for selecting items for computerized adaptive tests. \emph{Applied Measurement in Education, 2}, 359-375.
+
  Lord, F.M. (1980). \emph{Applications of item response theory to practical testing problems}.
  Hillsdale, NJ: Lawrence Erlbaum.
 
@@ -224,7 +236,6 @@ The function \code{print.cat} returns similar (but differently organized) result
 \dontrun{
  # Loading the 'tcals' parameters 
  data(tcals)
- tcals <- as.matrix(tcals)
  
  # Item bank creation with 'tcals' item parameters
  bank <- createItemBank(tcals)
@@ -250,8 +261,8 @@ The function \code{print.cat} returns similar (but differently organized) result
  	final=final)
 
  # New 'test' and 'final' rules (BM and EAP estimation
- # with Jeffreys' prior)
- test2 <- list(method="BM", priorDist="Jeffreys")
+ # with Jeffreys' prior, randomesque value 5)
+ test2 <- list(method="BM", priorDist="Jeffreys", randomesque=5)
  final2 <- list(method="EAP", priorDist="Jeffreys")
 
  # New stopping rule: classification criterion, with 
@@ -275,6 +286,18 @@ The function \code{print.cat} returns similar (but differently organized) result
  stop4 <- list(rule="length",thr=10)
  res4 <- randomCAT(0, bank, start=start, test=test3, stop=stop4,
  	final=final2)
+
+ # Item bank creation for content balancing
+ bank2 <- createItemBank(tcals, cb=TRUE)
+
+ # Creation of the 'cbList' list with arbitrary proportions
+ cbList <- list(names=c("Audio1","Audio2","Written1","Written2",
+                "Written3"), props=c(0.1,0.2,0.2,0.2,0.3))
+
+ # CAT test with 'start', 'test2', 'stop4' and 'final2' lists
+ # and content balancing using 'cbList'
+ res5 <- randomCAT(0, bank2, start=start, test=test2, stop=stop4,
+ 	final=final2, cbControl=cbList)
 
  # Plotting results
  plot(res)
