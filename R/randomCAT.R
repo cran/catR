@@ -1,8 +1,9 @@
-randomCAT<-function(trueTheta,itemBank,maxItems=50,cbControl=NULL,start=list(fixItems=NULL,seed=NULL,nrItems=1,theta=0,halfRange=2,startSelect="bOpt"),test=list(method="BM",priorDist="norm",priorPar=c(0,1),range=c(-4,4),D=1,parInt=c(-4,4,33),itemSelect="MFI",infoType="observed",randomesque=1),stop=list(rule="length",thr=20,alpha=0.05),final=list(method="BM",priorDist="norm",priorPar=c(0,1),range=c(-4,4),D=1,parInt=c(-4,4,33),alpha=0.05)){
+randomCAT<-function(trueTheta,itemBank,maxItems=50,cbControl=NULL,start=list(fixItems=NULL,seed=NULL,nrItems=1,theta=0,halfRange=2,startSelect="bOpt"),test=list(method="BM",priorDist="norm",priorPar=c(0,1),range=c(-4,4),D=1,parInt=c(-4,4,33),itemSelect="MFI",infoType="observed",randomesque=1),stop=list(rule="length",thr=20,alpha=0.05),final=list(method="BM",priorDist="norm",priorPar=c(0,1),range=c(-4,4),D=1,parInt=c(-4,4,33),alpha=0.05),save.output=FALSE,output=c("out","default")){
 if (!testList(start,type="start")$test) stop(testList(start,type="start")$message,call.=FALSE)
 if (!testList(test,type="test")$test) stop(testList(test,type="test")$message,call.=FALSE)
 if (!testList(stop,type="stop")$test) stop(testList(stop,type="stop")$message,call.=FALSE)
 if (!testList(final,type="final")$test) stop(testList(final,type="final")$message,call.=FALSE)
+internalCAT<-function(){
 startList<-list(fixItems=start$fixItems,seed=start$seed,nrItems=NULL,theta=NULL,halfRange=2,startSelect="bOpt")
 startList$nrItems<-ifelse(is.null(start$nrItems),1,start$nrItems)
 startList$theta<-ifelse(is.null(start$theta),0,start$theta)
@@ -69,7 +70,7 @@ finalEst<-thetaEst(PAR,PATTERN,D=final$D,method=final$method,priorDist=final$pri
 seFinal<-semTheta(finalEst,PAR,x=PATTERN,D=final$D,method=final$method,priorDist=final$priorDist,priorPar=final$priorPar,parInt=final$parInt)
 confIntFinal<-c(finalEst-qnorm(1-final$alpha/2)*seFinal,finalEst+qnorm(1-final$alpha/2)*seFinal)
 endWarning<-FALSE
-RES<-list(trueTheta=trueTheta,maxItems=maxItems,testItems=ITEMS,itemPar=PAR,pattern=PATTERN,thetaProv=TH,seProv=SETH,thFinal=finalEst,seFinal=seFinal,ciFinal=confIntFinal,startFixItems=start$fixItems,startSeed=start$seed,startNrItems=start$nrItems,startTheta=start$theta,startHalfRange=start$halfRange,startThStart=pr0$thStart,startSelect=start$startSelect,provMethod=test$method,provDist=test$priorDist,provPar=test$priorPar,provRange=test$range,provD=test$D,itemSelect=test$itemSelect,infoType=test$infoType,randomesque=test$randomesque,cbControl=cbControl,cbGroup=itemBank$cbGroup,stopRule=stop$rule,stopThr=stop$thr,stopAlpha=stop$alpha,endWarning=endWarning,finalMethod=final$method,finalDist=final$priorDist,finalPar=final$priorPar,finalRange=final$range,finalD=final$D,finalAlpha=final$alpha)
+RES<-list(trueTheta=trueTheta,maxItems=maxItems,testItems=ITEMS,itemPar=PAR,pattern=PATTERN,thetaProv=TH,seProv=SETH,thFinal=finalEst,seFinal=seFinal,ciFinal=confIntFinal,startFixItems=start$fixItems,startSeed=start$seed,startNrItems=start$nrItems,startTheta=start$theta,startHalfRange=start$halfRange,startThStart=pr0$thStart,startSelect=start$startSelect,provMethod=test$method,provDist=test$priorDist,provPar=test$priorPar,provRange=test$range,provD=test$D,itemSelect=test$itemSelect,infoType=test$infoType,randomesque=test$randomesque,cbControl=cbControl,cbGroup=itemBank$cbGroup,stopRule=stop$rule,stopThr=stop$thr,stopAlpha=stop$alpha,endWarning=endWarning,finalMethod=final$method,finalDist=final$priorDist,finalPar=final$priorPar,finalRange=final$range,finalD=final$D,finalAlpha=final$alpha,save.output=save.output,output=output)
 class(RES)<-"cat"
 }
 else{
@@ -89,12 +90,21 @@ seFinal<-semTheta(finalEst,PAR,x=PATTERN,D=final$D,method=final$method,priorDist
 confIntFinal<-c(finalEst-qnorm(1-final$alpha/2)*seFinal,finalEst+qnorm(1-final$alpha/2)*seFinal)
 if ((stop$rule=="length" & length(ITEMS)<stop$thr) | (stop$rule=="precision" & seProv>stop$thr) | (stop$rule=="classification" & thProv-qnorm(1-stop$alpha/2)*seProv<stop$thr & thProv+qnorm(1-stop$alpha/2)*seProv>stop$thr)) endWarning<-TRUE
 else endWarning<-FALSE
-RES<-list(trueTheta=trueTheta,maxItems=maxItems,testItems=ITEMS,itemPar=PAR,pattern=PATTERN,thetaProv=TH,seProv=SETH,thFinal=finalEst,seFinal=seFinal,ciFinal=confIntFinal,startFixItems=start$fixItems,startSeed=start$seed,startNrItems=start$nrItems,startTheta=start$theta,startHalfRange=start$halfRange,startThStart=pr0$thStart,startSelect=start$startSelect,provMethod=test$method,provDist=test$priorDist,provPar=test$priorPar,provRange=test$range,provD=test$D,itemSelect=test$itemSelect,infoType=test$infoType,randomesque=test$randomesque,cbControl=cbControl,cbGroup=itemBank$cbGroup,stopRule=stop$rule,stopThr=stop$thr,stopAlpha=stop$alpha,endWarning=endWarning,finalMethod=final$method,finalDist=final$priorDist,finalPar=final$priorPar,finalRange=final$range,finalD=final$D,finalAlpha=final$alpha)
+RES<-list(trueTheta=trueTheta,maxItems=maxItems,testItems=ITEMS,itemPar=PAR,pattern=PATTERN,thetaProv=TH,seProv=SETH,thFinal=finalEst,seFinal=seFinal,ciFinal=confIntFinal,startFixItems=start$fixItems,startSeed=start$seed,startNrItems=start$nrItems,startTheta=start$theta,startHalfRange=start$halfRange,startThStart=pr0$thStart,startSelect=start$startSelect,provMethod=test$method,provDist=test$priorDist,provPar=test$priorPar,provRange=test$range,provD=test$D,itemSelect=test$itemSelect,infoType=test$infoType,randomesque=test$randomesque,cbControl=cbControl,cbGroup=itemBank$cbGroup,stopRule=stop$rule,stopThr=stop$thr,stopAlpha=stop$alpha,endWarning=endWarning,finalMethod=final$method,finalDist=final$priorDist,finalPar=final$priorPar,finalRange=final$range,finalD=final$D,finalAlpha=final$alpha,save.output=save.output,output=output)
 class(RES)<-"cat"
 }
 return(RES)
 }
-
+   resToReturn <- internalCAT()
+    if (save.output) {
+        if (output[2] == "default") 
+            wd <- paste(getwd(), "/", sep = "")
+        else wd <- output[2]
+        fileName <- paste(wd, output[1], ".txt", sep = "")
+        capture.output(resToReturn, file = fileName)
+    }
+    return(resToReturn)
+}
 
 print.cat<-function (x, ...) 
 {
@@ -337,38 +347,96 @@ met1ter <- paste("   Order of starting abilities administration: ",
     cat("   ",x$cbControl$names[i],": ",mess,"\n",sep="")
 }
 }
+  if (!x$save.output) 
+        cat("\n","Output was not captured!", "\n")
+    else {
+        if (x$output[2] == "default") 
+            wd <- paste(getwd(), "/", sep = "")
+        else wd <- x$output[2]
+        fileName <- paste(wd, x$output[1], ".txt", sep = "")
+        cat("\n","Output was captured and saved into file", "\n", 
+            " '", fileName, "'", "\n", "on ",as.character(Sys.Date()),"\n","\n", sep = "")
+    }
 
 }
 
 
 
-plot.cat<-function(x,ci=FALSE,alpha=0.05,trueTh=TRUE, classThr=NULL, ...){
-res<-x
-if (is.logical(trueTh)==FALSE) stop("'trueTh' must be either TRUE or FALSE",call.=FALSE)
-if (is.logical(ci)==FALSE) stop("'ci' must be either TRUE or FALSE",call.=FALSE)
-if (is.numeric(classThr)==FALSE & is.null(classThr)==FALSE) stop("'classThr' must be either a  numeric threshold or NULL",call.=FALSE)
-X<-1:length(res$testItems)
-nra<-length(res$pattern)-length(res$thetaProv)
-Y<-c(rep(NA,nra),res$thetaProv)
-r1<-res$thetaProv-qnorm(1-alpha/2)*res$seProv
-r2<-res$thetaProv+qnorm(1-alpha/2)*res$seProv	
-vectRange<-c(res$thetaProv,res$trueTheta)
-if (ci==TRUE) vectRange<-c(vectRange,r1,r2)
-if (is.null(classThr)==FALSE) vectRange<-c(vectRange,classThr)
-ra<-range(vectRange)
-ra[1]<-ra[1]-0.2
-ra[2]<-ra[2]+0.2
-r1<-c(rep(NA,nra),r1)
-r2<-c(rep(NA,nra),r2)
-plot(X,Y,type="o",xlab="Item",ylab="Ability estimate",ylim=ra,cex=0.7)
-if (ci==TRUE){
-for (i in 1:length(X)){
-lines(rep(i,2),c(r1[i],r2[i]),lty=3)
-lines(c(i-0.2,i+0.2),rep(r1[i],2))
-lines(c(i-0.2,i+0.2),rep(r2[i],2))
+plot.cat<-function (x, ci = FALSE, alpha = 0.05, trueTh = TRUE, classThr = NULL, save.plot = FALSE, 
+    save.options = c("plot", "default", "pdf"), ...) 
+{
+ internalCAT<-function(){
+   res <- x
+    if (is.logical(trueTh) == FALSE) 
+        stop("'trueTh' must be either TRUE or FALSE", call. = FALSE)
+    if (is.logical(ci) == FALSE) 
+        stop("'ci' must be either TRUE or FALSE", call. = FALSE)
+    if (is.numeric(classThr) == FALSE & is.null(classThr) == 
+        FALSE) 
+        stop("'classThr' must be either a  numeric threshold or NULL", 
+            call. = FALSE)
+    X <- 1:length(res$testItems)
+    nra <- length(res$pattern) - length(res$thetaProv)
+    Y <- c(rep(NA, nra), res$thetaProv)
+    r1 <- res$thetaProv - qnorm(1 - alpha/2) * res$seProv
+    r2 <- res$thetaProv + qnorm(1 - alpha/2) * res$seProv
+    vectRange <- c(res$thetaProv, res$trueTheta)
+    if (ci == TRUE) 
+        vectRange <- c(vectRange, r1, r2)
+    if (is.null(classThr) == FALSE) 
+        vectRange <- c(vectRange, classThr)
+    ra <- range(vectRange)
+    ra[1] <- ra[1] - 0.2
+    ra[2] <- ra[2] + 0.2
+    r1 <- c(rep(NA, nra), r1)
+    r2 <- c(rep(NA, nra), r2)
+    plot(X, Y, type = "o", xlab = "Item", ylab = "Ability estimate", 
+        ylim = ra, cex = 0.7)
+    if (ci == TRUE) {
+        for (i in 1:length(X)) {
+            lines(rep(i, 2), c(r1[i], r2[i]), lty = 3)
+            lines(c(i - 0.2, i + 0.2), rep(r1[i], 2))
+            lines(c(i - 0.2, i + 0.2), rep(r2[i], 2))
+        }
+    }
+    if (trueTh == TRUE) 
+        abline(h = res$trueTheta)
+    if (is.null(classThr) == FALSE) 
+        abline(h = classThr, lty = 2)
 }
+    internalCAT()
+    if (save.plot) {
+        plotype <- NULL
+        if (save.options[3] == "pdf") 
+            plotype <- 1
+        if (save.options[3] == "jpeg") 
+            plotype <- 2
+        if (is.null(plotype)) 
+            cat("Invalid plot type (should be either 'pdf' or 'jpeg').", 
+                "\n", "The plot was not captured!", "\n")
+        else {
+            if (save.options[2] == "default") 
+                wd <- paste(getwd(), "/", sep = "")
+            else wd <- save.options[2]
+            fileName <- paste(wd, save.options[1], switch(plotype, 
+                `1` = ".pdf", `2` = ".jpg"), sep = "")
+            if (plotype == 1) {
+                {
+                  pdf(file = fileName)
+                  internalCAT()
+                }
+                dev.off()
+            }
+            if (plotype == 2) {
+                {
+                  jpeg(file = fileName)
+                  internalCAT()
+                }
+                dev.off()
+            }
+            cat("The plot was captured and saved into", "\n", 
+                " '", fileName, "'", "\n", "\n", sep = "")
+        }
+    }
+    else cat("The plot was not captured!", "\n", sep = "")
 }
-if (trueTh==TRUE) abline(h=res$trueTheta)
-if (is.null(classThr)==FALSE) abline(h=classThr,lty=2)
-}
-
