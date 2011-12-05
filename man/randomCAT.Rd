@@ -6,12 +6,12 @@
 \title{Random generation of adaptive tests}
 
 \description{
- This command generates a response pattern to an adaptive test, for agiven item bank, a true ability level, 
+ This command generates a response pattern to an adaptive test, for a given item bank, a true ability level, 
  and several lists of CAT parameters (starting items, stopping rule, provisional and final ability estimators).
  }
 
 \usage{
- randomCAT(trueTheta, itemBank, maxItems=50, cbControl=NULL,
+randomCAT(trueTheta, itemBank, maxItems=50, cbControl=NULL,
  	start=list(fixItems=NULL, seed=NULL, nrItems=1, theta=0, 
  	halfRange=2, startSelect="bOpt"), test=list(method="BM", 
  	priorDist="norm", priorPar=c(0,1), range=c(-4,4), D=1, 
@@ -19,9 +19,10 @@
  	randomesque=1), stop=list(rule="length", thr=20,
  	alpha=0.05), final=list(method="BM", priorDist="norm",
  	priorPar=c(0,1), range=c(-4,4),D=1, parInt=c(-4,4,33), 
- 	alpha=0.05))
- \method{print}{cat}(x, ...)
- \method{plot}{cat}(x, ci=FALSE, alpha=0.05, trueTh=TRUE, classThr=NULL, ...)
+ 	alpha=0.05), save.output=FALSE, output=c("out","default"))
+\method{print}{cat}(x, ...)
+\method{plot}{cat}(x, ci=FALSE, alpha=0.05, trueTh=TRUE, classThr=NULL, 
+ 	save.plot=FALSE, save.options=c("plot","default","pdf"),...)
  }
 
 \arguments{
@@ -33,11 +34,18 @@
  \item{test}{a list with the options for provisional ability estimation and next item selection. See \bold{Details}.}
  \item{stop}{a list with the options of the stopping rule. See \bold{Details}.}
  \item{final}{a list with the options for final ability estimation. See \bold{Details}.}
+ \item{save.output}{logical: should the output be saved in an external text file? (default is \code{FALSE}).}
+ \item{output}{character: a vector of two components. The first component is the name of the output file, the second component is either
+              the file path or \code{"default"} (default). See \bold{Details}.}
  \item{x}{an object of class "cat", typically an output of \code{randomCAT} function.}
  \item{ci}{logical: should the confidence intervals be plotted for each provisional ability estimate? (default is \code{TRUE}).}
  \item{alpha}{numeric: the significance level for provisional confidence intervals (default is 0.05). Ignored if \code{ci} is \code{FALSE}.}
  \item{trueTh}{logical: should the true ability level be drawn by a horizontal line? (default is TRUE).}
  \item{classThr}{either a numeric value giving the classification threshold to be displayed, or \code{NULL}.}
+ \item{save.plot}{logical: should the plot be saved in an external figure? (default is \code{FALSE}).}
+ \item{save.options}{character: a vector of three components. The first component is the name of the output file, the second component
+                    is either the file path or \code{"default"} (default), and the third component is the file extension, either \code{"pdf"} (default)
+                    or \code{"jpeg"}. Ignored if \code{save.plot} is \code{FALSE}. See \bold{Details}.}
  \item{...}{other generic arguments to be passed to \code{print} and \code{plot} functions.}
 }
 
@@ -80,6 +88,8 @@
  \item{finalRange}{the value of the \code{final$range} argument (or its default value if missing).}
  \item{finalD}{the value of the \code{final$D} argument (or its default value if missing).}
  \item{finalAlpha}{the value of the \code{final$alpha} argument (or its default value if missing).}
+ \item{save.output}{the value of the \code{save.output} argument.}
+ \item{output}{the value of the \code{output} argument.}
  
 The function \code{print.cat} returns similar (but differently organized) results. 
  }
@@ -146,7 +156,7 @@ The function \code{print.cat} returns similar (but differently organized) result
  \item{\code{infoType}: character: the type of information function to be used for next item selection. Possible values are \code{"observed"}
                  (default) for observed information function, and \code{"Fisher"} for Fisher information function. Ignored if \code{itemselect}
                  is not \code{"MEI"}.}
- \item{randomesque}{integer: the number of items to be chosen from the next item selection rule, among those the next item to be administered will be
+ \item{\code{randomesque}: integer: the number of items to be chosen from the next item selection rule, among those the next item to be administered will be
                    randomly picked up. Default value is 1 and leads to usual selection of the optimal item (Kingsbury and Zara, 1989).}
  }
  These arguments are passed to the functions \code{\link{thetaEst}} (or \code{\link{eapEst}}) and \code{\link{semTheta}} (or \code{\link{eapSem}})
@@ -182,11 +192,22 @@ The function \code{print.cat} returns similar (but differently organized) result
  of the lists is checked with the \code{\link{testList}} function, and the adaptive test is generated only if the lists
  are adequately defined. Othgerwise, a message error is printed.
 
+ The output of \code{randomCAT}, as displayed by the \code{print.cat} function, can be stored in a text file provided that
+ \code{save.output} is set to \code{TRUE} (the default value \code{FALSE} does not execute the storage). In this case, the name of
+ the text file must be given as a character string into the first component of the output argument (default name is \code{"out"}),
+ and the path for saving the text file can be given through the second component of output. The default value is \code{"default"},
+ meaning that the file will be saved in the current working directory. Any other path can be specified as a character string: see
+ the \bold{Examples} section for an illustration. 
+
  The function \code{plot.cat} represents the set of provisional and final ability estimates througghout the test. Corresponding
  confidence intervals (with confidence level defined by the argument \code{alpha}) are also drawn if \code{ci=TRUE} (which
  is not the default value). The true ability level can be drawn by a horizontal solid line by specifying \code{trueTh=TRUE} (which is 
  the default value); setting it to \code{FALSE} will undo the drawing. Finally, any classification threshold can be additionally 
  displayed by specifying a numeric value to the argument \code{classThr}. The default value \code{NULL} does not display any threshold.
+
+ Finally, the plot can be saved in an external file, either as PDF or JPEG format. First, the argument \code{save.plot} must be set to
+ \code{TRUE} (default is \code{FALSE}). Then, the name of the figure, its location and format are specified through the argument 
+ \code{save.options}, all as character strings. See the \code{Examples} section for further information and a practical example.
 }
 
 \references{
@@ -299,11 +320,22 @@ The function \code{print.cat} returns similar (but differently organized) result
  res5 <- randomCAT(0, bank2, start=start, test=test2, stop=stop4,
  	final=final2, cbControl=cbList)
 
+ # Saving the output in the external 'ou' text file within folder
+ # 'Program Files' of hard drive 'C'
+ res5 <- randomCAT(0, bank2, start=start, test=test2, stop=stop4,
+ 	final=final2, cbControl=cbList, save.output = TRUE,
+      output=c("out","c:/Program Files/"))
+
  # Plotting results
  plot(res)
  plot(res, ci=TRUE)
  plot(res, ci=TRUE, trueTh=FALSE)
  plot(res, ci=TRUE, classThr=1)
+
+ # Saving last figure into PDF file 'figure' within folder
+ # 'C:/Program Files/'
+ plot(res, ci=TRUE, classThr=1, save.plot=TRUE,
+      save.options=c("figure","c:/Program Files","pdf"))
 
  # With mistake
  plot(res, ci=0.05)

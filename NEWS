@@ -6,6 +6,23 @@
 
 
 ------------------------------------
+- Changes in catR 2.1 (2011-12-05) -
+------------------------------------
+
+MINOR UPDATES
+
+  o  It is now possible to save the output of 'randomCAT' into
+     a text file, by specifying the new arguments 'save.output'
+     and 'output' properly. Similarly, the plots obtained with
+     the 'plot.cat' function can be saved as PDF or JPEG files
+     by specifying properly the new arguments 'save.plot' and 
+     'save.options'. See the corresponding help files for 
+     further details.
+
+  o  Some typos have been fixed in the help files.
+
+
+------------------------------------
 - Changes in catR 2.0 (2011-10-21) -
 ------------------------------------
 
