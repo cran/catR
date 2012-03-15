@@ -6,6 +6,18 @@
 
 
 ------------------------------------
+- Changes in catR 2.2 (2012-03-15) -
+------------------------------------
+
+MINOR UPDATE
+
+  o  The references of several help files have been updated.
+
+  o  A basic NAMESPACE file has been added for compatibility
+     with R versions 2.14.0 and later.
+
+
+------------------------------------
 - Changes in catR 2.1 (2011-12-05) -
 ------------------------------------
 

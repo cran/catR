@@ -60,6 +60,9 @@
  Haley, D.C. (1952). Estimation of the dosage mortality relationship when the dose is subject to error. 
  Technical report no 15. Palo Alto, CA: Applied Mathematics and Statistics Laboratory, Stanford University. 
 
+ Magis, D., and Raiche, G. (in press). Random generation of response patterns under computerized adaptive testing
+ with the R package \emph{catR}. \emph{Journal of Statistical Software}.
+
  Owen, R. J. (1975). A Bayesian sequential procedure for quantal response in the context of adaptive mental testing.  \emph{Journal of the American Statistical
  Association, 70}, 351-356.
 

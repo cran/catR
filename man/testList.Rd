@@ -46,6 +46,10 @@
  Each mismatch yields a different output message to help in debugging the problem.
  }
 
+\references{
+ Magis, D., and Raiche, G. (in press). Random generation of response patterns under computerized adaptive testing
+ with the R package \emph{catR}. \emph{Journal of Statistical Software}.
+}
 
 \author{
     David Magis \cr

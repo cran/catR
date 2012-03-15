@@ -67,6 +67,11 @@
  }  
  }
 
+\references{
+ Magis, D., and Raiche, G. (in press). Random generation of response patterns under computerized adaptive testing
+ with the R package \emph{catR}. \emph{Journal of Statistical Software}.
+}
+
 \author{
     David Magis \cr
     Post-doctoral researcher, FNRS (Fonds National de la Recherche Scientifique) \cr

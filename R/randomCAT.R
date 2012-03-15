@@ -418,24 +418,24 @@ plot.cat<-function (x, ci = FALSE, alpha = 0.05, trueTh = TRUE, classThr = NULL,
             if (save.options[2] == "default") 
                 wd <- paste(getwd(), "/", sep = "")
             else wd <- save.options[2]
-            fileName <- paste(wd, save.options[1], switch(plotype, 
+            nameFile <- paste(wd, save.options[1], switch(plotype, 
                 `1` = ".pdf", `2` = ".jpg"), sep = "")
             if (plotype == 1) {
                 {
-                  pdf(file = fileName)
+                  pdf(file = nameFile)
                   internalCAT()
                 }
                 dev.off()
             }
             if (plotype == 2) {
                 {
-                  jpeg(file = fileName)
+                  jpeg(filename = nameFile)
                   internalCAT()
                 }
                 dev.off()
             }
             cat("The plot was captured and saved into", "\n", 
-                " '", fileName, "'", "\n", "\n", sep = "")
+                " '", nameFile, "'", "\n", "\n", sep = "")
         }
     }
     else cat("The plot was not captured!", "\n", sep = "")
