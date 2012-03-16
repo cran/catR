@@ -74,6 +74,9 @@
  Haley, D.C. (1952). Estimation of the dosage mortality relationship when the dose is subject to error. 
  Technical report no 15. Palo Alto, CA: Applied Mathematics and Statistics Laboratory, Stanford University. 
 
+ Magis, D., and Raiche, G. (in press). Random generation of response patterns under computerized adaptive testing
+ with the R package \emph{catR}. \emph{Journal of Statistical Software}.
+
  van der Linden, W. J. (1998). Bayesian item selection criteria for adaptive testing. \emph{Psychometrika, 63}, 201-216.
 
  van der Linden, W. J., and Pashley, P. J. (2000). Item selection and ability estimlation in adaptive testing. In W. J. van der Linden and C. A. W. Glas (Eds.), 

@@ -33,6 +33,9 @@
  Laurier, M., Froio, L., Pearo C., and Fournier, M. (1998). Test de classement d'anglais langue seconde au collegial. 
  Montreal, Canada: College de Maisonneuve.
 
+ Magis, D., and Raiche, G. (in press). Random generation of response patterns under computerized adaptive testing
+ with the R package \emph{catR}. \emph{Journal of Statistical Software}.
+
  Raiche, G. (2002). Le depistage du sous-classement aux tests de classement en anglais, langue seconde, au collegial
  [The detection of under classification to the collegial English as a second language placement tests].
  Gatineau, QC: College de l'Outaouais.

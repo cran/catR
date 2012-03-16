@@ -136,6 +136,9 @@
 
  Kingsbury, G. G., and Zara, A. R. (1989). Procedures for selecting items for computerized adaptive tests. \emph{Applied Measurement in Education, 2}, 359-375.
 
+ Magis, D., and Raiche, G. (in press). Random generation of response patterns under computerized adaptive testing
+ with the R package \emph{catR}. \emph{Journal of Statistical Software}.
+
  Urry, V. W. (1970). \emph{A Monte Carlo investigation of logistic test models.} Unpublished doctoral dissertation. West Lafayette, IN: Purdue University.
 
  van der Linden, W. J. (1998). Bayesian item selection criteria for adaptive testing. \emph{Psychometrika, 63}, 201-216.

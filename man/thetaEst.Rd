@@ -74,6 +74,9 @@
  Lord, F.M. (1980). \emph{Applications of item response theory to practical testing problems}.
  Hillsdale, NJ: Lawrence Erlbaum.
 
+ Magis, D., and Raiche, G. (in press). Random generation of response patterns under computerized adaptive testing
+ with the R package \emph{catR}. \emph{Journal of Statistical Software}.
+
  Warm, T.A. (1989). Weighted likelihood estimation of ability in item response models. \emph{Psychometrika, 54}, 427-450.
 }
 

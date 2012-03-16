@@ -64,6 +64,9 @@
 \references{
  Choi, S. W., and Swartz, R. J. (2009). Comparison of CAT item selection criteria for polytomous items. \emph{Applied PScyhological Measurement, 32}, 419-440.
 
+ Magis, D., and Raiche, G. (in press). Random generation of response patterns under computerized adaptive testing
+ with the R package \emph{catR}. \emph{Journal of Statistical Software}.
+
  van der Linden, W. J. (1998). Bayesian item selection criteria for adaptive testing. \emph{Psychometrika, 63}, 201-216.
 
  van der Linden, W. J., and Pashley, P. J. (2000). Item selection and ability estimlation in adaptive testing. In W. J. van der Linden and C. A. W. Glas (Eds.), 
