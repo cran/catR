@@ -59,8 +59,8 @@
  Jeffreys, H. (1946). An invariant form for the prior probability in estimation problems. \emph{Proceedings of the Royal
  Society of London. Series A, Mathematical and Physical Sciences, 186}, 453-461.
 
- Magis, D., and Raiche, G. (in press). Random generation of response patterns under computerized adaptive testing
- with the R package \emph{catR}. \emph{Journal of Statistical Software}.
+ Magis, D., and Raiche, G. (2012). Random Generation of Response Patterns under Computerized Adaptive Testing with the R 
+ Package \emph{catR}. \emph{Journal of Statistical Software}, \emph{48 (8)}, 1-31. URL \url{http://www.jstatsoft.org/v48/i08/}
 }
 
 \author{
