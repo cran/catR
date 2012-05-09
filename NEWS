@@ -6,6 +6,20 @@
 
 
 ------------------------------------
+- Changes in catR 2.3 (2012-05-09) -
+------------------------------------
+
+MINOR UPDATE
+
+  o  The references of several help files have been updated
+     with respect to the formal publication of the related
+     JSS paper about catR.
+
+  o  The CITATION file has been updated accordingly.
+
+
+
+------------------------------------
 - Changes in catR 2.2 (2012-03-15) -
 ------------------------------------
 
