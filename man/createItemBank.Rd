@@ -21,13 +21,13 @@
  \item{cb}{logical: should subgroups of items be returned in the item bank for content balancing pruposes? (default is \code{FALSE}).}
  \item{model}{character: the name of the logistic IRT model, with possible values \code{"1PL"}, \code{"2PL"}, \code{"3PL"} or \code{"4PL"}
               (default). Ignored if \code{items} is a matrix or a data frame.}
- \item{aPrior}{vector of three components, specifying the prior distribution and ites parameters for generating the item discrimination levels. 
+ \item{aPrior}{vector of three components, specifying the prior distribution and item parameters for generating the item discrimination levels. 
                Ignored if \code{items} is a matrix or a data frame. See \bold{Details}.}
- \item{bPrior}{vector of three components, specifying the prior distribution and ites parameters for generating the item difficulty levels. 
+ \item{bPrior}{vector of three components, specifying the prior distribution and item parameters for generating the item difficulty levels. 
                Ignored if \code{items} is a matrix or a data frame. See \bold{Details}.}
- \item{cPrior}{vector of three components, specifying the prior distribution and ites parameters for generating the item lower asymptote levels. 
+ \item{cPrior}{vector of three components, specifying the prior distribution and ite mparameters for generating the item lower asymptote levels. 
                Ignored if \code{items} is a matrix or a data frame. See \bold{Details}.}
- \item{dPrior}{vector of three components, specifying the prior distribution and ites parameters for generating the item upper asymptote levels. 
+ \item{dPrior}{vector of three components, specifying the prior distribution and item parameters for generating the item upper asymptote levels. 
                Ignored if \code{items} is a matrix or a data frame. See \bold{Details}.}
  \item{thMin}{numeric: the lower bound for the fine grid of ability levels (default is -4). See \bold{Details}.} 
  \item{thMax}{numeric: the upper bound for the fine grid of ability levels (default is 4). See \bold{Details}.} 
