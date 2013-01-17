@@ -15,7 +15,7 @@ if (is.null(testC)) stop("Prior distribution for item lower asymptotes must be e
 testD<-switch(dPrior[1],beta=1,unif=2)
 if (is.null(testD)) stop("Prior distribution for item upper asymptotes must be either 'beta' or 'unif'",call.=FALSE)
 set.seed(seed)
-b<-switch(bPrior[1],norm=rnorm(items,as.numeric(bPrior[2]),as.numeric(bPrior[3])),unif=runif(items,as.numeric(bPrior[1]),as.numeric(bPrior[2])))
+b<-switch(bPrior[1],norm=rnorm(items,as.numeric(bPrior[2]),as.numeric(bPrior[3])),unif=runif(items,as.numeric(bPrior[2]),as.numeric(bPrior[3])))
 if (model!="1PL") a<-switch(aPrior[1],norm=rnorm(items,as.numeric(aPrior[2]),as.numeric(aPrior[3])),lnorm=rlnorm(items,as.numeric(aPrior[2]),as.numeric(aPrior[3])),unif=runif(items,as.numeric(aPrior[2]),as.numeric(aPrior[3])))
 else a<-rep(1,items) 
 if (model=="3PL" | model=="4PL") c<-switch(cPrior[1],beta=rbeta(items,as.numeric(cPrior[2]),as.numeric(cPrior[3])),unif=runif(items,as.numeric(cPrior[2]),as.numeric(cPrior[3])))

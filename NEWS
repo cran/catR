@@ -11,6 +11,23 @@
 
 MINOR UPDATE
 
+  o  An error was debugged in the 'createItemBank' function.
+     When creating difficulty parameters with the 'unif' 
+     distribution, the selection of specified parameters was
+     leading to an error. Many thanks to Przemek Lis and 
+     Michel Kosinski (Cambridge University, UK) who noticed
+     this problem.
+
+  o  Some typos were fixed.
+
+
+
+------------------------------------
+- Changes in catR 2.3 (2012-05-09) -
+------------------------------------
+
+MINOR UPDATE
+
   o  The references of several help files have been updated
      with respect to the formal publication of the related
      JSS paper about catR.
