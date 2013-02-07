@@ -6,7 +6,26 @@
 
 
 ------------------------------------
-- Changes in catR 2.3 (2012-05-09) -
+- Changes in catR 2.5 (2013-02-07) -
+------------------------------------
+
+MINOR UPDATE
+
+  o  An error was debugged in the 'MWI' function. The 
+     selection of the information function values to
+     compute the MLWI or MPWI was wrong, so that the same
+     item was always selected, independently of the current
+     response pattern (for the same set of administered
+     items). Many thanks to Koken Ozaki (Institute of
+     Statistical Mathematics, Tokyo, Japan) who noticed
+     this problem.
+
+  o  Some typos were fixed.
+
+
+
+------------------------------------
+- Changes in catR 2.4 (2013-01-17) -
 ------------------------------------
 
 MINOR UPDATE

@@ -20,7 +20,7 @@
  \item{theta}{numeric: the current value of the ability estimate (default is 0).}
  \item{out}{either a vector of integer values specifying the items previously administered, or \code{NULL} (default).} 
  \item{x}{numeric: the provisional response pattern, with the same length as \code{out} (and \code{NULL} by default).
-          Ignored if \code{method} is either \code{"MFI"} or \code{"Owen"}. See \bold{Details}.}
+          Ignored if \code{method} is either \code{"MFI"} or \code{"Urry"}. See \bold{Details}.}
  \item{criterion}{character: the method for next item selection. Possible values are \code{"MFI"} (default), \code{"Urry"}
                \code{"MLWI"}, \code{"MPWI"}, \code{"MEI"}, \code{"MEPV"} and \code{random}. See \bold{Details}.}
  \item{method}{character: the ability estimator. Possible values are \code{"BM"} (default), \code{"ML"} and \code{"WL"}. See \bold{Details}.}
@@ -34,7 +34,7 @@
  	Ignored if \code{method=="EAP"}.}
  \item{parInt}{numeric: a vector of three numeric values, specifying respectively the lower bound, the upper bound and the
                number of quadrature points for numerical integration (default is \code{c(-4,4,33)}). Ignored if \code{method} is either \code{"MFI"}
-               or \code{"Owen"}. See \bold{Details}.}
+               or \code{"Urry"}. See \bold{Details}.}
  \item{infoType}{character: the type of information function to be used. Possible values are \code{"observed"} (default) for observed
                  information function, and \code{"Fisher"} for Fisher information function. Ignored if \code{criterion} is not \code{"MEI"}.}
  \item{randomesque}{integer: the number of items to be chosen from the next item selection rule, among those the next item to be administered will be
@@ -72,7 +72,7 @@
  selects the item with maximum expected information, computed with the \code{\link{MEI}} function. 
 
  The method for next item selection is specified by the \code{criterion} argument. Possible values are \code{"MFI"} for maximum Fisher information
- criterion, \code{"Urry"} for Owen's method, \code{"MLWI"} for maximum likelihood weighted information criterion, \code{"MPWI"} for the
+ criterion, \code{"Urry"} for Urry's method, \code{"MLWI"} for maximum likelihood weighted information criterion, \code{"MPWI"} for the
  maximum posterior weighted information criterion, \code{"MEI"} for the maximum expected information criterion, \code{"MEPV"} for minimum expected
  posterior variance, and \code{"random"} for random selection. Other values return an error message.
 
