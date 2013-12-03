@@ -6,6 +6,25 @@
 
 
 ------------------------------------
+- Changes in catR 2.6 (2013-12-03) -
+------------------------------------
+
+MINOR UPDATE
+
+  o  An error was debugged in the 'nextItem' function. 
+     With 'MLWI', 'MPWI', 'MEI' and 'MEPV' the set of 
+     parameters of previously administered items was not 
+     correctly passed to the corresponding functions in 
+     case of content balancing (that is, vector 'OUT' was
+     used instead of vector 'out'). This was leading to 
+     warning messages and incorrectly computed values of
+     the criteria. Many thanks to Irshad Mujawar (Arcadix 
+     Infotech Private Limited, Bangalore, India) who 
+     noticed this problem.
+
+
+
+------------------------------------
 - Changes in catR 2.5 (2013-02-07) -
 ------------------------------------
 
