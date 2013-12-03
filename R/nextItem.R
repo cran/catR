@@ -56,9 +56,9 @@ res <- list(item = select, par = itemBank$itemPar[select, ],
             info = itemBank$infoTab[th, select], criterion = criterion,randomesque=randomesque)
     }
     if (crit == "MLWI" | crit == "MPWI") {
-        if (length(OUT) == 1) 
-            par <- matrix(itemBank$itemPar[OUT, ], 1, 4)
-        else par <- itemBank$itemPar[OUT, ]
+        if (length(out) == 1) 
+            par <- matrix(itemBank$itemPar[out, ], 1, 4)
+        else par <- itemBank$itemPar[out, ]
         ITEMS <- rep(1, nrow(itemBank$itemPar))
         ITEMS[OUT] <- 0
         likInfo <- rep(0, nrow(itemBank$itemPar))
@@ -81,7 +81,7 @@ info = likInfo[select], criterion = criterion,randomesque=randomesque)
         for (i in 1:length(items)) {
             if (items[i] > 0) 
                 infos[i] <- MEI(itemBank, item = i, x = x, theta = theta, 
-                  it = itemBank$itemPar[OUT, ], method = method, 
+                  it = itemBank$itemPar[out, ], method = method, 
                   priorDist = priorDist, priorPar = priorPar, 
                   D = D, range = range, parInt = parInt, infoType = infoType)
         }
@@ -97,7 +97,7 @@ res<-list(item = select, par = itemBank$itemPar[select,], info = infos[select], 
         for (i in 1:length(items)) {
             if (items[i] > 0) 
                 epvs[i] <- EPV(itemBank, item = i, x = x, theta = theta, 
-                  it = itemBank$itemPar[OUT, ], priorDist = priorDist, 
+                  it = itemBank$itemPar[out, ], priorDist = priorDist, 
                   priorPar = priorPar, D = D, parInt = parInt)
         }
 epVal<-sort(epvs)[min(c(randomesque,sum(items)))]
