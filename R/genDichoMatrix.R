@@ -1,11 +1,4 @@
-createItemBank<-function(items=100, cb=FALSE, model="4PL", aPrior=c("norm",1,0.2),bPrior=c("norm",0,1),cPrior=c("unif",0,0.25),dPrior=c("unif",0.75,1),thMin=-4, thMax=4,step=0.01, seed=1, D=1){
-if (is.matrix(items) | is.data.frame(items)){
-itemPar<-as.matrix(items[,1:4])
-if (ncol(items)==5 & cb) cbGroup<-items[,5]
-else cbGroup<-NULL 
-}
-else {
-cbGroup<-NULL
+genDichoMatrix<-function(items=100, cbControl=NULL, model="4PL", aPrior=c("norm",1,0.2),bPrior=c("norm",0,1),cPrior=c("unif",0,0.25),dPrior=c("unif",0.75,1), seed=1){
 testB<-switch(bPrior[1],norm=1,unif=2)
 if (is.null(testB)) stop("Prior distribution for item difficulties must be either 'norm' or 'unif'",call.=FALSE)
 testA<-switch(aPrior[1],norm=1,lnorm=2,unif=3)
@@ -22,13 +15,34 @@ if (model=="3PL" | model=="4PL") c<-switch(cPrior[1],beta=rbeta(items,as.numeric
 else c<-rep(0,items)
 if (model=="4PL") d<-switch(dPrior[1],beta=rbeta(items,as.numeric(dPrior[2]),as.numeric(dPrior[3])),unif=runif(items,as.numeric(dPrior[2]),as.numeric(dPrior[3])))
 else d<-rep(1,items)
-itemPar<-cbind(a,b,c,d)
+if (!is.null(cbControl)){
+props<-cbControl$props
+names<-cbControl$names
+if (sum(props)!=1 & sum(props)!=items) stop("'props' element of 'cbControl' should either sum to 1 or to 'items'!",call.=FALSE)
+if (sum(props)==1) nr<-round(items*props)
+else nr<-props
+f<-function(items,nr){
+res<-matrix(0,length(nr),items)
+for (i in 1:items){
+res[,i]<-rmultinom(1,1,nr)
+nr<-nr-res[,i]
 }
-colnames(itemPar) <- c("a", "b", "c", "d")
-theta <- seq(from=thMin, to=thMax, by=step)
-infoTab <- matrix(NA, length(theta), nrow(itemPar))
-for (i in 1:length(theta)) infoTab[i,]<-Ii(theta[i],itemPar,D=D)$Ii
-res <- list(itemPar=itemPar, theta=theta, infoTab=infoTab,cbGroup=cbGroup)
-class(res) <- "itBank"
-return(res)
+return(res)}
+pr<-f(items,nr)
+g<-function(x) (1:length(x))[x==1]
+it<-apply(pr,2,g)
+groups<-NULL
+for (i in 1:items) groups[i]<-names[it[i]]
+groups<-as.factor(groups)
+RES<-data.frame(a,b,c,d,Group=groups)
 }
+else RES<-data.frame(a,b,c,d)
+return(RES)}
+
+
+
+
+
+
+
+

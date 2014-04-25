@@ -1,63 +1,93 @@
-startItems<-function (itemBank, fixItems = NULL, seed = NULL, nrItems = 1, 
-    theta = 0, halfRange = 2, startSelect = "bOpt") 
+startItems<-function (itemBank, model=NULL, fixItems = NULL, seed = NULL, nrItems = 1, 
+    theta = 0, halfRange = 2, startSelect = "MFI", nAvailable = NULL) 
 {
-    it <- itemBank$itemPar
-    if (is.null(fixItems) == FALSE) {
-        items <- fixItems
-        par <- it[fixItems, ]
-        thStart <- NA
+if (!is.null(nAvailable)) {
+  if (length(nAvailable)!=nrow(itemBank)) stop("mismatch between length of 'nAvailable' and the number of items in 'itemBank'",call.=FALSE)
+  if (sum(nAvailable)<nrItems) stop("less available items (in 'nAvailable') than requested by 'nrItems'!",call.=FALSE)
+}
+if (nrItems > 0)
+  if (startSelect == "progressive" | startSelect == "proportional") {
+    fixItems <- NULL
+    nrItems <- 1
+    seed <- NA
+  }
+if (!is.null(fixItems)) {
+  items <- fixItems
+  par <- itemBank[fixItems, ]
+  thStart <- startSelect <- NA
+  res <- list(items = items, par = par, thStart = thStart, startSelect = startSelect)
+}
+else {
+  if (nrItems > 0) {
+    if (!is.null(seed)) {
+      if (!is.na(seed)) set.seed(seed)
+        if (is.null(nAvailable))
+          items <- sample(1:nrow(itemBank),nrItems)
+        else items<-sample(which(nAvailable==1),nrItems)
+          par <- itemBank[items, ]
+          thStart <- startSelect<-NA
     }
     else {
-        if (is.numeric(seed) == TRUE) {
-            set.seed(seed)
-            repeat {
-                items <- round(runif(nrItems, 0, 1) * nrow(it)) + 
-                  1
-                if (length(unique(items)) == nrItems) 
-                  break
-            }
-            par <- it[items, ]
-            thStart <- NA
+      if (nrItems == 1) thStart <- theta
+        else thStart <- seq(from = theta - halfRange, to = theta + halfRange, length = nrItems)
+      if (startSelect != "bOpt" & startSelect != "thOpt" & startSelect != "MFI" & startSelect != "progressive" & startSelect != "proportional") 
+        stop("'startSelect' must be either 'bOpt', 'thOpt', 'progressive', 'proportional' or 'MFI'", call. = FALSE)
+      if (!is.null(model) & startSelect!="MFI") stop("'startSelect' can only be 'MFI' with polytomous items!",call.=FALSE)
+      if (startSelect == "bOpt") {
+        items = NULL
+        nr.items <- nrow(itemBank)
+        selected<-rep(0,nr.items)
+        for (i in 1:length(thStart)) {
+          item.dist <- abs(thStart[i]-itemBank[, 2])
+          if (!is.null(nAvailable))
+            pos.adm <- (1-selected) * nAvailable
+          else
+            pos.adm <- 1-selected
+          prov <- which(item.dist==min(item.dist[pos.adm==1]))[pos.adm[which(item.dist==min(item.dist[pos.adm==1]))]==1]
+          items[i] <- ifelse(length(prov) == 1, prov, sample(prov, 1))
+          selected[items[i]] <- 1 
         }
-        else {
-            if (nrItems == 1) 
-                thStart <- theta
-            else {
-                thStart <- seq(from = theta - halfRange, to = theta + 
-                  halfRange, length = nrItems)
-                ra <- rnorm(nrItems)
-                thStart <- thStart[rank(ra)]
-            }
-            if (startSelect != "bOpt" & startSelect != "MFI") 
-                stop("'startSelect' must be either 'bOpt' or 'MFI'", 
-                  call. = FALSE)
-            if (startSelect == "bOpt") {
-                items = NULL
-                ind <- rep(1, nrow(it))
-                for (i in 1:length(thStart)) {
-                  ind[items] <- 0
-                  ra<-rank(abs(thStart[i]-it[, 2]))
-                  minRA<-min(ra[ind>0])
-                  items <- c(items, min((1:length(ind))[ra==minRA]))
-                }
-            }
-            if (startSelect == "MFI") {
-                items = NULL
-                ind <- rep(1, nrow(it))
-                for (i in 1:length(thStart)) {
-                  ind[items] <- 0
-                  seqZE <- (1:length(itemBank$theta))
-                  zeTheta <- min(seqZE[abs(itemBank$theta - thStart[i]) == 
-                    min(abs(itemBank$theta - thStart[i]))])
-ra<-rank(itemBank$infoTab[zeTheta, ])
-                  maxRA<-max(ra[ind>0])
-                  items <- c(items, min((1:length(ind))[ra==maxRA]))
-                }
-            }
-            par = it[items, ]
+      }
+      if (startSelect == "thOpt") {
+        items = NULL
+        nr.items <- nrow(itemBank)
+        selected<-rep(0,nr.items)
+        u <- -3/4 +(itemBank[,3]+ itemBank[,4]+-2*itemBank[,3]* itemBank[,4]) / 2
+        v <- (itemBank[,3]+itemBank[,4]-1)/4
+        xstar <- 2*sqrt(-u/3)*cos(acos(-v*sqrt(-27/u^3) /2 ) /3 + 4*pi/3)+1/2
+        thMax <- itemBank[,2] + log((xstar-itemBank[,3]) / (itemBank[,4] - xstar))/ itemBank[,1]
+        item.dist <- abs(thMax - theta)
+        for (i in 1:length(thStart)) {
+          if (!is.null(nAvailable))
+            pos.adm <- (1-selected) * nAvailable
+          else
+            pos.adm <- 1-selected
+          prov <- which(item.dist==min(item.dist[pos.adm==1]))[pos.adm[which(item.dist==min(item.dist[pos.adm==1]))]==1]
+          items[i] <- ifelse(length(prov) == 1, prov, sample(prov, 1))
+          selected[items[i]] <- 1 
         }
-    }
+      }
+        if (startSelect == "MFI") {
+          items = NULL
+          nr.items <- nrow(itemBank)
+          selected <- rep(0,nr.items)
+          for (i in 1:length(thStart)) {
+            item.info <- Ii(thStart[i], itemBank, model=model)$Ii
+            if (!is.null(nAvailable))
+              pos.adm <- (1-selected) * nAvailable
+            else
+              pos.adm <- 1-selected
+            prov <- which(item.info==max(item.info[pos.adm==1]))[pos.adm[which(item.info==max(item.info[pos.adm==1]))]==1]
+            items[i] <- ifelse(length(prov) == 1, prov, sample(prov, 1))
+            selected[items[i]] <- 1                 
+          }
+        }
+        par = itemBank[items, ]
+      }
     res <- list(items = items, par = par, thStart = thStart, 
-        startSelect = startSelect)
+                startSelect = startSelect)
+}
+else res <- list(items = NULL, par = NULL, thStart = NULL, startSelect = NULL)
+}
     return(res)
 }

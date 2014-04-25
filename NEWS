@@ -6,6 +6,181 @@
 
 
 ------------------------------------
+- Changes in catR 3.0 (2014-04-25) -
+------------------------------------
+
+MAJOR UPDATES
+
+  o  Functions 'startItems', 'nextItem' and 'randomCAT' have 
+     been updated thanks to Juan Ramon Barrada (Universidad 
+     Zaragoza, Spain), which is now listed as co-author of the
+     package.
+
+  o  Function 'nextItem' was also updated thanks to Guido 
+     Corradi (Universidad Zaragoza, Spain).
+
+  o  'catR' now supports the Graded Response Model (GRM; 
+     Samejima, 1969), the Modified Graded Response Model 
+     (MGRM; Muraki, 1990), the Partical Credit Model (PCM; 
+     Masters, 1982), the Generalized Partial Credit Model 
+     (GPCM; Muraki, 1992), the Rating Scale Model (RSM; 
+     Andrich, 1978) and the Nominal Response Model (NRM; Bock, 
+     1972).  
+
+  o  Functions 'Pi', 'Ii', 'OIi', 'thetaEst', 'semTheta', 
+     'eapEst', 'eapSem', 'startItems', 'EPV', 'MEI', 'MWI',
+     'nextItem' and 'randomCAT'allow now the use of polytomous 
+     IRT models.
+
+  o  The function 'createItemBank' has been withdrawn from
+     this version. The item bank must now be provided
+     directly as the matrix of item parameters (plus the group
+     membership for content balancing, optionally).
+
+  o  Five new item selection rules have been added: Kullback-
+     Leibler (KL), posterior Kullback-Leibler (KLP), the so-
+     called thOpt (optimal theta) method, progressive method 
+     and proportional method. They are available for both 
+     dichotomous and polytomous IRT models (except thOpt).
+
+  o  The 'KL' function was created to support the computation 
+     of Kullback-Leibler information for next item selection.
+
+  o  Several CATs can be run in one step by using the new
+     'simulateRespondents' function. In addition, summary
+     statistics related to all generated tests are provided
+     by this function. Corresponding plots can also be drawn
+     and saved in a similar way as with 'randomCAT'.
+
+  o  The dependency to the 'sfsmisc' package was withdrawn. To
+     do so, an internal function for numerical integration, 
+     called 'integrate.catR', was written and works similarly 
+     to the 'integrate.xy' function from package 'sfsmisc' 
+     (which was considered so far). In other words, the   
+     function 'integrate.xy' was replaced by 'integrate.catR' 
+     in 'eapEst', 'eapSem' and 'MWI'.
+
+  o  The functions 'genDichoMatrix' and 'genPolyMatrix' were 
+     created to partly compensate the withdrawal of 
+     'createItemBank'. Those functions allow for easy 
+     generation of item banks under either the dichotomous IRT 
+     models (1PL, 2PL, 3PL and 4PL) or the polytomous IRT 
+     models that are supported by 'catR' (GRM, MGRM, PCM, 
+     GPCM, RSM and NRM). The output format is identical to the 
+     one required in order to run CATs with dichotomous and 
+     polytomous item banks. Random allocation of items into 
+     subgroups (for content balancing purposes) is also 
+     possible.
+
+  o  The function 'breakBank' was created to separate the 
+     item banks in two parts, the matrix of item parameters 
+     and the vector of group membership for items. This
+     function works with both dichotomous and polytomous
+     IRT banks. Its creation resulted from the withdrawal of
+     the 'createItemBank' function. 
+
+  o  The function 'Ji' was created to compute the J function 
+     (related to WL estimation) under dichotomous and 
+     polytomous models. This function was previously embedded 
+     into 'thetaEst' for dichotomous models, but is now 
+     written independently for both dichotomous and 
+     polytomous models. 
+
+  o  The function 'test.cbList' has been updated. The second
+     argument does not need to be the full item bank anymore
+     but just a vector of group membership (such as the
+     fifth column of the 'tcals' data set only). This is to
+     remove the connection with the 'createItemBank' function
+     (that has been withdrawn from this update) and to
+     allow its use with polytomous models.
+
+  o  The functions 'EPV', 'MEI', 'MWI', 'startItems' and
+     'nextItem' have been updated. The argument 'itemBank' 
+     argument does not need to be the full item bank anymore
+     but just a matrix with four columns with item parameters 
+     (such as the first four columns of the 'tcals' data set 
+     only). This is to remove the connection with the 
+     'createItemBank' function (that has been withdrawn from
+     this update).
+
+  o  The default value of the 'startSelect' argument of the
+     'startItems' function has been changed from "bOpt" to
+     "MFI" for compatibility with the 'startItems.poly'
+     function.
+
+  o  The function 'genPattern' was created to generate 
+     responses patterns under dichotomous and polytomous IRT 
+     models. This is helpful mostly for examples but can also
+     be considered internally in 'randomCAT'.
+
+  o  The function 'startItems' can now select only a fraction
+     of the item bank to select the first items. This is 
+     controled by the new 'nAvailable' argument, holding 0's
+     and 1's for items that are respectively not available and
+     available. By default, all items are available.
+
+  o  The random seed for the selection of the first item(s) in 
+     'startItems' can be set to NA in order to remove random 
+     seed selection of these items. 
+
+  o  The 'nrItems' argument of 'startItems' can now be set to 
+     0 to avoid early selection of starting items. Only NULL 
+     values are then returned.
+
+  o  The function 'randomCAT' can now return also ability 
+     level estimates and standard errors for the first 
+     starting items. This is done by fixing the argument 
+     'allTheta' to TRUE (default value is FALSE). If so, 
+     provisional ability estimates and standard errors are 
+     displayed within parentheses in the output of 'randomCAT' 
+     (i.e. when using 'print.cat()' function).
+
+ 
+MINOR UPDATES
+
+  o  Currently the formula for the SE of the WL method in the
+     'semTheta' function is the same as that for the ML method,
+     as it happened that the formula (in versions of catR prior
+     to 3.0) was sometiems leading to mathematical problems.
+     This formula will be updated once it will be accurately
+     corrected.
+
+  o  The 'startItems' function was slightly modified. When        
+     items are randomly selected, the random sampling of 
+     these items was rewritten using the 'sample' function.
+
+ o   In 'nextItem function, the Urry's procedure to select 
+     the next item was renamed as 'bOpt' method (instead of 
+     'Urry'), for homogenbeity with the similar argument of
+     the 'startItems' function. 
+
+  o  The help file of the 'MEI' function was updated as an
+     error was present in the description of both the 
+     observed and the expected item information function.         
+     Their implementation, however, was correctly written.
+
+  o  When the first items are selected randomly or fixed by
+     the user, the 'startSelect' element of the output list
+     returns now NA instead of the by-default value of the
+     argument 'startSelect'.
+
+  o  To save the output of 'randomCAT', the 'output' argument
+     contains now three components, the file path, the file 
+     name, and the type of file (in this order). By default,
+     the output is stored in working directory, as a csv file
+     with name 'name.csv'. Other type is text file.
+
+  o  The order of the components of 'save.options' argument of
+     'plot.cat' has been modified to match those of the 
+     'output' argument of 'randomCAT'..
+
+  o  Some typos were fixed.
+
+  o  Author's affiliation was updated.
+
+
+
+------------------------------------
 - Changes in catR 2.6 (2013-12-03) -
 ------------------------------------
 
@@ -28,7 +203,7 @@ MINOR UPDATE
 - Changes in catR 2.5 (2013-02-07) -
 ------------------------------------
 
-MINOR UPDATE
+MINOR UPDATES
 
   o  An error was debugged in the 'MWI' function. The 
      selection of the information function values to
@@ -47,7 +222,7 @@ MINOR UPDATE
 - Changes in catR 2.4 (2013-01-17) -
 ------------------------------------
 
-MINOR UPDATE
+MINOR UPDATES
 
   o  An error was debugged in the 'createItemBank' function.
      When creating difficulty parameters with the 'unif' 
@@ -64,7 +239,7 @@ MINOR UPDATE
 - Changes in catR 2.3 (2012-05-09) -
 ------------------------------------
 
-MINOR UPDATE
+MINOR UPDATES
 
   o  The references of several help files have been updated
      with respect to the formal publication of the related
@@ -78,7 +253,7 @@ MINOR UPDATE
 - Changes in catR 2.2 (2012-03-15) -
 ------------------------------------
 
-MINOR UPDATE
+MINOR UPDATES
 
   o  The references of several help files have been updated.
 

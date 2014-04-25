@@ -11,9 +11,9 @@ testList<-function (list, type = "start")
                 sep = ""))
         else {
             elements <- switch(type, start = c("fixItems", "seed", 
-                "nrItems", "theta", "halfRange", "startSelect"), 
+                "nrItems", "theta", "halfRange", "startSelect","nAvailable"), 
                 test = c("method", "priorDist", "priorPar", "range", 
-                  "D", "parInt", "itemSelect", "infoType","randomesque"), stop = c("rule", 
+                  "D", "parInt", "itemSelect", "infoType","randomesque","SETH","AP","nAvailable"), stop = c("rule", 
                   "thr", "alpha"), final = c("method", "priorDist", 
                   "priorPar", "range", "D", "alpha", "parInt"))
             if (is.null(elements)) 
@@ -52,7 +52,7 @@ testList<-function (list, type = "start")
                     seedNames <- c("seed")
                     singleIntNames <- c("nrItems")
                     numNames <- c("theta", "halfRange", "thr", 
-                      "alpha", "D")
+                      "alpha", "D","SETH","AP")
                     metNames <- c("method")
                     priorNames <- c("priorDist")
                     parNames <- c("priorPar", "range")
@@ -62,6 +62,7 @@ testList<-function (list, type = "start")
                     infoTypeNames <- c("infoType")
                     startNames <- c("startSelect")
                     intOnlyNames <- c("randomesque")
+                    boolNames<-c("nAvailable")
                     i <- 0
                     repeat {
                       i <- i + 1
@@ -74,14 +75,14 @@ testList<-function (list, type = "start")
                         sum(names(list)[i] == eapNames), sum(names(list)[i] == 
                           itemSelectNames), sum(names(list)[i] == 
                           infoTypeNames), sum(names(list)[i] == 
-                          startNames),sum(names(list)[i] == intOnlyNames))
-                      ind <- (1:13)[vect == 1]
+                          startNames),sum(names(list)[i] == intOnlyNames),sum(names(list)[i] == boolNames))
+                      ind <- (1:14)[vect == 1]
                       prov <- switch(ind, `1` = ifelse(is.null(list[[i]]), 
                         TRUE, ifelse(is.numeric(list[[i]]), ifelse(max(abs(list[[i]] - 
                           round(list[[i]]))) <= 1e-04, TRUE, 
                           FALSE), FALSE)), `2` = ifelse(is.null(list[[i]]), 
-                        TRUE, ifelse(is.numeric(list[[i]]), ifelse(length(list[[i]]) == 
-                          1, TRUE, FALSE), FALSE)), `3` = ifelse(is.numeric(list[[i]]) & 
+                        TRUE, ifelse(is.numeric(list[[i]]), ifelse(length(list[[i]]) == 1, TRUE, FALSE), ifelse(is.na(list[[i]]),TRUE,FALSE))), 
+`3` = ifelse(is.numeric(list[[i]]) & 
                         length(list[[i]]) == 1, ifelse(abs(list[[i]] - 
                         round(list[[i]])) <= 1e-04, TRUE, FALSE), 
                         FALSE), `4` = (is.numeric(list[[i]]) & 
@@ -99,13 +100,15 @@ testList<-function (list, type = "start")
                           TRUE & abs(list[[i]][3] - round(list[[i]][3])) <= 
                           1e-04), `10` = (is.list(list[[i]]) == 
                           FALSE & length(list[[i]]) == 1 & sum(list[[i]] == 
-                          c("MFI", "Urry", "MLWI", "MPWI", "MEI", 
-                            "MEPV", "random")) == 1), `11` = (is.list(list[[i]]) == 
+                          c("MFI", "bOpt", "thOpt", "MLWI", "MPWI", "MEI", 
+                            "MEPV", "KL","KLP","progressive","proportional","random")) == 1), `11` = (is.list(list[[i]]) == 
                           FALSE & length(list[[i]]) == 1 & sum(list[[i]] == 
                           c("observed", "Fisher")) == 1), `12` = (is.list(list[[i]]) == 
                           FALSE & length(list[[i]]) == 1 & sum(list[[i]] == 
-                          c("bOpt", "MFI")) == 1), `13` = ifelse(is.numeric(list[[i]]), ifelse(max(abs(list[[i]] - 
+                          c("bOpt", "thOpt", "MFI", "progressive", "proportional")) == 1), `13` = ifelse(is.numeric(list[[i]]), ifelse(max(abs(list[[i]] - 
                           round(list[[i]]))) <= 1e-04, ifelse(list[[i]]>0,TRUE,FALSE), 
+                          FALSE), FALSE), `14` = ifelse(is.numeric(list[[i]]), ifelse(max(abs(list[[i]] - 
+                          round(list[[i]]))) <= 1e-04, ifelse((min(list[[i]])==0 & max(list[[i]])==1),TRUE,FALSE), 
                           FALSE), FALSE))
                       if (!prov) {
                         res$test <- FALSE
@@ -140,17 +143,20 @@ testList<-function (list, type = "start")
                             "\n", " one integer components", 
                             sep = ""), `10` = paste("element '", 
                             names(list)[i], "' of '", deparse(substitute(list)), 
-                            "' must be either 'MFI', 'Urry',", 
-                            "\n", " 'MLWI', 'MPWI', 'MEI', 'MEPV' or 'random'", 
+                            "' must be either 'MFI', 'bOpt',", 
+                            "\n", " 'MLWI', 'MPWI', 'MEI', 'MEPV', 'KL', 'KLP',",
+                            "\n", " 'progressive', 'proportional' or 'random'", 
                             sep = ""), `11` = paste("element '", 
                             names(list)[i], "' of '", deparse(substitute(list)), 
                             "' must be either 'observed' or 'Fisher'", 
                             sep = ""), `12` = paste("element '", 
                             names(list)[i], "' of '", deparse(substitute(list)), 
-                            "' must be either 'bOpt' or 'MFI'", 
+                            "' must be either 'bOpt', 'thOpt', 'progressive', 'proportional' or 'MFI'", 
                             sep = ""),`13` = paste("element '", 
                           names(list)[i], "' of '", deparse(substitute(list)), 
-                          "' must be a positive integer value",sep=""))
+                          "' must be a positive integer value",sep=""), `14` = paste("element '", 
+                          names(list)[i], "' of '", deparse(substitute(list)), 
+                          "' must be a vector of boolean values",sep=""))
                         break
                       }
                       else {
