@@ -21,14 +21,14 @@ else{
 res<-p0*Ij0+p1*Ij1
 }
 else{
-probs<-Pi(th,itemBank[item,],model=model)$Pi
+probs<-Pi(th,itemBank[item,],model=model,D=D)$Pi
 probs<-probs[!is.na(probs)]
 it.new<-rbind(it.given,itemBank[item,])
 I.new<-NULL
 for (j in 0:(length(probs)-1)){
-th.new<-thetaEst(it=it.new,x=c(x,j),model=model,method=method,priorDist=priorDist,priorPar=priorPar,range=range,parInt=parInt)
-if (infoType=="Fisher") I.new<-c(I.new,Ii(th.new,itemBank[item,],model=model)$Ii)
-else I.new<-c(I.new,OIi(th.new,itemBank[item,],x=j,model=model))
+th.new<-thetaEst(it=it.new,x=c(x,j),model=model,method=method,priorDist=priorDist,priorPar=priorPar,range=range,parInt=parInt,D=D)
+if (infoType=="Fisher") I.new<-c(I.new,Ii(th.new,itemBank[item,],model=model,D=D)$Ii)
+else I.new<-c(I.new,OIi(th.new,itemBank[item,],x=j,model=model,D=D))
 }
 res<-sum(probs*I.new)
 }

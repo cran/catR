@@ -2,7 +2,7 @@ genPattern<-function(th,it,model=NULL,D=1){
 it<-rbind(it)
 if (is.null(model)) res<-rbinom(nrow(it),1,Pi(th,it,model=model,D=D)$Pi)
 else{
-pr<-Pi(th,it,model=model)$Pi
+pr<-Pi(th,it,model=model,D=D)$Pi
 res<-NULL
 for (i in 1:nrow(pr)){
 pp<-pr[i,][!is.na(pr[i,])]

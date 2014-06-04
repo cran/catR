@@ -22,11 +22,11 @@ RES<-1/sqrt(res)
 else{
 met<-switch(method,"ML"=1,"BM"=2,"WL"=3,"EAP"=4)
 pd<-switch(priorDist,"norm"=1,"unif"=2,"Jeffreys"=3)
-if (met==1 | (met==2 & pd==2)) optI<-sum(Ii(thEst,it,model=model)$Ii)
-if (met==2 & pd==1) optI<-sum(Ii(thEst,it,model=model)$Ii)+1/priorPar[2]^2
+if (met==1 | (met==2 & pd==2)) optI<-sum(Ii(thEst,it,model=model,D=D)$Ii)
+if (met==2 & pd==1) optI<-sum(Ii(thEst,it,model=model,D=D)$Ii)+1/priorPar[2]^2
 if ((met==2 & pd==3) | met==3){
-prI<-Ii(thEst,it,model=model)
-prJ<-Ji(thEst,it,model=model)
+prI<-Ii(thEst,it,model=model,D=D)
+prJ<-Ji(thEst,it,model=model,D=D)
 if (met==2) optI<-sum(prI$Ii)+(sum(prI$dIi)^2-sum(prI$d2Ii)*sum(prI$Ii))/(2*sum(prI$Ii)^2)
 # else optI<-sum(prI$Ii)+(sum(prJ$Ji)*sum(prI$dIi)-sum(prJ$dJi)*sum(prI$Ii))/(2*sum(prI$Ii)^2)
 else optI<-sum(prI$Ii)

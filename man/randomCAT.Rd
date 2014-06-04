@@ -12,7 +12,7 @@
 \usage{
 randomCAT(trueTheta, itemBank, model = NULL, responses = NULL, maxItems = 50, 
  	cbControl = NULL, nAvailable = NULL, start = list(fixItems = NULL, 
- 	seed = NULL, nrItems = 1, theta = 0, halfRange = 2, startSelect = "MFI"), 
+ 	seed = NULL, nrItems = 1, theta = 0, D = 1, halfRange = 2, startSelect = "MFI"), 
  	test = list(method = "BM", priorDist = "norm", priorPar = c(0, 1), 
  	range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), itemSelect = "MFI", 
  	infoType = "observed", randomesque = 1, AP = 1), stop = list(rule = "length", 
@@ -67,6 +67,7 @@ randomCAT(trueTheta, itemBank, model = NULL, responses = NULL, maxItems = 50,
  \item{startSeed}{the value of the \code{start$seed} argument (or its default value if missing).}
  \item{startNrItems}{the value of the \code{start$nrItems} argument (or its default value if missing).}
  \item{startTheta}{the value of the \code{start$theta} argument (or its default value if missing).}
+ \item{startD}{the value of the \code{start$D} argument (or its default value if missing).}
  \item{startHalfRange}{the value of the \code{start$halfRange} argument (or its default value if missing).}
  \item{startThStart}{the starting ability values used for selecting the first items of the test.}
  \item{startSelect}{the value of the \code{start$startSelect} argument (or its default value if missing).}
@@ -117,8 +118,7 @@ See the \code{\link{nextItem}} function for further details on how to specify \c
 
  The test specification is made by means of four lists of options: one list for the selection of the starting items, 
  one list with the options for provisional ability estimation, one list to define the stopping rule, and one list with
- the options for final ability estimation. These lists are specified respectively by the arguments \code{start}, \code{test},
- \code{stop} and \code{final}. 
+ the options for final ability estimation. These lists are specified respectively by the arguments \code{start}, \code{test}, \code{stop} and \code{final}. 
 
  The \code{start} list can contain one or several of the following arguments:
  \itemize{
@@ -126,6 +126,7 @@ See the \code{\link{nextItem}} function for further details on how to specify \c
  \item{\code{seed}: either a numeric value to fix the random seed for item selection, \code{NA} to randomly select the items withour fixing the random seed, or \code{NULL} (default) to select the items on the basis of their difficulty level. Ignored if \code{fixItems} is not \code{NULL}.}
  \item{\code{nrItems}: the number of first items to be selected (default is 1). Can be set to zero (see below). Ignored if \code{fixItems} is not \code{NULL}.}
  \item{\code{theta}: the central initial ability value, used to define the range of ability levels for selecting the first items (default is 0). Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}. See \code{\link{startItems}} for further details.}
+ \item{\code{D}: numeric, the metric constant. Default is \code{D=1} (for logistic metric); \code{D=1.702} yields approximately the normal metric (Haley, 1952). Ignored if \code{model} is not \code{NULL} and if \code{startSelect} is not \code{"MFI"}.} 
  \item{\code{halfRange}: the half range of starting ability levels for selecting the first items (default is 2). Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}. See \code{\link{startItems}} for further details.}
  \item{\code{startSelect}: the method for selecting the first items of the test, with possible values \code{"bOpt"} and \code{"MFI"} (default). Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}. See \code{\link{startItems}} for further details.}
  }
@@ -135,9 +136,9 @@ If the argument \code{nrItems} is set to zero, then no starting item is selected
 
  The \code{test} list can contain one or several of the following arguments:
  \itemize{
- \item{\code{method}: a character string to specify the method for ability estimation. Possible values are: \code{"BM"} (default) for Bayesian modal estimation (Birnbaum, 1969), \code{"ML"} for maximum likelihood estimation (lord, 1980), \code{"EAP"} for expected a posteriori (EAP) estimation (Bock and Mislevy, 1982), and \code{"WL"} for weighted likelihood estimation (Warm, 1989).}
+ \item{\code{method}: a character string to specify the method for ability estimation. Possible values are: \code{"BM"} (default) for Bayesian modal estimation (Birnbaum, 1969), \code{"ML"} for maximum likelihood estimation (Lord, 1980), \code{"EAP"} for expected a posteriori (EAP) estimation (Bock and Mislevy, 1982), and \code{"WL"} for weighted likelihood estimation (Warm, 1989).}
  \item{\code{priorDist}: a character string which sets the prior distribution. Possible values are: \code{"norm"} (default) for normal distribution, \code{"unif"} for uniform distribution, and \code{"Jeffreys"} for Jeffreys' noninformative prior distribution (Jeffreys, 1939, 1946). ignored if \code{method} is neither \code{"BM"} nor \code{"EAP"}.}
- \item{\code{priorPar}: a vector of two numeric components, which sets the parameters of the prior distribution. If (\code{method="BM"} or \code{method=="EAP"}) and \code{priorDist="norm"}, the components of \code{priorPar} are respectively the mean and the standard deviation of the prior normal density. If (\code{method="BM"} or \code{method=="EAP"}) and \code{priorDist="unif"}, the components of \code{priorPar} are respectively the lower and upper bound of the prior uniform density. Ignored in all other cases. By default, \code{priorPar} takes the parameters of the prior standard normal distribution (i.e., \code{priorPar=c(0,1)}). In addition, \code{priorPar} also provides the prior parameters for the comoutation of MLWI and MPWI values for next item selection (see \code{\link{nextItem}} for further details).}
+ \item{\code{priorPar}: a vector of two numeric components, which sets the parameters of the prior distribution. If (\code{method="BM"} or \code{method=="EAP"}) and \code{priorDist="norm"}, the components of \code{priorPar} are respectively the mean and the standard deviation of the prior normal density. If (\code{method="BM"} or \code{method="EAP"}) and \code{priorDist="unif"}, the components of \code{priorPar} are respectively the lower and upper bound of the prior uniform density. Ignored in all other cases. By default, \code{priorPar} takes the parameters of the prior standard normal distribution (i.e., \code{priorPar=c(0,1)}). In addition, \code{priorPar} also provides the prior parameters for the comoutation of MLWI and MPWI values for next item selection (see \code{\link{nextItem}} for further details).}
  \item{\code{range}: the maximal range of ability levels, set as a vector of two numeric components. The ability estimate will always lie to this interval (set by default to [-4, 4]). Ignored if \code{method=="EAP"}.}
  \item{\code{D}: the value of the metric constant. Default is \code{D=1} for logistic metric. Setting \code{D=1.702} yields approximately the normal metric (Haley, 1952). Ignored if \code{model} is not \code{NULL}.}
  \item{\code{parInt}: a numeric vector of three components, holding respectively the values of the arguments \code{lower}, \code{upper} and \code{nqp} of the \code{\link{eapEst}}, \code{\link{eapSem}} and \code{MWI} commands. It specifies the range of quadrature points for numerical integration, and is used for computing the EAP estimate, its standard error, and the MLWI and MPWI values for next item selection. Default vector is (-4, 4, 33), thus setting the range from -4 to 4 by steps of 0.25. Ignored if \code{method} is not \code{"EAP"} and if \code{itemSelect} is neither \code{"MLWI"} nor \code{"MPWI"}.}
@@ -177,43 +178,39 @@ Usually the ability estimates and related standard errors are computed right aft
 }
 
 \references{
- Barrada, J. R., Olea, J., Ponsoda, V., and Abad, F. J. (2010). A method for the comparison of item selection rules in computerized adaptive testing. \emph{Applied Psychological Measurement}, \emph{20}, 213-229.
+ Barrada, J. R., Olea, J., Ponsoda, V., and Abad, F. J. (2010). A method for the comparison of item selection rules in computerized adaptive testing. \emph{Applied Psychological Measurement}, \emph{20}, 213-229. doi: 10.1177/0146621610370152
 
- Barton, M.A., and Lord, F.M. (1981). An upper asymptote for the three-parameter logistic item-response model.
+ Barton, M.A., and Lord, F.M. (1981). \emph{An upper asymptote for the three-parameter logistic item-response model}.
  Research Bulletin 81-20. Princeton, NJ: Educational Testing Service.
 
  Birnbaum, A. (1969). Statistical theory for logistic mental test models with a prior distribution of ability.
- \emph{Journal of Mathematical Psychology, 6}, 258-276.
+ \emph{Journal of Mathematical Psychology, 6}, 258-276. doi: 10.1016/0022-2496(69)90005-4
 
  Bock, R. D., and Mislevy, R. J. (1982). Adaptive EAP estimation of ability in a microcomputer environment. 
- \emph{Applied Psychological Measurement, 6}, 431-444.
+ \emph{Applied Psychological Measurement, 6}, 431-444. doi: 10.1177/014662168200600405
 
- Haley, D.C. (1952). Estimation of the dosage mortality relationship when the dose is subject to error. 
- Technical report no 15. Palo Alto, CA: Applied Mathematics and Statistics Laboratory, Stanford University. 
+ Haley, D.C. (1952). \emph{Estimation of the dosage mortality relationship when the dose is subject to error}. Technical report no 15. Palo Alto, CA: Applied Mathematics and Statistics Laboratory, Stanford University. 
  
  Jeffreys, H. (1939). \emph{Theory of probability}. Oxford, UK: Oxford University Press.
 
- Jeffreys, H. (1946). An invariant form for the prior probability in estimation problems. \emph{Proceedings of the Royal
- Society of London. Series A, Mathematical and Physical Sciences, 186}, 453-461.
+ Jeffreys, H. (1946). An invariant form for the prior probability in estimation problems. \emph{Proceedings of the Royal Society of London. Series A, Mathematical and Physical Sciences, 186}, 453-461.
 
- Kingsbury, G. G., and Zara, A. R. (1989). Procedures for selecting items for computerized adaptive tests. \emph{Applied Measurement in Education, 2}, 359-375.
+ Kingsbury, G. G., and Zara, A. R. (1989). Procedures for selecting items for computerized adaptive tests. \emph{Applied Measurement in Education, 2}, 359-375. doi: 10.1207/s15324818ame0204_6
 
- Lord, F. M. (1980). \emph{Applications of item response theory to practical testing problems}.
- Hillsdale, NJ: Lawrence Erlbaum.
+ Lord, F. M. (1980). \emph{Applications of item response theory to practical testing problems}. Hillsdale, NJ: Lawrence Erlbaum.
 
  Magis, D., and Raiche, G. (2012). Random Generation of Response Patterns under Computerized Adaptive Testing with the R 
  Package \emph{catR}. \emph{Journal of Statistical Software}, \emph{48 (8)}, 1-31. URL \url{http://www.jstatsoft.org/v48/i08/}
 
-Thompson, N. A. (2009). Item selection in computerized classification testing. \emph{Educational and Psychological Measurement, 69}, 778-793.
+Thompson, N. A. (2009). Item selection in computerized classification testing. \emph{Educational and Psychological Measurement, 69}, 778-793. doi: 10.1177/0013164408324460
 
  Urry, V. W. (1970). \emph{A Monte Carlo investigation of logistic test models.} Unpublished doctoral dissertation. West Lafayette, IN: Purdue University.
 
- van der Linden, W. J. (1998). Bayesian item selection criteria for adaptive testing. \emph{Psychometrika, 63}, 201-216.
+ van der Linden, W. J. (1998). Bayesian item selection criteria for adaptive testing. \emph{Psychometrika, 63}, 201-216. doi: 10.1007/BF02294775
 
- Veerkamp, W. J. J., and Berger, M. P. F. (1997). Some new item selection criteria for adaptive testing.
- \emph{Journal of Educational and Behavioral Statistics, 22}, 203-226.
+ Veerkamp, W. J. J., and Berger, M. P. F. (1997). Some new item selection criteria for adaptive testing. \emph{Journal of Educational and Behavioral Statistics, 22}, 203-226. doi: 10.3102/10769986022002203
 
- Warm, T.A. (1989). Weighted likelihood estimation of ability in item response models. \emph{Psychometrika, 54}, 427-450.
+ Warm, T.A. (1989). Weighted likelihood estimation of ability in item response models. \emph{Psychometrika, 54}, 427-450. doi: 10.1007/BF02294627
 }
 
 

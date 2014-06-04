@@ -46,9 +46,9 @@ Under polytomous IRT models, let \emph{k} be the number of administered items, a
 \deqn{KL_j(\theta || \hat{\theta}_k) = \sum_{t=0}^{g_j} \,P_{jt}(\hat{\theta}_k) \,\log \left( \frac{P_{jt}(\hat{\theta}_k)}{P_{jt}(\theta)}\right).}
 
 In case of dichotomous IRT models, all \eqn{g_l} values reduce to 1, so that item responses \eqn{x_l} equal either 0 or 1. Set simply \eqn{P_j(\theta)} as the probability of answering item \emph{j} correctly for a given ability level \eqn{\theta}. Then, KL information reduces to
-\deqn{KL_j(\theta || \hat{\theta}) = P_j(\hat{\theta}) \,\log \left( \frac{P_,(\hat{\theta}_k)}{P_j(\theta)}\right) + [1-P_j(\hat{\theta}_k)] \,\log \left( \frac{1-P_j(\hat{\theta}_k)}{1-P_j(\theta)}\right).}
+\deqn{KL_j(\theta || \hat{\theta}) = P_j(\hat{\theta}) \,\log \left( \frac{P_j(\hat{\theta}_k)}{P_j(\theta)}\right) + [1-P_j(\hat{\theta}_k)] \,\log \left( \frac{1-P_j(\hat{\theta}_k)}{1-P_j(\theta)}\right).}
 
-The quantity that is returned by this \code{KL} function is either: the likelihood function weithed by Kullback-Leibler information (the KL value):
+The quantity that is returned by this \code{KL} function is either: the likelihood function weighted by Kullback-Leibler information (the KL value):
 \deqn{KL_j(\hat{\theta}_k) = \int KL_j(\theta || \hat{\theta}_k) \, L(\theta | x_1, ..., x_k) \,d\theta}
 or the posterior function weighted by Kullback-Leibler information (the KLP value):
 \deqn{KLP_j(\hat{\theta}) = \int KL_j(\theta || \hat{\theta}_k) \, \pi(\theta) \,L(\theta | x_1, ..., x_k) \,d\theta}
@@ -69,15 +69,14 @@ Note that the provisional response pattern \code{x} can also be set to \code{NUL
 }
 
 \references{
- Barrada, J. R., Olea, J., Ponsoda, V., and Abad, F. J. (2010). A method for the comparison of item selection rules in computerized adaptive testing. \emph{Applied Psychological Measurement}, \emph{20}, 213-229.
+ Barrada, J. R., Olea, J., Ponsoda, V., and Abad, F. J. (2010). A method for the comparison of item selection rules in computerized adaptive testing. \emph{Applied Psychological Measurement}, \emph{20}, 213-229. doi: 10.1177/0146621610370152
 
- Barton, M.A., and Lord, F.M. (1981). An upper asymptote for the three-parameter logistic item-response model.
+ Barton, M.A., and Lord, F.M. (1981). \emph{An upper asymptote for the three-parameter logistic item-response model}.
  Research Bulletin 81-20. Princeton, NJ: Educational Testing Service.
 
- Chang, H.-H., and Ying, Z. (1996). A global information approach to computerized adaptive testing. \emph{Applied Psychological Measurement, 34}, 438-452.
+ Chang, H.-H., and Ying, Z. (1996). A global information approach to computerized adaptive testing. \emph{Applied Psychological Measurement, 34}, 438-452. doi: 10.1177/014662169602000303
 
- Haley, D.C. (1952). Estimation of the dosage mortality relationship when the dose is subject to error. 
- Technical report no 15. Palo Alto, CA: Applied Mathematics and Statistics Laboratory, Stanford University. 
+ Haley, D.C. (1952). \emph{Estimation of the dosage mortality relationship when the dose is subject to error}. Technical report no 15. Palo Alto, CA: Applied Mathematics and Statistics Laboratory, Stanford University. 
 
  Magis, D., and Raiche, G. (2012). Random Generation of Response Patterns under Computerized Adaptive Testing with the R 
  Package \emph{catR}. \emph{Journal of Statistical Software}, \emph{48 (8)}, 1-31. URL \url{http://www.jstatsoft.org/v48/i08/}

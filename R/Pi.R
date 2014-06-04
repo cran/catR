@@ -24,12 +24,12 @@ aj<-it[i,1]
 if (model=="GRM") bj<-it[i,2:ncol(it)]
 else bj<-it[i,2]-it[i,3:ncol(it)]
 bj<-bj[!is.na(bj)]
-ej<-exp(aj*(th-bj))
+ej<-exp(D*aj*(th-bj))
 Pjs<-ej/(1+ej)
 Pjs<-c(1,Pjs,0)
-dPjs<-aj*Pjs*(1-Pjs)
-d2Pjs<-aj*(dPjs-2*Pjs*dPjs)
-d3Pjs<-aj*(d2Pjs-2*dPjs^2-2*Pjs*d2Pjs)
+dPjs<-D*aj*Pjs*(1-Pjs)
+d2Pjs<-D*aj*(dPjs-2*Pjs*dPjs)
+d3Pjs<-D*aj*(d2Pjs-2*dPjs^2-2*Pjs*d2Pjs)
 n<-length(Pjs)
 prov[i,1:(n-1)]<-Pjs[1:(n-1)]-Pjs[2:n]
 prov1[i,1:(n-1)]<-dPjs[1:(n-1)]-dPjs[2:n]
@@ -43,13 +43,13 @@ prov<-prov1<-prov2<-prov3<-matrix(NA,nrow(it),nc)
 for (i in 1:nrow(it)){
 dj<-0
 if (model=="PCM") {
-for (t in 1:ncol(it)) dj<-c(dj,dj[t]+th-it[i,t])
+for (t in 1:ncol(it)) dj<-c(dj,dj[t]+D*(th-it[i,t]))
 }
 if (model=="GPCM") {
-for (t in 1:(ncol(it)-1)) dj<-c(dj,dj[t]+it[i,1]*(th-it[i,t+1]))
+for (t in 1:(ncol(it)-1)) dj<-c(dj,dj[t]+it[i,1]*D*(th-it[i,t+1]))
 }
 if (model=="RSM") {
-for (t in 1:(ncol(it)-1)) dj<-c(dj,dj[t]+th-(it[i,1]+it[i,t+1]))
+for (t in 1:(ncol(it)-1)) dj<-c(dj,dj[t]+D*(th-(it[i,1]+it[i,t+1])))
 }
 if (model=="NRM") {
 for (t in 1:(ncol(it)/2)) dj<-c(dj,it[i,(2*(t-1)+1)]*th+it[i,(2*t)])

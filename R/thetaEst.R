@@ -41,15 +41,15 @@ pd<-switch(priorDist,"norm"=1,"unif"=2,"Jeffreys"=3)
 if (met==2 & pd==2) RANGE<-c(max(c(priorPar[1],range[1])),min(c(priorPar[2],range[2])))
 else RANGE<-range
 dl<-function(th){
-p<-Pi(th,it,model=model)
+p<-Pi(th,it,model=model,D=D)
 pr<-p$Pi
 dpr<-p$dPi
 res<-0
 for (i in 1:length(x)) res<-res+dpr[i,x[i]+1]/pr[i,x[i]+1]
 return(res)}
 f0<-function(th){
-if (met==2) res<-switch(pd,'1'=(priorPar[1]-th)/priorPar[2]^2,'2'=0,'3'=sum(Ii(th,it,model=model)$dIi)/(2*sum(Ii(th,it,model=model)$Ii)))
-else res<-switch(met,'1'=0,'2'=0,'3'=sum(Ji(th,it,model=model)$Ji)/(2*sum(Ii(th,it,model=model)$Ii)))
+if (met==2) res<-switch(pd,'1'=(priorPar[1]-th)/priorPar[2]^2,'2'=0,'3'=sum(Ii(th,it,model=model,D=D)$dIi)/(2*sum(Ii(th,it,model=model,D=D)$Ii)))
+else res<-switch(met,'1'=0,'2'=0,'3'=sum(Ji(th,it,model=model,D=D)$Ji)/(2*sum(Ii(th,it,model=model,D=D)$Ii)))
 return(res)
 }
 optF<-function(th) dl(th)+f0(th)

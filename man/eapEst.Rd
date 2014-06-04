@@ -48,19 +48,15 @@ Polytomous IRT models are specified by their respective acronym: \code{"GRM"} fo
  }
 
 \references{
- Barton, M.A., and Lord, F.M. (1981). An upper asymptote for the three-parameter logistic item-response model.
- Research Bulletin 81-20. Princeton, NJ: Educational Testing Service.
+ Barton, M.A., and Lord, F.M. (1981). \emph{An upper asymptote for the three-parameter logistic item-response model}. Research Bulletin 81-20. Princeton, NJ: Educational Testing Service.
 
- Bock, R. D., and Mislevy, R. J. (1982). Adaptive EAP estimation of ability in a microcomputer environment. 
- \emph{Applied Psychological Measurement, 6}, 431-444.
+ Bock, R. D., and Mislevy, R. J. (1982). Adaptive EAP estimation of ability in a microcomputer environment. \emph{Applied Psychological Measurement, 6}, 431-444. doi: 10.1177/014662168200600405
 
- Haley, D.C. (1952). Estimation of the dosage mortality relationship when the dose is subject to error. 
- Technical report no 15. Palo Alto, CA: Applied Mathematics and Statistics Laboratory, Stanford University. 
+ Haley, D.C. (1952). \emph{Estimation of the dosage mortality relationship when the dose is subject to error}. Technical report no 15. Palo Alto, CA: Applied Mathematics and Statistics Laboratory, Stanford University. 
  
  Jeffreys, H. (1939). \emph{Theory of probability}. Oxford, UK: Oxford University Press.
 
- Jeffreys, H. (1946). An invariant form for the prior probability in estimation problems. \emph{Proceedings of the Royal
- Society of London. Series A, Mathematical and Physical Sciences, 186}, 453-461.
+ Jeffreys, H. (1946). An invariant form for the prior probability in estimation problems. \emph{Proceedings of the Royal Society of London. Series A, Mathematical and Physical Sciences, 186}, 453-461.
 
  Magis, D., and Raiche, G. (2012). Random Generation of Response Patterns under Computerized Adaptive Testing with the R 
  Package \emph{catR}. \emph{Journal of Statistical Software}, \emph{48 (8)}, 1-31. URL \url{http://www.jstatsoft.org/v48/i08/}

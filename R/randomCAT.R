@@ -1,5 +1,5 @@
 randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL, maxItems = 50, cbControl = NULL, nAvailable = NULL,
-                     start = list(fixItems = NULL, seed = NULL, nrItems = 1, theta = 0, 
+                     start = list(fixItems = NULL, seed = NULL, nrItems = 1, theta = 0, D=1,
                                   halfRange = 2, startSelect = "MFI"),
                      test = list(method = "BM", priorDist = "norm", priorPar = c(0, 1), range = c(-4, 4),
                             D = 1, parInt = c(-4, 4, 33), itemSelect = "MFI", 
@@ -29,9 +29,10 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL, maxIte
       itemBank <- as.matrix(itemBank)
     }
   internalCAT<-function() {
-    startList <- list(fixItems = start$fixItems, seed = start$seed, nrItems = NULL, theta = NULL, halfRange = 2, startSelect = "MFI")
+    startList <- list(fixItems = start$fixItems, seed = start$seed, nrItems = NULL, theta = NULL, D=1, halfRange = 2, startSelect = "MFI")
     startList$nrItems <- ifelse(is.null(start$nrItems), 1, start$nrItems)
     startList$theta <- ifelse(is.null(start$theta), 0, start$theta)
+ startList$D<- ifelse(is.null(start$D), 1, start$D)
     startList$halfRange <- ifelse(is.null(start$halfRange), 2, start$halfRange)
     startList$startSelect <- ifelse(is.null(start$startSelect), "MFI", start$startSelect)
     start <- startList
@@ -87,7 +88,7 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL, maxIte
     if (stop$rule=="classification" & (test$itemSelect=="progressive" | test$itemSelect=="proportional"))
       stop("'classification' rule cannot be considered with neither 'progressive' nor 'proportional' item selection rules!",call.=FALSE)
     pr0 <- startItems(itemBank = itemBank, model=model, fixItems = start$fixItems, 
-                      seed = start$seed, nrItems = start$nrItems, theta = start$theta, 
+                      seed = start$seed, nrItems = start$nrItems, theta = start$theta, D=start$D,
                       halfRange = start$halfRange, startSelect = start$startSelect, nAvailable = nAvailable)
     ITEMS<-pr0$items
     PAR <- rbind(pr0$par)
@@ -128,7 +129,7 @@ if (!enter.cat){
                     pattern = PATTERN, thetaProv = TH, seProv = SETH, 
                     thFinal = finalEst, seFinal = seFinal, ciFinal = confIntFinal, 
                     startFixItems = start$fixItems, startSeed = start$seed, 
-                    startNrItems = start$nrItems, startTheta = start$theta, 
+                    startNrItems = start$nrItems, startTheta = start$theta, startD=start$D, 
                     startHalfRange = start$halfRange, startThStart = pr0$thStart, 
                     startSelect = start$startSelect, provMethod = test$method, 
                     provDist = test$priorDist, provPar = test$priorPar, 
@@ -193,7 +194,7 @@ if (!enter.cat){
                   pattern = PATTERN, thetaProv = TH, seProv = SETH, 
                   thFinal = finalEst, seFinal = seFinal, ciFinal = confIntFinal, 
                   startFixItems = start$fixItems, startSeed = start$seed, 
-                  startNrItems = start$nrItems, startTheta = start$theta, 
+                  startNrItems = start$nrItems, startTheta = start$theta, startD=start$D, 
                   startHalfRange = start$halfRange, startThStart = pr0$thStart, 
                   startSelect = start$startSelect, provMethod = test$method, 
                   provDist = test$priorDist, provPar = test$priorPar, 
@@ -224,7 +225,6 @@ if (!enter.cat){
       RES$seProv<-c(prov.se,RES$seProv)
     }
   }
-  if (!is.null(model)) RES$provD<-RES$finalD <- NA
   return(RES)
   }
   resToReturn <- internalCAT()
@@ -524,79 +524,93 @@ else fileName <- paste(wd, x$output[2], ".txt", sep = "")
 }
 
 
-plot.cat<-function (x, ci = FALSE, alpha = 0.05, trueTh = TRUE, classThr = NULL, save.plot = FALSE, 
-                    save.options = c("path", "name", "pdf"), ...) 
+
+plot.cat<-function (x, ci = FALSE, alpha = 0.05, trueTh = TRUE, classThr = NULL, 
+    save.plot = FALSE, save.options = c("path", "name", "pdf"), 
+    ...) 
 {
-if (!is.logical(trueTh)) 
-      stop("'trueTh' must be either TRUE or FALSE", call. = FALSE)
+    if (!is.logical(trueTh)) 
+        stop("'trueTh' must be either TRUE or FALSE", call. = FALSE)
     if (!is.logical(ci)) 
-      stop("'ci' must be either TRUE or FALSE", call. = FALSE)
+        stop("'ci' must be either TRUE or FALSE", call. = FALSE)
     if (!is.numeric(classThr) & !is.null(classThr)) 
-      stop("'classThr' must be either a  numeric threshold or NULL", 
-           call. = FALSE)
-  internalCAT<-function(){
-    res <- x
-    X <- 1:length(res$testItems)
-    nra <- length(res$pattern) - length(res$thetaProv)
-    Y <- c(rep(NA, nra), res$thetaProv)
-    r1 <- res$thetaProv - qnorm(1 - alpha/2) * res$seProv
-    r2 <- res$thetaProv + qnorm(1 - alpha/2) * res$seProv
-    vectRange <- c(res$thetaProv, res$trueTheta)
-    if (ci) 
-      vectRange <- c(vectRange, r1, r2)
-    if (!is.null(classThr)) 
-      vectRange <- c(vectRange, classThr)
-    ra <- range(vectRange)
-    ra[1] <- ra[1] - 0.2
-    ra[2] <- ra[2] + 0.2
-    r1 <- c(rep(NA, nra), r1)
-    r2 <- c(rep(NA, nra), r2)
-    plot(X, Y, type = "o", xlab = "Item", ylab = "Ability estimate", 
-         ylim = ra, cex = 0.7)
-    if (ci) {
-      for (i in 1:length(X)) {
-        lines(rep(i, 2), c(r1[i], r2[i]), lty = 3)
-        lines(c(i - 0.2, i + 0.2), rep(r1[i], 2))
-        lines(c(i - 0.2, i + 0.2), rep(r2[i], 2))
-      }
+        stop("'classThr' must be either a  numeric threshold or NULL", 
+            call. = FALSE)
+    internalCAT <- function() {
+        res <- x
+        X <- 1:length(res$testItems)
+        nra <- length(res$pattern) - length(res$thetaProv)
+if (nra<0){ 
+indic<-2:length(res$thetaProv)
+Y<-res$thetaProv[indic]
+        r1 <- res$thetaProv[indic] - qnorm(1 - alpha/2) * res$seProv[indic]
+        r2 <- res$thetaProv[indic] + qnorm(1 - alpha/2) * res$seProv[indic]
+}
+else  {
+      Y <- c(rep(NA, nra), res$thetaProv)
+        r1 <- res$thetaProv - qnorm(1 - alpha/2) * res$seProv
+        r2 <- res$thetaProv + qnorm(1 - alpha/2) * res$seProv
+}
+        vectRange <- c(res$thetaProv, res$trueTheta)
+        if (ci) 
+            vectRange <- c(vectRange, r1, r2)
+        if (!is.null(classThr)) 
+            vectRange <- c(vectRange, classThr)
+        ra <- range(vectRange)
+        ra[1] <- ra[1] - 0.2
+        ra[2] <- ra[2] + 0.2
+if (nra>=0){
+        r1 <- c(rep(NA, nra), r1)
+        r2 <- c(rep(NA, nra), r2)
+}
+        plot(X, Y, type = "o", xlab = "Item", ylab = "Ability estimate", 
+            ylim = ra, cex = 0.7)
+        if (ci) {
+            for (i in 1:length(X)) {
+                lines(rep(i, 2), c(r1[i], r2[i]), lty = 3)
+                lines(c(i - 0.2, i + 0.2), rep(r1[i], 2))
+                lines(c(i - 0.2, i + 0.2), rep(r2[i], 2))
+            }
+        }
+        if (trueTh) 
+            abline(h = res$trueTheta)
+        if (!is.null(classThr)) 
+            abline(h = classThr, lty = 2)
     }
-    if (trueTh) 
-      abline(h = res$trueTheta)
-    if (!is.null(classThr)) 
-      abline(h = classThr, lty = 2)
-  }
-  internalCAT()
-  if (save.plot) {
-    plotype <- NULL
-    if (save.options[3] == "pdf") 
-      plotype <- 1
-    if (save.options[3] == "jpeg") 
-      plotype <- 2
-    if (is.null(plotype)) 
-      cat("Invalid plot type (should be either 'pdf' or 'jpeg').", 
-          "\n", "The plot was not captured!", "\n")
-    else {
-      if (save.options[1] == "path") 
-        wd <- paste(getwd(), "/", sep = "")
-      else wd <- save.options[1]
-      nameFile <- paste(wd, save.options[2], switch(plotype, `1` = ".pdf", `2` = ".jpg"), sep = "")
-      if (plotype == 1) {
-{
-  pdf(file = nameFile)
-  internalCAT()
-}
-dev.off()
-      }
-      if (plotype == 2) {
-{
-  jpeg(filename = nameFile)
-  internalCAT()
-}
-dev.off()
-      }
-      cat("The plot was captured and saved into", "\n", 
-          " '", nameFile, "'", "\n", "\n", sep = "")
+    internalCAT()
+    if (save.plot) {
+        plotype <- NULL
+        if (save.options[3] == "pdf") 
+            plotype <- 1
+        if (save.options[3] == "jpeg") 
+            plotype <- 2
+        if (is.null(plotype)) 
+            cat("Invalid plot type (should be either 'pdf' or 'jpeg').", 
+                "\n", "The plot was not captured!", "\n")
+        else {
+            if (save.options[1] == "path") 
+                wd <- paste(getwd(), "/", sep = "")
+            else wd <- save.options[1]
+            nameFile <- paste(wd, save.options[2], switch(plotype, 
+                `1` = ".pdf", `2` = ".jpg"), sep = "")
+            if (plotype == 1) {
+                {
+                  pdf(file = nameFile)
+                  internalCAT()
+                }
+                dev.off()
+            }
+            if (plotype == 2) {
+                {
+                  jpeg(filename = nameFile)
+                  internalCAT()
+                }
+                dev.off()
+            }
+            cat("The plot was captured and saved into", "\n", 
+                " '", nameFile, "'", "\n", "\n", sep = "")
+        }
     }
-  }
-  else cat("The plot was not captured!", "\n", sep = "")
+    else cat("The plot was not captured!", "\n", sep = "")
 }
+

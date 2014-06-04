@@ -5,7 +5,6 @@ dP<-pr$dPi
 d2P<-pr$d2Pi
 if (is.null(model)){
 Q<-1-P
-
 res<-(P*Q*dP^2-(x-P)*(P*Q*d2P+dP^2*(P-Q)))/(P^2*Q^2)
 }
 else{

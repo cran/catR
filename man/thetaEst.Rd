@@ -45,8 +45,7 @@ Polytomous IRT models are specified by their respective acronym: \code{"GRM"} fo
  \code{priorDist="norm"}), or the range for defining the prior uniform distribution (if \code{priorDist="unif"}). This argument
  is ignored if \code{priorDist="Jeffreys"}.
 
- The \code{eapPar} argument sets the range and the number of quadrature points for numerical integration in the EAP process. By default, it takes
- the vector value (-4, 4, 33), that is, 33 quadrature points on the range [-4; 4] (or, by steps of 0.25). See \code{\link{eapEst}} for further details. 
+ The \code{parInt} argument sets the range and the number of quadrature points for numerical integration in the EAP process. By default, it takes the vector value (-4, 4, 33), that is, 33 quadrature points on the range [-4; 4] (or, by steps of 0.25). See \code{\link{eapEst}} for further details. 
 
  The \code{range} argument permits to limit the interval of investigation for the ML, BM and WL ability estimates (in particular, to avoid
  infinite ability estimates). The default \code{range} is [-4, 4].
@@ -57,16 +56,13 @@ It has been shown that in some cases the weighted likelihood estimator and the B
 }
 
 \references{
- Barton, M.A., and Lord, F.M. (1981). An upper asymptote for the three-parameter logistic item-response model.
- Research Bulletin 81-20. Princeton, NJ: Educational Testing Service.
+ Barton, M.A., and Lord, F.M. (1981). \emph{An upper asymptote for the three-parameter logistic item-response model}. Research Bulletin 81-20. Princeton, NJ: Educational Testing Service.
 
- Birnbaum, A. (1969). Statistical theory for logistic mental test models with a prior distribution of ability.
- \emph{Journal of Mathematical Psychology, 6}, 258-276.
+ Birnbaum, A. (1969). Statistical theory for logistic mental test models with a prior distribution of ability. \emph{Journal of Mathematical Psychology, 6}, 258-276. doi: 10.1016/0022-2496(69)90005-4
 
- Bock, R. D., and Mislevy, R. J. (1982). Adaptive EAP estimation of ability in a microcomputer environment. 
- \emph{Applied Psychological Measurement, 6}, 431-444.
+ Bock, R. D., and Mislevy, R. J. (1982). Adaptive EAP estimation of ability in a microcomputer environment. \emph{Applied Psychological Measurement, 6}, 431-444. doi: 10.1177/014662168200600405
 
- Haley, D.C. (1952). Estimation of the dosage mortality relationship when the dose is subject to error. 
+ Haley, D.C. (1952). \emph{Estimation of the dosage mortality relationship when the dose is subject to error.} 
  Technical report no 15. Palo Alto, CA: Applied Mathematics and Statistics Laboratory, Stanford University. 
  
  Jeffreys, H. (1939). \emph{Theory of probability}. Oxford, UK: Oxford University Press.
@@ -74,15 +70,14 @@ It has been shown that in some cases the weighted likelihood estimator and the B
  Jeffreys, H. (1946). An invariant form for the prior probability in estimation problems. \emph{Proceedings of the Royal
  Society of London. Series A, Mathematical and Physical Sciences, 186}, 453-461.
 
- Lord, F.M. (1980). \emph{Applications of item response theory to practical testing problems}.
- Hillsdale, NJ: Lawrence Erlbaum.
+ Lord, F.M. (1980). \emph{Applications of item response theory to practical testing problems}. Hillsdale, NJ: Lawrence Erlbaum.
 
-Magis, D. (in press). A note on weighted likelihood and Jeffreys modal estimation of proficiency levels in polytomous item response models. \emph{Psychometrika}.
+Magis, D. (in press). A note on weighted likelihood and Jeffreys modal estimation of proficiency levels in polytomous item response models. \emph{Psychometrika}.doi: 10.1007/S11336-013-9378-5
 
  Magis, D., and Raiche, G. (2012). Random Generation of Response Patterns under Computerized Adaptive Testing with the R 
  Package \emph{catR}. \emph{Journal of Statistical Software}, \emph{48 (8)}, 1-31. URL \url{http://www.jstatsoft.org/v48/i08/}
 
- Warm, T.A. (1989). Weighted likelihood estimation of ability in item response models. \emph{Psychometrika, 54}, 427-450.
+ Warm, T.A. (1989). Weighted likelihood estimation of ability in item response models. \emph{Psychometrika, 54}, 427-450. doi: 10.1007/BF02294627
 }
 
 \author{

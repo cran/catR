@@ -40,15 +40,15 @@ Polytomous IRT models are specified by their respective acronym: \code{"GRM"} fo
 }
 
 \references{
-Barton, M.A., and Lord, F.M. (1981). An upper asymptote for the three-parameter logistic item-response model. Research Bulletin 81-20. Princeton, NJ: Educational Testing Service.
+Barton, M.A., and Lord, F.M. (1981). \emph{An upper asymptote for the three-parameter logistic item-response model}. Research Bulletin 81-20. Princeton, NJ: Educational Testing Service.
 
-Haley, D.C. (1952). Estimation of the dosage mortality relationship when the dose is subject to error. Technical report no 15. Palo Alto, CA: Applied Mathematics and Statistics Laboratory, Stanford University. 
+Haley, D.C. (1952). \emph{Estimation of the dosage mortality relationship when the dose is subject to error}. Technical report no 15. Palo Alto, CA: Applied Mathematics and Statistics Laboratory, Stanford University. 
 
 Magis, D., and Raiche, G. (2012). Random Generation of Response Patterns under Computerized Adaptive Testing with the R Package \emph{catR}. \emph{Journal of Statistical Software}, \emph{48 (8)}, 1-31. URL \url{http://www.jstatsoft.org/v48/i08/}
 
 Samejima, F. (1998, April). \emph{Expansion of Warm's weighted likelihood estimator of ability for the three-parameter logistic model to generate discrete responses.} PPaper presented at the annual meeting of the National Council on Measurement in Education, San Diego, CA.
 
-Warm, T.A. (1989). Weighted likelihood estimation of ability in item response models. \emph{Psychometrika, 54}, 427-450.
+Warm, T.A. (1989). Weighted likelihood estimation of ability in item response models. \emph{Psychometrika, 54}, 427-450. doi: 10.1007/BF02294627
  }
 
 \author{

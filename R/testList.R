@@ -11,7 +11,7 @@ testList<-function (list, type = "start")
                 sep = ""))
         else {
             elements <- switch(type, start = c("fixItems", "seed", 
-                "nrItems", "theta", "halfRange", "startSelect","nAvailable"), 
+                "nrItems", "theta", "D", "halfRange", "startSelect","nAvailable"), 
                 test = c("method", "priorDist", "priorPar", "range", 
                   "D", "parInt", "itemSelect", "infoType","randomesque","SETH","AP","nAvailable"), stop = c("rule", 
                   "thr", "alpha"), final = c("method", "priorDist", 

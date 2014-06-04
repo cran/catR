@@ -49,55 +49,57 @@ else {
     row.head3 <- rep("estimated.theta", itemsRow)
     row.head3[1:length(row.head3)] <- paste(row.head3[1:length(row.head3)],1:length(row.head3), sep=".")
     row.head <- c()
-    row.head <- c(row.head, "true.theta", row.head1, row.head2, row.head3)
+    row.head <- c(row.head, "respondent", "true.theta", row.head1, row.head2, "start.theta", row.head3)
     responses.df <- data.frame()
     for (i in 1:respondents) {
       if (!floor((i-1)*10/respondents)==last_shown) {
         last_shown <- floor((i-1)*10/respondents)
         cat("Simulation process: ", last_shown*10, "%\n")
-    }
-    if (rmax < 1) {
-      nAvailable <- rep(1, bank_size)
-      if (Mrmax == "restricted")
-        nAvailable[exposureRates>=rmax] <- 0
-      if (Mrmax == "IE") {
-        kpar[(exposureRates/kpar)<=rmax] <- 1
-        kpar[(exposureRates/kpar)>rmax] <- rmax*kpar[(exposureRates/kpar)>rmax]/exposureRates[(exposureRates/kpar)>rmax]
-        nAvailable[runif(bank_size)>kpar] <- 0
       }
-    }
-    if(!is.null(responsesMatrix)) {
-      rCAT <- randomCAT(trueTheta=thetas[i], itemBank=itemBank, responses = resp[i,],  model=model,
+      if (rmax < 1) {
+        nAvailable <- rep(1, bank_size)
+        if (Mrmax == "restricted")
+          nAvailable[exposureRates>=rmax] <- 0
+        if (Mrmax == "IE") {
+          kpar[(exposureRates/kpar)<=rmax] <- 1
+          kpar[(exposureRates/kpar)>rmax] <- rmax*kpar[(exposureRates/kpar)>rmax]/exposureRates[(exposureRates/kpar)>rmax]
+          nAvailable[runif(bank_size)>kpar] <- 0
+        }
+      }
+      if(!is.null(responsesMatrix)) {
+        rCAT <- randomCAT(trueTheta=thetas[i], itemBank=itemBank, responses = resp[i,],  model=model,
                       maxItems=maxItems, cbControl=cbControl, nAvailable=nAvailable, start=start, test=test,
                       stop=stop, final=final, allTheta=TRUE)
-    }
-    else {
-      rCAT <- randomCAT(trueTheta=thetas[i], itemBank=itemBank, model=model,
+      }
+      else {
+        rCAT <- randomCAT(trueTheta=thetas[i], itemBank=itemBank, model=model,
                       maxItems=maxItems, cbControl=cbControl, nAvailable=nAvailable, start=start, test=test,
                       stop=stop, final=final, allTheta=TRUE)
-    }
-    estimatedThetas <- c(estimatedThetas, rCAT$thFinal)
-    vItemExposure <- c(vItemExposure, rCAT$testItems)
-    exposure[rCAT$testItems[1:length(rCAT$testItems)]] <- exposure[rCAT$testItems[1:length(rCAT$testItems)]] + 1
-    exposureRates = exposure / i
-    numberItems <- c(numberItems,length(rCAT$testItems))
-    totalSeFinal <- c(totalSeFinal, rCAT$seFinal)
-    if (stop$rule=="precision") 
-      thrOK <- c(thrOK,rCAT$seFinal<=stop$thr)
-    if (stop$rule == "classification") 
-      thrOK <- c(thrOK,(rCAT$trueTheta - stop$thr) * (rCAT$thFinal - stop$thr) >= 0)
-    if (stop$rule == "length") 
-      thrOK <- c(thrOK,1)
-    items.administrated <- rep(-99, itemsRow)
-    responses <- rep(-99, itemsRow)
-    provisional.theta <- rep(-99, itemsRow)
-    items.administrated[1:length(rCAT$testItems)] <- rCAT$testItems
-    responses[1:length(rCAT$pattern)] <- rCAT$pattern
-    provisional.theta[1:length(rCAT$thetaProv)] <- rCAT$thetaProv
-    row <- c()
-    row <- c(row, rCAT$trueTheta, items.administrated, responses, provisional.theta)
-    responses.df <- rbind(responses.df, row)
-    }
+      }
+      estimatedThetas <- c(estimatedThetas, rCAT$thFinal)
+      vItemExposure <- c(vItemExposure, rCAT$testItems)
+      exposure[rCAT$testItems[1:length(rCAT$testItems)]] <- exposure[rCAT$testItems[1:length(rCAT$testItems)]] + 1
+      exposureRates = exposure / i
+      numberItems <- c(numberItems,length(rCAT$testItems))
+      totalSeFinal <- c(totalSeFinal, rCAT$seFinal)
+      if (stop$rule=="precision") 
+        thrOK <- c(thrOK,rCAT$seFinal<=stop$thr)
+      if (stop$rule == "classification") 
+        thrOK <- c(thrOK,(rCAT$trueTheta - stop$thr) * (rCAT$thFinal - stop$thr) >= 0)
+      if (stop$rule == "length") 
+        thrOK <- c(thrOK,1)
+      items.administrated <- rep(-99, itemsRow)
+      responses <- rep(-99, itemsRow)
+      provisional.theta <- rep(-99, itemsRow)
+      items.administrated[1:length(rCAT$testItems)] <- rCAT$testItems
+      responses[1:length(rCAT$pattern)] <- rCAT$pattern
+      if (start$nrItems == 0)
+        rCAT$thetaProv <- rCAT$thetaProv[2:length(rCAT$thetaProv)]
+      provisional.theta[1:length(rCAT$thetaProv)] <- rCAT$thetaProv
+      row <- c()
+      row <- c(row, i, rCAT$trueTheta, items.administrated, responses, rCAT$startTheta, provisional.theta)
+      responses.df <- rbind(responses.df, row)
+      }
     colnames(responses.df) <- row.head  
     final.values.df <- data.frame(thetas,estimatedThetas,totalSeFinal,numberItems)
     colnames(final.values.df) <- c("true.theta","estimated.theta","final.SE", "total.items.administrated")
@@ -184,7 +186,7 @@ if (save.output) {
     sep <- ";"
   else
     sep <- "\t"
-  write.table(resToReturn$responses.df, fileName2, quote=FALSE, sep=sep)
+  write.table(resToReturn$responses.df, fileName2, quote=FALSE, sep=sep, row.names = FALSE)
   write.table(resToReturn$final.values.df, file=fileName3, sep=sep, quote=FALSE, row.names = FALSE)
 }
 return(resToReturn)

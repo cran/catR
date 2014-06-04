@@ -1,5 +1,5 @@
 startItems<-function (itemBank, model=NULL, fixItems = NULL, seed = NULL, nrItems = 1, 
-    theta = 0, halfRange = 2, startSelect = "MFI", nAvailable = NULL) 
+    theta = 0, D=1, halfRange = 2, startSelect = "MFI", nAvailable = NULL) 
 {
 if (!is.null(nAvailable)) {
   if (length(nAvailable)!=nrow(itemBank)) stop("mismatch between length of 'nAvailable' and the number of items in 'itemBank'",call.=FALSE)
@@ -55,7 +55,7 @@ else {
         u <- -3/4 +(itemBank[,3]+ itemBank[,4]+-2*itemBank[,3]* itemBank[,4]) / 2
         v <- (itemBank[,3]+itemBank[,4]-1)/4
         xstar <- 2*sqrt(-u/3)*cos(acos(-v*sqrt(-27/u^3) /2 ) /3 + 4*pi/3)+1/2
-        thMax <- itemBank[,2] + log((xstar-itemBank[,3]) / (itemBank[,4] - xstar))/ itemBank[,1]
+        thMax <- itemBank[,2] + log((xstar-itemBank[,3]) / (itemBank[,4] - xstar))/ (D*itemBank[,1])
         item.dist <- abs(thMax - theta)
         for (i in 1:length(thStart)) {
           if (!is.null(nAvailable))
@@ -72,7 +72,7 @@ else {
           nr.items <- nrow(itemBank)
           selected <- rep(0,nr.items)
           for (i in 1:length(thStart)) {
-            item.info <- Ii(thStart[i], itemBank, model=model)$Ii
+            item.info <- Ii(thStart[i], itemBank, model=model,D=D)$Ii
             if (!is.null(nAvailable))
               pos.adm <- (1-selected) * nAvailable
             else

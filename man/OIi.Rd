@@ -50,16 +50,15 @@ Polytomous IRT models are specified by their respective acronym: \code{"GRM"} fo
 
 
 \references{
- Barton, M.A., and Lord, F.M. (1981). An upper asymptote for the three-parameter logistic item-response model.
+ Barton, M.A., and Lord, F.M. (1981). \emph{An upper asymptote for the three-parameter logistic item-response model}.
  Research Bulletin 81-20. Princeton, NJ: Educational Testing Service.
 
- Haley, D.C. (1952). Estimation of the dosage mortality relationship when the dose is subject to error. 
- Technical report no 15. Palo Alto, CA: Applied Mathematics and Statistics Laboratory, Stanford University.
+ Haley, D.C. (1952). \emph{Estimation of the dosage mortality relationship when the dose is subject to error}. Technical report no 15. Palo Alto, CA: Applied Mathematics and Statistics Laboratory, Stanford University.
 
  Magis, D., and Raiche, G. (in press). Random generation of response patterns under computerized adaptive testing
  with the R package \emph{catR}. \emph{Journal of Statistical Software}.
 
- van der Linden, W. (1998). Bayesian item selection criteria for adaptive testing. \emph{Psychometrika, 63}, 201-216.
+ van der Linden, W. (1998). Bayesian item selection criteria for adaptive testing. \emph{Psychometrika, 63}, 201-216. doi: 10.1007/BF02294775
 
  Veerkamp, W. J. J. (1996). \emph{Statistical inference for adaptive testing}. Internal report. Enschede, The Netherlands: 
  University of Twente. 

@@ -25,17 +25,17 @@ lik<-sapply(X,L,x,it.given)
 }
 else{
 if (is.null(lik)){
-LL <- function(th, param, r, model) {
-prob <- Pi(th, param, model = model)$Pi
+LL <- function(th, param, r, model,D=1) {
+prob <- Pi(th, param, model = model,D=D)$Pi
 res <- 1
 for (i in 1:length(r)) res <- res * prob[i, r[i] + 1]
 return(res)
 }
-lik<-sapply(X,LL,it.given,x,model=model)
+lik<-sapply(X,LL,it.given,x,model=model,D=D)
 }
-pi<-Pi(theta,par,model=model)$Pi
+pi<-Pi(theta,par,model=model,D=D)$Pi
 for (i in 1:length(X)){
-pri<-Pi(X[i],par,model=model)$Pi
+pri<-Pi(X[i],par,model=model,D=D)$Pi
 KLF[i]<-sum(pi*log(pi/pri),na.rm=TRUE)
 }
 crit.value <- lik*KLF 

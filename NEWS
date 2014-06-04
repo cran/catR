@@ -6,6 +6,41 @@
 
 
 ------------------------------------
+- Changes in catR 3.1 (2014-06-04) -
+------------------------------------
+
+MAJOR UPDATES
+
+  o  The scaling constant D was not properly specified in 
+     'startItems' and 'nextItem' functions. This has been 
+     fixed.
+
+  o  A bug was occuring when 'nrItems' was set to zero in 
+     the 'startItems' function. In this case, the methods
+     'MLWI', 'MPWI', 'KL' and 'KLP' of 'nextItem' were not
+     working properly. Moreover, the 'plot.cat' function was
+     not working when 'nrItems' was fixed to zero. Finally, 
+     the output of 'simulateRespondents' was also affected
+     by this problem and was corrected.
+
+  o  In addition, the scaling constant D was embedded to all 
+     polytomous IRT models (but the NRM). All subsequent
+     functions (such as 'Pi', 'Ii' and so on) have been 
+     updated. Many thanks to Mike Powell
+     (mike.powell@learninglogistics.com) for suggesting this
+     update.
+
+
+MINOR UPDATES
+
+  o  The DOI numbers were added to the references (whenever
+     available).
+
+  o  Some typos were fixed.
+
+
+
+------------------------------------
 - Changes in catR 3.0 (2014-04-25) -
 ------------------------------------
 

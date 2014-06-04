@@ -46,23 +46,22 @@ The output list contains the response probabilities and the respective derivativ
 
 
 \references{
-Andrich, D. (1978). A rating formulation for ordered response categories. \emph{Psychometrika, 43}, 561-573.
+Andrich, D. (1978). A rating formulation for ordered response categories. \emph{Psychometrika, 43}, 561-573. doi: 10.1007/BF02293814
 
-Barton, M.A., and Lord, F.M. (1981). An upper asymptote for the three-parameter logistic item-response model.
+Barton, M.A., and Lord, F.M. (1981). \emph{An upper asymptote for the three-parameter logistic item-response model}.
  Research Bulletin 81-20. Princeton, NJ: Educational Testing Service.
 
-Bock, R. D. (1972). Estimating item parameters and latent ability when responses are scored in two or more nominal categories. \emph{Psychometrika, 37}, 29-51.
+Bock, R. D. (1972). Estimating item parameters and latent ability when responses are scored in two or more nominal categories. \emph{Psychometrika, 37}, 29-51. doi: 10.1007/BF02291411
 
- Haley, D.C. (1952). Estimation of the dosage mortality relationship when the dose is subject to error. 
- Technical report no 15. Palo Alto, CA: Applied Mathematics and Statistics Laboratory, Stanford University. 
+ Haley, D.C. (1952). \emph{Estimation of the dosage mortality relationship when the dose is subject to error}. Technical report no 15. Palo Alto, CA: Applied Mathematics and Statistics Laboratory, Stanford University. 
 
  Magis, D., and Raiche, G. (2012). Random Generation of Response Patterns under Computerized Adaptive Testing with the R Package \emph{catR}. \emph{Journal of Statistical Software}, \emph{48 (8)}, 1-31. URL \url{http://www.jstatsoft.org/v48/i08/}
 
-Masters, G. N. (1982). A Rasch model for partial credit scoring. \emph{Psychometrika, 47}, 149-174.
+Masters, G. N. (1982). A Rasch model for partial credit scoring. \emph{Psychometrika, 47}, 149-174. doi: 10.1007/BF02296272
 
-Muraki, E. (1990). Fitting a polytomous item response model to Likert-type data. \emph{Applied Psychological Measurement, 14}, 59-71.
+Muraki, E. (1990). Fitting a polytomous item response model to Likert-type data. \emph{Applied Psychological Measurement, 14}, 59-71. doi: 10.1177/014662169001400106
 
-Muraki, E. (1992). A generalized partial credit model: Application of an EM algorithm. \emph{Applied Psychological Measurement, 16}, 19-176.
+Muraki, E. (1992). A generalized partial credit model: Application of an EM algorithm. \emph{Applied Psychological Measurement, 16}, 19-176. doi: 10.1177/014662169201600206
 
 Samejima, F. (1969). \emph{Estimation of latent ability using a response pattern of graded scores}. Psychometrika Monograph (vol. 17).
  }

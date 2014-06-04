@@ -9,7 +9,7 @@
 
 \usage{
 startItems(itemBank, model = NULL, fixItems = NULL, seed = NULL, nrItems = 1, 
- 	 theta = 0, halfRange = 2, startSelect = "MFI", nAvailable = NULL) 
+ 	 theta = 0, D = 1, halfRange = 2, startSelect = "MFI", nAvailable = NULL) 
  }
 
 \arguments{
@@ -19,6 +19,7 @@ startItems(itemBank, model = NULL, fixItems = NULL, seed = NULL, nrItems = 1,
  \item{seed}{either a numeric value, \code{NA} or \code{NULL} (default). Ignored if \code{fixItems} is not \code{NULL}. See \bold{Details}.}
  \item{nrItems}{numeric: the number of starting items to be selected (default is 1). Can be equal to zero to avoid initial selection of items (see \bold{Details}). Ignored if \code{fixItems} is not \code{NULL}.}
  \item{theta}{numeric: the initial ability level for selecting the first items (default is 0). Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}. See \bold{Details}.}
+ \item{D}{numeric: the metric constant. Default is \code{D=1} (for logistic metric); \code{D=1.702} yields approximately the normal metric (Haley, 1952). Ignored if \code{model} is not \code{NULL} and if \code{startSelect} is not \code{"MFI"}.} 
  \item{halfRange}{numeric: the half of the range of initial ability values (default is 2). Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}. See \bold{Details}.}
  \item{startSelect}{character: the criterion for selecting the first items. Possible values are \code{"bOpt"}, \code{"thOpt"}, \code{"progressive"}, \code{"proportional"}, and \code{"MFI"} (default). See \bold{Details}.}
  \item{nAvailable}{either a boolean vector indicating which items (denoted by 1's) are available at the start of the test and which (denoted by 0's) are not, or \code{NULL} (default). See \bold{Details}.}
@@ -83,8 +84,10 @@ Currently only the \code{"MFI"} value for \code{startSelect} is allowed for poly
 }
 
 \references{
- Barton, M.A., and Lord, F.M. (1981). An upper asymptote for the three-parameter logistic item-response model.
- Research Bulletin 81-20. Princeton, NJ: Educational Testing Service.
+ Barton, M.A., and Lord, F.M. (1981). \emph{An upper asymptote for the three-parameter logistic item-response model}. Research Bulletin 81-20. Princeton, NJ: Educational Testing Service.
+
+ Haley, D.C. (1952). \emph{Estimation of the dosage mortality relationship when the dose is subject to error.} 
+ Technical report no 15. Palo Alto, CA: Applied Mathematics and Statistics Laboratory, Stanford University. 
 
  Magis, D., and Raiche, G. (2012). Random Generation of Response Patterns under Computerized Adaptive Testing with the R 
  Package \emph{catR}. \emph{Journal of Statistical Software}, \emph{48 (8)}, 1-31. URL \url{http://www.jstatsoft.org/v48/i08/}

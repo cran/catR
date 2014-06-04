@@ -132,9 +132,9 @@ These plots can be saved as external PDF or JPEG files, by setting \code{save.pl
 
  Magis, D., and Raiche, G. (2012). Random Generation of Response Patterns under Computerized Adaptive Testing with the R Package \emph{catR}. \emph{Journal of Statistical Software}, \emph{48 (8)}, 1-31. URL \url{http://www.jstatsoft.org/v48/i08/}
  
-Revuelta, J., and Ponsoda, V. (1998). A comparison of item exposure control methods in computerized adaptive testing. \emph{Journal of Educational Measurement, 35}, 311-327. 
+Revuelta, J., and Ponsoda, V. (1998). A comparison of item exposure control methods in computerized adaptive testing. \emph{Journal of Educational Measurement, 35}, 311-327. doi: 10.1111/j.1745-3984.1998.tb00541.x
 
-van der Linden, W.J., & Veldkamp, B.P. (2004). Constraining item exposure in computerized adaptive testing with shadow tests. \emph{Journal of Educational & Behavioral Statistics, 29}, 273-291.
+van der Linden, W.J., & Veldkamp, B.P. (2004). Constraining item exposure in computerized adaptive testing with shadow tests. \emph{Journal of Educational & Behavioral Statistics, 29}, 273-291. doi: 10.3102/10769986029003273
 }
 
 

@@ -21,7 +21,7 @@ Y2<-h(X)
 }
 else{
 LL<-function(th,it,x,model){
-prob<-Pi(th,it,model=model)$Pi
+prob<-Pi(th,it,model=model,D=D)$Pi
 res<-1
 for (i in 1:length(x)) res<-res*prob[i,x[i]+1]
 return(res)}
@@ -30,7 +30,7 @@ res <- NULL
 for (i in 1:length(s)) res[i]<-switch(priorDist,
 norm=(s[i]-thEst)^2*dnorm(s[i],priorPar[1],priorPar[2])*LL(s[i],it,x,model=model), 
 unif=(s[i]-thEst)^2*dunif(s[i],priorPar[1],priorPar[2])*LL(s[i],it,x,model=model), 
-Jeffreys=(s[i]-thEst)^2*sqrt(sum(Ii(s[i],it,model=model)$Ii))*LL(s[i],it,x,model=model))
+Jeffreys=(s[i]-thEst)^2*sqrt(sum(Ii(s[i],it,model=model,D=D)$Ii))*LL(s[i],it,x,model=model))
 return(res)
 }
 hh<-function(s,model){
@@ -38,7 +38,7 @@ res <- NULL
 for (i in 1:length(s)) res[i]<-switch(priorDist, 
 norm=dnorm(s[i],priorPar[1],priorPar[2])*LL(s[i],it,x,model=model), 
 unif=dunif(s[i],priorPar[1],priorPar[2])*LL(s[i],it,x,model=model), 
-Jeffreys=sqrt(sum(Ii(s[i],it,model=model)$Ii))*LL(s[i],it,x,model=model))
+Jeffreys=sqrt(sum(Ii(s[i],it,model=model,D=D)$Ii))*LL(s[i],it,x,model=model))
 return(res)
 }
 X<-seq(from=lower,to=upper,length=nqp)

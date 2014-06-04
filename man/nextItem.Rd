@@ -138,44 +138,41 @@ In case of content balancing control, three vectors of proportions are returned 
 \references{
  Baker, F.B. (1992). \emph{Item response theory: parameter estimation techniques}. New York, NY: Marcel Dekker.
 
-Barrada, J. R., Mazuela, P., and Olea, J. (2006). Maximum information stratification method for controlling item exposure in computerized adaptive testing. \emph{Psicothema, 18}, 156-159.
+Barrada, J. R., Mazuela, P., and Olea, J. (2006). Maximum information stratification method for controlling item exposure in computerized adaptive testing. \emph{Psicothema, 18}, 156-159. 
 
-Barrada, J. R., Olea, J., Ponsoda, V., and Abad, F. J. (2008). Incorporating randomness to the Fisher information for improving item exposure control in CATS. \emph{British Journal of Mathematical and Statistical Psychology, 61}, 493-513.
+Barrada, J. R., Olea, J., Ponsoda, V., and Abad, F. J. (2008). Incorporating randomness to the Fisher information for improving item exposure control in CATS. \emph{British Journal of Mathematical and Statistical Psychology, 61}, 493-513. doi: 10.1348/000711007X230937
 
- Barrada, J. R., Olea, J., Ponsoda, V., and Abad, F. J. (2010). A method for the comparison of item selection rules in computerized adaptive testing. \emph{Applied Psychological Measurement}, \emph{20}, 213-229.
+ Barrada, J. R., Olea, J., Ponsoda, V., and Abad, F. J. (2010). A method for the comparison of item selection rules in computerized adaptive testing. \emph{Applied Psychological Measurement}, \emph{20}, 213-229. doi: 10.1177/0146621610370152
 
- Barton, M.A., and Lord, F.M. (1981). An upper asymptote for the three-parameter logistic item-response model.
+ Barton, M.A., and Lord, F.M. (1981). \emph{An upper asymptote for the three-parameter logistic item-response model}.
  Research Bulletin 81-20. Princeton, NJ: Educational Testing Service.
 
 Chang, H.-H., and Ying, Z. (1996). A global information approach to computerized adaptive testing. \emph{Applied Psychological Measurement, 34}, 438-452.
 
- Choi, S. W., and Swartz, R. J. (2009). Comparison of CAT item selection criteria for polytomous items. \emph{Applied Psychological Measurement, 32}, 419-440.
+ Choi, S. W., and Swartz, R. J. (2009). Comparison of CAT item selection criteria for polytomous items. \emph{Applied Psychological Measurement, 32}, 419-440. doi: 10.1177/0146621608327801
 
- Haley, D.C. (1952). Estimation of the dosage mortality relationship when the dose is subject to error. 
- Technical report no 15. Palo Alto, CA: Applied Mathematics and Statistics Laboratory, Stanford University. 
+ Haley, D.C. (1952). \emph{Estimation of the dosage mortality relationship when the dose is subject to error}. Technical report no 15. Palo Alto, CA: Applied Mathematics and Statistics Laboratory, Stanford University. 
 
- Kingsbury, G. G., and Zara, A. R. (1989). Procedures for selecting items for computerized adaptive tests. \emph{Applied Measurement in Education, 2}, 359-375.
+ Kingsbury, G. G., and Zara, A. R. (1989). Procedures for selecting items for computerized adaptive tests. \emph{Applied Measurement in Education, 2}, 359-375. doi: 10.1207/s15324818ame0204_6
 
-Leroux, A. J., Lopez, M., Hembry, I. and Dodd, B. G. (2013). A comparison of exposure control procedures in CATs using the 3PL model. \emph{Educational and Psychological Measurement, 73}, 857-874.
+Leroux, A. J., Lopez, M., Hembry, I. and Dodd, B. G. (2013). A comparison of exposure control procedures in CATs using the 3PL model. \emph{Educational and Psychological Measurement, 73}, 857-874. doi: 10.1177/0013164413486802
 
-Magis, D. (2013). A note on the item information function of the four-parameter logistic model. \emph{Applied Psychological Measurement, 37}, 304-315.
+Magis, D. (2013). A note on the item information function of the four-parameter logistic model. \emph{Applied Psychological Measurement, 37}, 304-315. doi: 10.1177/0146621613475471
 
  Magis, D., and Raiche, G. (2012). Random Generation of Response Patterns under Computerized Adaptive Testing with the R 
  Package \emph{catR}. \emph{Journal of Statistical Software}, \emph{48 (8)}, 1-31. URL \url{http://www.jstatsoft.org/v48/i08/}
 
-Revuelta, J., and Ponsoda, V. (1998). A comparison of item exposure control methods in computerized adaptive testing. \emph{Journal of Educational Measurement, 35}, 311-327.
+Revuelta, J., and Ponsoda, V. (1998). A comparison of item exposure control methods in computerized adaptive testing. \emph{Journal of Educational Measurement, 35}, 311-327. doi: 10.1111/j.1745-3984.1998.tb00541.x
 
-Segall, D. O. (2004). A sharing item response theory model for computerized adaptive testing. \emph{Journal of Educational and Behavioral Statistics, 29}, 439-460.
+Segall, D. O. (2004). A sharing item response theory model for computerized adaptive testing. \emph{Journal of Educational and Behavioral Statistics, 29}, 439-460. doi: 10.3102/10769986029004439
 
  Urry, V. W. (1970). \emph{A Monte Carlo investigation of logistic test models.} Unpublished doctoral dissertation. West Lafayette, IN: Purdue University.
 
- van der Linden, W. J. (1998). Bayesian item selection criteria for adaptive testing. \emph{Psychometrika, 63}, 201-216.
+ van der Linden, W. J. (1998). Bayesian item selection criteria for adaptive testing. \emph{Psychometrika, 63}, 201-216. doi: 10.1007/BF02294775
 
- van der Linden, W. J., and Pashley, P. J. (2000). Item selection and ability estimlation in adaptive testing. In W. J. van der Linden and C. A. W. Glas (Eds.), 
- \emph{Computerized adaptive testing. Theory and practice} (pp. 1-25). Boston, MA: Kluwer. 
+ van der Linden, W. J., and Pashley, P. J. (2000). Item selection and ability estimation in adaptive testing. In W. J. van der Linden and C. A. W. Glas (Eds.), \emph{Computerized adaptive testing. Theory and practice} (pp. 1-25). Boston, MA: Kluwer. 
 
- Veerkamp, W. J. J., and Berger, M. P. F. (1997). Some new item selection criteria for adaptive testing.
- \emph{Journal of Educational and Behavioral Statistics, 22}, 203-226.
+ Veerkamp, W. J. J., and Berger, M. P. F. (1997). Some new item selection criteria for adaptive testing. \emph{Journal of Educational and Behavioral Statistics, 22}, 203-226. doi: 10.3102/10769986022002203
 }
 
 \author{
