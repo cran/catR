@@ -30,7 +30,7 @@ res <- NULL
 for (i in 1:length(s)) res[i]<-switch(priorDist,
 norm=s[i]*dnorm(s[i],priorPar[1],priorPar[2])*LL(s[i],it,x,model=model), 
 unif=s[i]*dunif(s[i],priorPar[1],priorPar[2])*LL(s[i],it,x,model=model), 
-Jeffreys=s[i]*sqrt(sum(Ii(s[i],it,model=model,D=D)$Ii))*LL(s[i],it,x,model=mode))
+Jeffreys=s[i]*sqrt(sum(Ii(s[i],it,model=model,D=D)$Ii))*LL(s[i],it,x,model=model))
 return(res)
 }
 hh<-function(s,model){

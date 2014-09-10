@@ -16,7 +16,7 @@ Ij1<-Ii(th1,rbind(itemBank[item,]),D=D)$Ii
 }
 else{
    Ij0<-OIi(th0,rbind(itemBank[item,]),0,D=D)
-   Ij1<-OIi(th0,rbind(itemBank[item,]),1,D=D)
+   Ij1<-OIi(th1,rbind(itemBank[item,]),1,D=D)
 }
 res<-p0*Ij0+p1*Ij1
 }

@@ -1,12 +1,12 @@
 genPolyMatrix<-function(nrItems, nrCat, model="GRM",seed=1,same.nrCat=FALSE,cbControl=NULL){
 if (sum(model==c("GRM","MGRM","PCM","GPCM","RSM","NRM"))==0) stop("invalid 'model' name'",call.=FALSE)
+set.seed(seed)
 if (same.nrCat | model=="MGRM" | model=="RSM") gj<-rep(nrCat-1,nrItems)
 else {
 gj<-rpois(nrItems,nrCat-1)
 gj[gj>nrCat-1]<-nrCat-1
 gj[gj<1]<-1
 }
-set.seed(seed)
 if (model=="GRM" | model=="GPCM"){
 res<-matrix(NA,nrItems,(max(gj)+1))
 alphaj<-rlnorm(nrItems,0,0.1225)

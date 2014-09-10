@@ -6,6 +6,42 @@
 
 
 ------------------------------------
+- Changes in catR 3.2 (2014-09-10) -
+------------------------------------
+
+MAJOR UPDATES
+
+  o  A bug was fixed in the 'randomCAT' function. When 
+     more items had to be administered than the length of 
+     the item bank, an error was occuring. The maxLength
+     variable within 'randomCAT' was updated accordingly,
+     as well as the 'print.cat' function.
+
+  o  A bug was fixed in the 'eapEst' function. With 
+     polytomous IRT models the 'model' argument was not 
+     passed properly. Many thanks to Przemyslaw Lis (The
+     Psychoemtrics Center, University of Cambridge, UK) for
+     noticing this issue.
+
+  o  An error was corrected in the 'MEI' function. The 
+     expected infomation was not correctly computed with
+     dichotomous IRT models (i.e. ability level 'th0' was
+     used instead of 'th1' in the observed information 
+     function). Many thanks to Dirk Pelt (Erasmus University
+     Rotterdam, The Netherlands) for noticing this issue.
+
+  o  A bug was fixed in the 'genPolyMatrix' function. When 
+     different number of response categories were generated
+     for the items, the 'seed' argument was not operating
+     properly. 
+
+
+MINOR UPDATES
+
+  o  Some typos were fixed.
+
+
+------------------------------------
 - Changes in catR 3.1 (2014-06-04) -
 ------------------------------------
 

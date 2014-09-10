@@ -1,243 +1,293 @@
-randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL, maxItems = 50, cbControl = NULL, nAvailable = NULL,
-                     start = list(fixItems = NULL, seed = NULL, nrItems = 1, theta = 0, D=1,
-                                  halfRange = 2, startSelect = "MFI"),
-                     test = list(method = "BM", priorDist = "norm", priorPar = c(0, 1), range = c(-4, 4),
-                            D = 1, parInt = c(-4, 4, 33), itemSelect = "MFI", 
-                            infoType = "observed", randomesque = 1, AP = 1),
-                     stop = list(rule = "length", thr = 20, alpha = 0.05),
-                     final = list(method = "BM", priorDist = "norm", priorPar = c(0, 1), range = c(-4, 4),
-                                  D = 1, parInt = c(-4, 4, 33), alpha = 0.05), 
-                     allTheta=FALSE, save.output = FALSE, output = c("path","name", "csv")) {
-  if (!testList(start, type="start")$test)
-    stop(testList(start, type="start")$message, call.=FALSE)
-  if (!testList(test, type="test")$test)
-    stop(testList(test, type="test")$message, call.=FALSE)
-  if (!testList(stop, type="stop")$test)
-    stop(testList(stop, type="stop")$message, call.=FALSE)
-  if (!testList(final, type="final")$test)
-    stop(testList(final, type="final")$message, call.=FALSE)
-  if (!is.null(responses)) assigned.responses <- TRUE
-  else assigned.responses <- FALSE
-  if (!is.null(cbControl)) {
-  prov <- breakBank(itemBank)
-      itemBank <- prov$itemPar
-      cbGroup <- prov$cbGroup
-  if (!test.cbList(cbControl, cbGroup)$test) stop(test.cbList(cbControl, cbGroup)$message, call.=FALSE)
-     }
-    else {
-      cbGroup <- NULL
-      itemBank <- as.matrix(itemBank)
-    }
-  internalCAT<-function() {
-    startList <- list(fixItems = start$fixItems, seed = start$seed, nrItems = NULL, theta = NULL, D=1, halfRange = 2, startSelect = "MFI")
-    startList$nrItems <- ifelse(is.null(start$nrItems), 1, start$nrItems)
-    startList$theta <- ifelse(is.null(start$theta), 0, start$theta)
- startList$D<- ifelse(is.null(start$D), 1, start$D)
-    startList$halfRange <- ifelse(is.null(start$halfRange), 2, start$halfRange)
-    startList$startSelect <- ifelse(is.null(start$startSelect), "MFI", start$startSelect)
-    start <- startList
-    stopList <- list(rule = NULL, thr = 20, alpha = 0.05)
-    stopList$rule <- ifelse(is.null(stop$rule), "length", stop$rule)
-    stopList$thr <- ifelse(is.null(stop$thr), 20, stop$thr)
-    stopList$alpha <- ifelse(is.null(stop$alpha), 0.05, stop$alpha)
-    stop <- stopList
-    if (stop$rule=="length" & stop$thr>maxItems)
-      stop("'maxItems' is smaller than test length criterion 'stop$thr'", call.=FALSE)
-    testList <- list(method = NULL, priorDist = NULL, priorPar = c(0,1),range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), 
-                     itemSelect = "MFI", infoType = "observed", randomesque = 1, AP = 1, rule=stop$rule,thr=stop$thr)
-    testList$method <- ifelse(is.null(test$method), "BM", test$method)
-    testList$priorDist <- ifelse(is.null(test$priorDist), "norm", test$priorDist)
-    if (!is.null(test$priorPar)) {
-      testList$priorPar[1] <- test$priorPar[1]
-      testList$priorPar[2] <- test$priorPar[2]
-    }
-    if (!is.null(test$range)) {
-      testList$range[1] <- test$range[1]
-      testList$range[2] <- test$range[2]
-    }
-    testList$D <- ifelse(is.null(test$D), 1, test$D)
-    if (!is.null(test$parInt)) {
-      testList$parInt[1] <- test$parInt[1]
-      testList$parInt[2] <- test$parInt[2]
-      testList$parInt[3] <- test$parInt[3]
-    }
-    testList$itemSelect <- ifelse(is.null(test$itemSelect), "MFI", test$itemSelect)
-    testList$infoType <- ifelse(is.null(test$infoType), "observed", test$infoType)
-    testList$randomesque <- ifelse(is.null(test$randomesque), 1, test$randomesque)
-    testList$AP <- ifelse(is.null(test$AP), 1, test$AP)
-    test <- testList
-    finalList <- list(method = NULL, priorDist = NULL, priorPar = c(0, 1), range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), alpha = 0.05)
-    finalList$method <- ifelse(is.null(final$method), "BM", final$method)
-    finalList$priorDist <- ifelse(is.null(final$priorDist), "norm", final$priorDist)
-    if (is.null(final$priorPar) == FALSE) {
-      finalList$priorPar[1] <- final$priorPar[1]
-      finalList$priorPar[2] <- final$priorPar[2]
-    }
-    if (!is.null(final$range)) {
-      finalList$range[1] <- final$range[1]
-      finalList$range[2] <- final$range[2]
-    }
-    finalList$D <- ifelse(is.null(final$D), 1, final$D)
-    if (!is.null(final$parInt)) {
-      finalList$parInt[1] <- final$parInt[1]
-      finalList$parInt[2] <- final$parInt[2]
-      finalList$parInt[3] <- final$parInt[3]
-    }
-    finalList$alpha <- ifelse(is.null(final$alpha), 0.05, final$alpha)
-    final <- finalList 
-    if (stop$rule=="classification" & (test$itemSelect=="progressive" | test$itemSelect=="proportional"))
-      stop("'classification' rule cannot be considered with neither 'progressive' nor 'proportional' item selection rules!",call.=FALSE)
-    pr0 <- startItems(itemBank = itemBank, model=model, fixItems = start$fixItems, 
-                      seed = start$seed, nrItems = start$nrItems, theta = start$theta, D=start$D,
-                      halfRange = start$halfRange, startSelect = start$startSelect, nAvailable = nAvailable)
-    ITEMS<-pr0$items
-    PAR <- rbind(pr0$par)
-if (is.null(ITEMS)) PATTERN <- NULL
-else{
-    if (!is.null(responses)) PATTERN <- responses[ITEMS]
-    else PATTERN <- genPattern(trueTheta,PAR,model=model,D=test$D)
-}
-    if (!is.null(ITEMS))
-      TH <- thetaEst(PAR, PATTERN, model=model, D = test$D, method = test$method, 
-                     priorDist = test$priorDist, priorPar = test$priorPar, 
-                     range = test$range, parInt = test$parInt)
-      else TH <- start$theta
-    if (!is.null(ITEMS))
-    SETH <- semTheta(TH, PAR, x = PATTERN, model=model, D = test$D, 
-                     method = test$method, priorDist = test$priorDist, 
-                     priorPar = test$priorPar, parInt = test$parInt)
-else SETH<-NA
-    thProv <- TH
-    if (stop$rule=="length") maxLength<-min(c(maxItems,stop$thr))
-    else maxLength <- maxItems
-enter.cat<-TRUE
-if (!is.na(SETH)){
-    if (length(PATTERN) >= maxLength |
-        (stop$rule == "precision" & SETH <= stop$thr) |
-        (stop$rule == "classification" & (TH - qnorm(1 - stop$alpha/2) * SETH >= stop$thr | TH + qnorm(1 - stop$alpha/2) * SETH <= stop$thr)))
-enter.cat<-FALSE
-}
-if (!enter.cat){
-      finalEst <- thetaEst(PAR, PATTERN, model=model, D = final$D, method = final$method, priorDist = final$priorDist, 
-                             priorPar = final$priorPar, range = final$range, parInt = final$parInt)
-      seFinal <- semTheta(finalEst, PAR, x = PATTERN, model=model,D = final$D, method = final$method, priorDist = final$priorDist, 
-                            priorPar = final$priorPar, parInt = final$parInt)
-      confIntFinal <- c(finalEst - qnorm(1 - final$alpha/2) * seFinal, finalEst + qnorm(1 - final$alpha/2) * seFinal)
-      endWarning <- FALSE
-      RES <- list(trueTheta = trueTheta, model = model, 
-                    maxItems = maxItems, testItems = ITEMS, itemPar = PAR, 
-                    pattern = PATTERN, thetaProv = TH, seProv = SETH, 
-                    thFinal = finalEst, seFinal = seFinal, ciFinal = confIntFinal, 
-                    startFixItems = start$fixItems, startSeed = start$seed, 
-                    startNrItems = start$nrItems, startTheta = start$theta, startD=start$D, 
-                    startHalfRange = start$halfRange, startThStart = pr0$thStart, 
-                    startSelect = start$startSelect, provMethod = test$method, 
-                    provDist = test$priorDist, provPar = test$priorPar, 
-                    provRange = test$range, provD = test$D, itemSelect = test$itemSelect, 
-                    infoType = test$infoType, randomesque = test$randomesque, AP = test$AP,
-                    cbControl = cbControl, cbGroup = cbGroup, 
-                    stopRule = stop$rule, stopThr = stop$thr, stopAlpha = stop$alpha, 
-                    endWarning = endWarning, finalMethod = final$method, 
-                    finalDist = final$priorDist, finalPar = final$priorPar, 
-                    finalRange = final$range, finalD = final$D, 
-                    finalAlpha = final$alpha, save.output = save.output, 
-                    output = output,
-                    assigned.responses = assigned.responses)
-       class(RES) <- "cat"
+randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL, 
+    maxItems = 50, cbControl = NULL, nAvailable = NULL, start = list(fixItems = NULL, 
+        seed = NULL, nrItems = 1, theta = 0, D = 1, halfRange = 2, 
+        startSelect = "MFI"), test = list(method = "BM", priorDist = "norm", 
+        priorPar = c(0, 1), range = c(-4, 4), D = 1, parInt = c(-4, 
+            4, 33), itemSelect = "MFI", infoType = "observed", 
+        randomesque = 1, AP = 1), stop = list(rule = "length", 
+        thr = 20, alpha = 0.05), final = list(method = "BM", 
+        priorDist = "norm", priorPar = c(0, 1), range = c(-4, 
+            4), D = 1, parInt = c(-4, 4, 33), alpha = 0.05), 
+    allTheta = FALSE, save.output = FALSE, output = c("path", 
+        "name", "csv")) 
+{
+    if (!testList(start, type = "start")$test) 
+        stop(testList(start, type = "start")$message, call. = FALSE)
+    if (!testList(test, type = "test")$test) 
+        stop(testList(test, type = "test")$message, call. = FALSE)
+    if (!testList(stop, type = "stop")$test) 
+        stop(testList(stop, type = "stop")$message, call. = FALSE)
+    if (!testList(final, type = "final")$test) 
+        stop(testList(final, type = "final")$message, call. = FALSE)
+    if (!is.null(responses)) 
+        assigned.responses <- TRUE
+    else assigned.responses <- FALSE
+    if (!is.null(cbControl)) {
+        prov <- breakBank(itemBank)
+        itemBank <- prov$itemPar
+        cbGroup <- prov$cbGroup
+        if (!test.cbList(cbControl, cbGroup)$test) 
+            stop(test.cbList(cbControl, cbGroup)$message, call. = FALSE)
     }
     else {
-      repeat{        
-        pr <- nextItem(itemBank, model=model, theta=thProv, out = ITEMS, 
-                       x = PATTERN, criterion = test$itemSelect, 
-                       method = test$method, parInt = test$parInt, 
-                       priorDist = test$priorDist, priorPar = test$priorPar, 
-                       infoType = test$infoType, D = test$D, range = test$range, 
-                       randomesque = test$randomesque, AP = test$AP,
-                       cbControl = cbControl, cbGroup=cbGroup, maxItems=maxItems,
-                       rule= test$rule, thr = test$thr, SETH = SETH[length(SETH)], nAvailable = nAvailable)
-        ITEMS<-c(ITEMS,pr$item)
-        PAR<-rbind(PAR,pr$par)
-        if(!is.null(responses)) PATTERN <- c(PATTERN, responses[pr$item])
-        else PATTERN <- c(PATTERN, genPattern(trueTheta, pr$par, model = model, D=test$D))
-        thProv <- thetaEst(PAR, PATTERN, model=model, D = test$D, 
-                           method = test$method, priorDist = test$priorDist, 
-                           priorPar = test$priorPar, range = test$range, 
-                           parInt = test$parInt)
-        TH<-c(TH,thProv)
-        seProv <- semTheta(thProv, PAR, x = PATTERN, model=model,
-                           D = test$D, method = test$method, priorDist = test$priorDist, 
-                           priorPar = test$priorPar, parInt = test$parInt)
-        SETH<-c(SETH,seProv)
-        if ((length(ITEMS) >= maxLength) |
-          (stop$rule == "precision" & seProv <= stop$thr) |
-          (stop$rule == "classification" & (thProv - qnorm(1 - stop$alpha/2) * seProv >= stop$thr | thProv + qnorm(1 - stop$alpha/2) * seProv <= stop$thr))) 
-        break
-      }
-      finalEst <- thetaEst(PAR, PATTERN, model=model, D = final$D, 
-                           method = final$method, priorDist = final$priorDist, 
-                           priorPar = final$priorPar, range = final$range, 
-                           parInt = final$parInt)
-      seFinal <- semTheta(finalEst, PAR, x = PATTERN, model=model,
-                          D = final$D, method = final$method, priorDist = final$priorDist, 
-                          priorPar = final$priorPar, parInt = final$parInt)
-      confIntFinal <- c(finalEst - qnorm(1 - final$alpha/2) * 
-                        seFinal, finalEst + qnorm(1 - final$alpha/2) * 
-                        seFinal)
-      if ((stop$rule == "length" & length(ITEMS) < stop$thr) | 
-          (stop$rule == "precision" & seProv > stop$thr) | 
-          (stop$rule == "classification" & thProv - qnorm(1 - stop$alpha/2) * seProv < stop$thr & thProv + qnorm(1 - stop$alpha/2) * seProv > stop$thr)) 
-        endWarning <- TRUE
-      else 
-        endWarning <- FALSE
-      RES <- list(trueTheta = trueTheta, model = model, 
-                  maxItems = maxItems, testItems = ITEMS, itemPar = PAR, 
-                  pattern = PATTERN, thetaProv = TH, seProv = SETH, 
-                  thFinal = finalEst, seFinal = seFinal, ciFinal = confIntFinal, 
-                  startFixItems = start$fixItems, startSeed = start$seed, 
-                  startNrItems = start$nrItems, startTheta = start$theta, startD=start$D, 
-                  startHalfRange = start$halfRange, startThStart = pr0$thStart, 
-                  startSelect = start$startSelect, provMethod = test$method, 
-                  provDist = test$priorDist, provPar = test$priorPar, 
-                  provRange = test$range, provD = test$D, itemSelect = test$itemSelect, 
-                  infoType = test$infoType, randomesque = test$randomesque, AP = test$AP,
-                  cbControl = cbControl, cbGroup = cbGroup, 
-                  stopRule = stop$rule, stopThr = stop$thr, stopAlpha = stop$alpha, 
-                  endWarning = endWarning, finalMethod = final$method, 
+        cbGroup <- NULL
+        itemBank <- as.matrix(itemBank)
+    }
+    internalCAT <- function() {
+        startList <- list(fixItems = start$fixItems, seed = start$seed, 
+            nrItems = NULL, theta = NULL, D = 1, halfRange = 2, 
+            startSelect = "MFI")
+        startList$nrItems <- ifelse(is.null(start$nrItems), 1, 
+            start$nrItems)
+        startList$theta <- ifelse(is.null(start$theta), 0, start$theta)
+        startList$D <- ifelse(is.null(start$D), 1, start$D)
+        startList$halfRange <- ifelse(is.null(start$halfRange), 
+            2, start$halfRange)
+        startList$startSelect <- ifelse(is.null(start$startSelect), 
+            "MFI", start$startSelect)
+        start <- startList
+        stopList <- list(rule = NULL, thr = 20, alpha = 0.05)
+        stopList$rule <- ifelse(is.null(stop$rule), "length", 
+            stop$rule)
+        stopList$thr <- ifelse(is.null(stop$thr), 20, stop$thr)
+        stopList$alpha <- ifelse(is.null(stop$alpha), 0.05, stop$alpha)
+        stop <- stopList
+        if (stop$rule == "length" & stop$thr > maxItems) 
+            stop("'maxItems' is smaller than test length criterion 'stop$thr'", 
+                call. = FALSE)
+        testList <- list(method = NULL, priorDist = NULL, priorPar = c(0, 
+            1), range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), 
+            itemSelect = "MFI", infoType = "observed", randomesque = 1, 
+            AP = 1, rule = stop$rule, thr = stop$thr)
+        testList$method <- ifelse(is.null(test$method), "BM", 
+            test$method)
+        testList$priorDist <- ifelse(is.null(test$priorDist), 
+            "norm", test$priorDist)
+        if (!is.null(test$priorPar)) {
+            testList$priorPar[1] <- test$priorPar[1]
+            testList$priorPar[2] <- test$priorPar[2]
+        }
+        if (!is.null(test$range)) {
+            testList$range[1] <- test$range[1]
+            testList$range[2] <- test$range[2]
+        }
+        testList$D <- ifelse(is.null(test$D), 1, test$D)
+        if (!is.null(test$parInt)) {
+            testList$parInt[1] <- test$parInt[1]
+            testList$parInt[2] <- test$parInt[2]
+            testList$parInt[3] <- test$parInt[3]
+        }
+        testList$itemSelect <- ifelse(is.null(test$itemSelect), 
+            "MFI", test$itemSelect)
+        testList$infoType <- ifelse(is.null(test$infoType), "observed", 
+            test$infoType)
+        testList$randomesque <- ifelse(is.null(test$randomesque), 
+            1, test$randomesque)
+        testList$AP <- ifelse(is.null(test$AP), 1, test$AP)
+        test <- testList
+        finalList <- list(method = NULL, priorDist = NULL, priorPar = c(0, 
+            1), range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), 
+            alpha = 0.05)
+        finalList$method <- ifelse(is.null(final$method), "BM", 
+            final$method)
+        finalList$priorDist <- ifelse(is.null(final$priorDist), 
+            "norm", final$priorDist)
+        if (is.null(final$priorPar) == FALSE) {
+            finalList$priorPar[1] <- final$priorPar[1]
+            finalList$priorPar[2] <- final$priorPar[2]
+        }
+        if (!is.null(final$range)) {
+            finalList$range[1] <- final$range[1]
+            finalList$range[2] <- final$range[2]
+        }
+        finalList$D <- ifelse(is.null(final$D), 1, final$D)
+        if (!is.null(final$parInt)) {
+            finalList$parInt[1] <- final$parInt[1]
+            finalList$parInt[2] <- final$parInt[2]
+            finalList$parInt[3] <- final$parInt[3]
+        }
+        finalList$alpha <- ifelse(is.null(final$alpha), 0.05, 
+            final$alpha)
+        final <- finalList
+       if (stop$rule == "length") maxLength <- min(c(maxItems, stop$thr,nrow(itemBank)))
+        else maxLength <- min(maxItems,nrow(itemBank))
+
+        if (stop$rule == "classification" & (test$itemSelect == 
+            "progressive" | test$itemSelect == "proportional")) 
+            stop("'classification' rule cannot be considered with neither 'progressive' nor 'proportional' item selection rules!", 
+                call. = FALSE)
+        pr0 <- startItems(itemBank = itemBank, model = model, 
+            fixItems = start$fixItems, seed = start$seed, nrItems = start$nrItems, 
+            theta = start$theta, D = start$D, halfRange = start$halfRange, 
+            startSelect = start$startSelect, nAvailable = nAvailable)
+        ITEMS <- pr0$items
+        PAR <- rbind(pr0$par)
+        if (is.null(ITEMS)) 
+            PATTERN <- NULL
+        else {
+            if (!is.null(responses)) 
+                PATTERN <- responses[ITEMS]
+            else PATTERN <- genPattern(trueTheta, PAR, model = model, 
+                D = test$D)
+        }
+        if (!is.null(ITEMS)) 
+            TH <- thetaEst(PAR, PATTERN, model = model, D = test$D, 
+                method = test$method, priorDist = test$priorDist, 
+                priorPar = test$priorPar, range = test$range, 
+                parInt = test$parInt)
+        else TH <- start$theta
+        if (!is.null(ITEMS)) 
+            SETH <- semTheta(TH, PAR, x = PATTERN, model = model, 
+                D = test$D, method = test$method, priorDist = test$priorDist, 
+                priorPar = test$priorPar, parInt = test$parInt)
+        else SETH <- NA
+        thProv <- TH
+         enter.cat <- TRUE
+        if (!is.na(SETH)) {
+            if (length(PATTERN) >= maxLength | (stop$rule == 
+                "precision" & SETH <= stop$thr) | (stop$rule == 
+                "classification" & (TH - qnorm(1 - stop$alpha/2) * 
+                SETH >= stop$thr | TH + qnorm(1 - stop$alpha/2) * 
+                SETH <= stop$thr))) 
+                enter.cat <- FALSE
+        }
+        if (!enter.cat) {
+            finalEst <- thetaEst(PAR, PATTERN, model = model, 
+                D = final$D, method = final$method, priorDist = final$priorDist, 
+                priorPar = final$priorPar, range = final$range, 
+                parInt = final$parInt)
+            seFinal <- semTheta(finalEst, PAR, x = PATTERN, model = model, 
+                D = final$D, method = final$method, priorDist = final$priorDist, 
+                priorPar = final$priorPar, parInt = final$parInt)
+            confIntFinal <- c(finalEst - qnorm(1 - final$alpha/2) * 
+                seFinal, finalEst + qnorm(1 - final$alpha/2) * 
+                seFinal)
+            endWarning <- FALSE
+            RES <- list(trueTheta = trueTheta, model = model, 
+                maxItems = maxItems, testItems = ITEMS, itemPar = PAR, 
+                pattern = PATTERN, thetaProv = TH, seProv = SETH, 
+                thFinal = finalEst, seFinal = seFinal, ciFinal = confIntFinal, 
+                startFixItems = start$fixItems, startSeed = start$seed, 
+                startNrItems = start$nrItems, startTheta = start$theta, 
+                startD = start$D, startHalfRange = start$halfRange, 
+                startThStart = pr0$thStart, startSelect = start$startSelect, 
+                provMethod = test$method, provDist = test$priorDist, 
+                provPar = test$priorPar, provRange = test$range, 
+                provD = test$D, itemSelect = test$itemSelect, 
+                infoType = test$infoType, randomesque = test$randomesque, 
+                AP = test$AP, cbControl = cbControl, cbGroup = cbGroup, 
+                stopRule = stop$rule, stopThr = stop$thr, stopAlpha = stop$alpha, 
+                endWarning = endWarning, finalMethod = final$method, 
                 finalDist = final$priorDist, finalPar = final$priorPar, 
-                  finalRange = final$range, finalD = final$D, 
-                  finalAlpha = final$alpha, save.output = save.output, 
-                  output = output, assigned.responses = assigned.responses)
-      class(RES) <- "cat"
+                finalRange = final$range, finalD = final$D, finalAlpha = final$alpha, 
+                save.output = save.output, output = output, assigned.responses = assigned.responses)
+            class(RES) <- "cat"
+        }
+        else {
+            repeat {
+                pr <- nextItem(itemBank, model = model, theta = thProv, 
+                  out = ITEMS, x = PATTERN, criterion = test$itemSelect, 
+                  method = test$method, parInt = test$parInt, 
+                  priorDist = test$priorDist, priorPar = test$priorPar, 
+                  infoType = test$infoType, D = test$D, range = test$range, 
+                  randomesque = test$randomesque, AP = test$AP, 
+                  cbControl = cbControl, cbGroup = cbGroup, maxItems = maxItems, 
+                  rule = test$rule, thr = test$thr, SETH = SETH[length(SETH)], 
+                  nAvailable = nAvailable)
+                ITEMS <- c(ITEMS, pr$item)
+                PAR <- rbind(PAR, pr$par)
+                if (!is.null(responses)) 
+                  PATTERN <- c(PATTERN, responses[pr$item])
+                else PATTERN <- c(PATTERN, genPattern(trueTheta, 
+                  pr$par, model = model, D = test$D))
+                thProv <- thetaEst(PAR, PATTERN, model = model, 
+                  D = test$D, method = test$method, priorDist = test$priorDist, 
+                  priorPar = test$priorPar, range = test$range, 
+                  parInt = test$parInt)
+                TH <- c(TH, thProv)
+                seProv <- semTheta(thProv, PAR, x = PATTERN, 
+                  model = model, D = test$D, method = test$method, 
+                  priorDist = test$priorDist, priorPar = test$priorPar, 
+                  parInt = test$parInt)
+                SETH <- c(SETH, seProv)
+                if ((length(ITEMS) >= maxLength) | (stop$rule == 
+                  "precision" & seProv <= stop$thr) | (stop$rule == 
+                  "classification" & (thProv - qnorm(1 - stop$alpha/2) * 
+                  seProv >= stop$thr | thProv + qnorm(1 - stop$alpha/2) * 
+                  seProv <= stop$thr))) 
+                  break
+            }
+            finalEst <- thetaEst(PAR, PATTERN, model = model, 
+                D = final$D, method = final$method, priorDist = final$priorDist, 
+                priorPar = final$priorPar, range = final$range, 
+                parInt = final$parInt)
+            seFinal <- semTheta(finalEst, PAR, x = PATTERN, model = model, 
+                D = final$D, method = final$method, priorDist = final$priorDist, 
+                priorPar = final$priorPar, parInt = final$parInt)
+            confIntFinal <- c(finalEst - qnorm(1 - final$alpha/2) * 
+                seFinal, finalEst + qnorm(1 - final$alpha/2) * 
+                seFinal)
+            if ((stop$rule == "length" & length(ITEMS) < stop$thr) | 
+                (stop$rule == "precision" & seProv > stop$thr) | 
+                (stop$rule == "classification" & thProv - qnorm(1 - 
+                  stop$alpha/2) * seProv < stop$thr & thProv + 
+                  qnorm(1 - stop$alpha/2) * seProv > stop$thr)) 
+                endWarning <- TRUE
+            else endWarning <- FALSE
+            RES <- list(trueTheta = trueTheta, model = model, 
+                maxItems = maxItems, testItems = ITEMS, itemPar = PAR, 
+                pattern = PATTERN, thetaProv = TH, seProv = SETH, 
+                thFinal = finalEst, seFinal = seFinal, ciFinal = confIntFinal, 
+                startFixItems = start$fixItems, startSeed = start$seed, 
+                startNrItems = start$nrItems, startTheta = start$theta, 
+                startD = start$D, startHalfRange = start$halfRange, 
+                startThStart = pr0$thStart, startSelect = start$startSelect, 
+                provMethod = test$method, provDist = test$priorDist, 
+                provPar = test$priorPar, provRange = test$range, 
+                provD = test$D, itemSelect = test$itemSelect, 
+                infoType = test$infoType, randomesque = test$randomesque, 
+                AP = test$AP, cbControl = cbControl, cbGroup = cbGroup, 
+                stopRule = stop$rule, stopThr = stop$thr, stopAlpha = stop$alpha, 
+                endWarning = endWarning, finalMethod = final$method, 
+                finalDist = final$priorDist, finalPar = final$priorPar, 
+                finalRange = final$range, finalD = final$D, finalAlpha = final$alpha, 
+                save.output = save.output, output = output, assigned.responses = assigned.responses)
+            class(RES) <- "cat"
+        }
+        if (allTheta & start$nrItems > 0) {
+            nra <- length(RES$pattern) - length(RES$thetaProv)
+            if (nra > 0) {
+                prov.th <- prov.se <- NULL
+                for (k in 1:nra) {
+                  prov.par <- rbind(RES$itemPar[1:k, ])
+                  prov.th[k] <- thetaEst(prov.par, RES$pattern[1:k], 
+                    model = model, D = test$D, method = test$method, 
+                    priorDist = test$priorDist, priorPar = test$priorPar, 
+                    range = test$range, parInt = test$parInt)
+                  prov.se[k] <- semTheta(prov.th[k], prov.par, 
+                    RES$pattern[1:k], model = model, D = test$D, 
+                    method = test$method, priorDist = test$priorDist, 
+                    priorPar = test$priorPar, parInt = test$parInt)
+                }
+                RES$thetaProv <- c(prov.th, RES$thetaProv)
+                RES$seProv <- c(prov.se, RES$seProv)
+            }
+        }
+        return(RES)
     }
-  if (allTheta & start$nrItems>0) {
-    nra <- length(RES$pattern)-length(RES$thetaProv)
-    if (nra > 0) {
-      prov.th <- prov.se <-NULL
-      for (k in 1:nra) {
-        prov.par<-rbind(RES$itemPar[1:k,])
-        prov.th[k]<-thetaEst(prov.par,RES$pattern[1:k],model=model, D = test$D, method = test$method, 
-        priorDist = test$priorDist, priorPar = test$priorPar, range = test$range, 
-        parInt = test$parInt)
-        prov.se[k]<-semTheta(prov.th[k], prov.par,RES$pattern[1:k],model=model,D = test$D, method = test$method, 
-        priorDist = test$priorDist, priorPar = test$priorPar, parInt = test$parInt)
-      }
-      RES$thetaProv<-c(prov.th,RES$thetaProv)
-      RES$seProv<-c(prov.se,RES$seProv)
+    resToReturn <- internalCAT()
+    if (save.output) {
+        if (output[1] == "path") 
+            wd <- paste(getwd(), "/", sep = "")
+        else wd <- output[1]
+        if (output[3] == "csv") 
+            fileName <- paste(wd, output[2], ".csv", sep = "")
+        else fileName <- paste(wd, output[2], ".txt", sep = "")
+        capture.output(resToReturn, file = fileName)
     }
-  }
-  return(RES)
-  }
-  resToReturn <- internalCAT()
-  if (save.output) {
-    if (output[1] == "path")
-      wd <- paste(getwd(), "/", sep = "")
-    else wd <- output[1]
-  if (output[3]=="csv") fileName <- paste(wd, output[2], ".csv", sep = "")
-  else fileName <- paste(wd, output[2], ".txt", sep = "")
-  capture.output(resToReturn, file = fileName)
-  }
-  return(resToReturn)
+    return(resToReturn)
 }
+
 
 
 
@@ -445,7 +495,7 @@ else
   cat("\n")
   if (x$endWarning) 
     cat("WARNING: stopping rule was not satisfied after", 
-        x$maxItems, "items!", "\n", "\n")
+        length(x$pattern), "items!", "\n", "\n")
   cat(" Final results:", "\n")
   met <- switch(x$finalMethod, BM = "Bayes modal (MAP) estimator", 
                 WL = "Weighted likelihood estimator", ML = "Maximum likelihood estimator", 
@@ -613,4 +663,5 @@ if (nra>=0){
     }
     else cat("The plot was not captured!", "\n", sep = "")
 }
+
 
