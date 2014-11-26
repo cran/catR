@@ -223,7 +223,7 @@ print.catResult <- function(x, ...) {
   else
     cat("IRT model:",x$model, "\n", "\n")
   cat("Item selection criterion:", x$test$itemSelect,"\n")
-  cat("Starting selection rule:", x$start$startSelect  , "\n")
+  #cat("Starting selection rule:", x$start$startSelect  , "\n")
   cat("Stopping rule:", x$stop$rule, "\n")
   if (x$stop$rule=="length")
     cat("\t", "Test length:", x$stop$thr, "\n")

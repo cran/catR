@@ -1,6 +1,6 @@
-65d060e15405ea0959bdb0c8fc2feb36 *DESCRIPTION
+8bc94a97f225f0004b378aed13aa0e19 *DESCRIPTION
 ff4df0015688bd3676bd2367fcaf6fa2 *NAMESPACE
-13f42d5c1bade1e608ee4f1480b5628e *NEWS
+1afcb84ae1922eb44268230953fd4ba5 *NEWS
 28c8916816790107d504b48c9f7404e8 *R/EPV.R
 b2080e015a34bbb9f1635cd00a1486ed *R/Ii.R
 aaba45401554baafdc4990bd96dca44f *R/Ji.R
@@ -16,10 +16,10 @@ f951e67908bdcb72c4c64abc8782e449 *R/eapEst.R
 6d93af1ff3499c3657526e8526c3761b *R/genPattern.R
 7619d4d24e2fcbb553f31bc57c4cffb6 *R/genPolyMatrix.R
 acd423bbca61daa0048b94106d6d4418 *R/integrate.catR.R
-4380479b0c76f7fb36898a39b7f5a7da *R/nextItem.R
+5fe013d4ae21a2e59ccf803384343092 *R/nextItem.R
 dd28deea4ffb64c448492134f137ebbb *R/randomCAT.R
 ad8864e7849775403b8de0a97de9a902 *R/semTheta.R
-b0a915e16d74bfc7c67efe64d098abcb *R/simulateRespondents.R
+70ccec7f07b4ba9ca1a89b15c6cbc1ec *R/simulateRespondents.R
 7fe7c8996db93b6deb6415c35cba3fbd *R/startItems.R
 b565554de3d907e6c539167288ccf1d6 *R/test.cbList.R
 d7381e773ac13b944d8ff19fc4cd3264 *R/testList.R
@@ -41,7 +41,7 @@ c749a671b0c225e367fc054ebd3050cc *man/Ii.Rd
 6b115ce89b81cc6f5526edbe105aacdb *man/genPattern.Rd
 5c3e23f17e816e2ca669deab01913170 *man/genPolyMatrix.Rd
 de732ef161074de79c4fe8fe583cff51 *man/integrate.catR.Rd
-3f845d9d81979b1ffa9703ebd6772360 *man/nextItem.Rd
+46c5e5d0efd2beb94d1a60683d78ed05 *man/nextItem.Rd
 a091e2a086e68a6771662e25c3bbf9d7 *man/randomCAT.Rd
 c75d73b0f740cc9d51074e8a79f022d9 *man/semTheta.Rd
 99601578c7092d8a4881c0f56bd444f1 *man/simulateRespondents.Rd

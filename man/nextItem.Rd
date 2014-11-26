@@ -142,12 +142,12 @@ Barrada, J. R., Mazuela, P., and Olea, J. (2006). Maximum information stratifica
 
 Barrada, J. R., Olea, J., Ponsoda, V., and Abad, F. J. (2008). Incorporating randomness to the Fisher information for improving item exposure control in CATS. \emph{British Journal of Mathematical and Statistical Psychology, 61}, 493-513. doi: 10.1348/000711007X230937
 
- Barrada, J. R., Olea, J., Ponsoda, V., and Abad, F. J. (2010). A method for the comparison of item selection rules in computerized adaptive testing. \emph{Applied Psychological Measurement}, \emph{20}, 213-229. doi: 10.1177/0146621610370152
+ Barrada, J. R., Olea, J., Ponsoda, V., and Abad, F. J. (2010). A method for the comparison of item selection rules in computerized adaptive testing. \emph{Applied Psychological Measurement}, \emph{34}, 438-452. doi: 10.1177/0146621610370152
 
  Barton, M.A., and Lord, F.M. (1981). \emph{An upper asymptote for the three-parameter logistic item-response model}.
  Research Bulletin 81-20. Princeton, NJ: Educational Testing Service.
 
-Chang, H.-H., and Ying, Z. (1996). A global information approach to computerized adaptive testing. \emph{Applied Psychological Measurement, 34}, 438-452.
+Chang, H.-H., and Ying, Z. (1996). A global information approach to computerized adaptive testing. \emph{Applied Psychological Measurement, 20}, 213-229.
 
  Choi, S. W., and Swartz, R. J. (2009). Comparison of CAT item selection criteria for polytomous items. \emph{Applied Psychological Measurement, 32}, 419-440. doi: 10.1177/0146621608327801
 

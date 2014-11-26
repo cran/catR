@@ -60,10 +60,8 @@ nextItem<-function (itemBank, model = NULL, theta = 0, out = NULL, x = NULL,
         nrIt <- min(c(randomesque, sum(items)))
         keepRank <- sort(ranks[items == 1], decreasing = TRUE)[1:nrIt]
         keep <- NULL
-        for (i in 1:length(keepRank)) keep[i] <- which(ranks == 
-            keepRank[i])
-        select <- ifelse(length(keep) == 1, keep, sample(c(keep), 
-            1))
+        for (i in 1:length(keepRank)) keep <- c(keep, which(ranks == keepRank[i] & items == 1))
+        select <- ifelse(length(keep) == 1, keep, sample(c(keep), 1))
         res <- list(item = select, par = itemBank[select, ], 
             info = info[select], criterion = criterion, randomesque = randomesque)
     }
@@ -80,9 +78,7 @@ nextItem<-function (itemBank, model = NULL, theta = 0, out = NULL, x = NULL,
         keepRank <- sort(ranks[items == 1], decreasing = FALSE)[1:nrIt]
         keepRank <- unique(keepRank)
         keep <- NULL
-        for (i in 1:length(keepRank)) {
-            keep <- c(keep, which(ranks == keepRank[i]))
-        }
+        for (i in 1:length(keepRank)) keep <- c(keep, which(ranks == keepRank[i] & items == 1))
         select <- ifelse(length(keep) == 1, keep, sample(keep, 
             1))
         res <- list(item = select, par = itemBank[select, ], 

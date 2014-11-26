@@ -6,6 +6,28 @@
 
 
 ------------------------------------
+- Changes in catR 3.3 (2014-11-26) -
+------------------------------------
+
+MAJOR UPDATES
+
+  o  When the item bank holds several items with the same
+     parameters, the 'MFI' next selection rule was often
+     selecting the same item several times. This bug has
+     now been fixed. Many thanks to Karthikeyan Madathil      
+     (kmadathil@gmail.com) for noticing this issue.
+
+
+MINOR UPDATES
+
+  o  The reference to Chang and Ying (1996) and Barrada, 
+     Olea, Ponsoda, and Abad (2010) were corrected in the 
+     'nextItem' help file.
+
+  o  The DESCRIPTION file was modified to match CRAN rules. 
+
+
+------------------------------------
 - Changes in catR 3.2 (2014-09-10) -
 ------------------------------------
 
