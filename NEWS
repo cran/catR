@@ -11,6 +11,53 @@
 
 MAJOR UPDATES
 
+  o  The 'simulateRespondents' was modified internally 
+     to fix a bug occuring when not all arguments of 
+     the 'start', 'test', 'stop' and 'final' lists were
+     passed to the function.
+
+
+  o  The argument 'nrItems' of function 'genPolyMatrix'
+     was replaced by 'items' to match with function
+     'genDichoMatrix'. Moreover, by-default values 
+     were asigned to arguments 'items' (100) and 'nrCat'
+     (3) of 'genPolyMatrix'.
+
+  o  The 'genPattern' function has now a 'seed' argument 
+     to possibly fix the random seed for generating 
+     item responses. By default it is set to NULL so no
+     random seed is determined.
+
+  o  The 'randomCAT' and 'simulateRespondents' functions
+     have now a 'genSeed' argument to possibly fix the
+     random generation of item responses. By default 
+     'genSeed' is set to NULL so no random seed is 
+     determined (and two successive runs of 'randomCAT' 
+     and 'simulateRespondents" will usually lead to 
+     different response patterns).
+
+  o  If post-hoc simulations are run with 'randomCAT' 
+     function and the 'trueTheta' argument is not 
+     provided, then it is returned as NA in the output
+     list.
+ 
+
+MINOR UPDATES
+
+  o  The help file of function 'genPolyMatrix' was 
+     rewritten to match with help file of function
+     'genDichoMatrix'.
+
+  o  Some typos were fixed.
+
+
+
+------------------------------------
+- Changes in catR 3.3 (2014-11-26) -
+------------------------------------
+
+MAJOR UPDATES
+
   o  When the item bank holds several items with the same
      parameters, the 'MFI' next selection rule was often
      selecting the same item several times. This bug has

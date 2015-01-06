@@ -1,4 +1,4 @@
-randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL, 
+randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL, genSeed = NULL,
     maxItems = 50, cbControl = NULL, nAvailable = NULL, start = list(fixItems = NULL, 
         seed = NULL, nrItems = 1, theta = 0, D = 1, halfRange = 2, 
         startSelect = "MFI"), test = list(method = "BM", priorDist = "norm", 
@@ -11,6 +11,11 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
     allTheta = FALSE, save.output = FALSE, output = c("path", 
         "name", "csv")) 
 {
+if (missing(trueTheta)){
+if (is.null(responses)) stop("'trueTheta' was not provided!",call.=FALSE)
+trueTheta<-NA
+}
+else trueTheta<-trueTheta
     if (!testList(start, type = "start")$test) 
         stop(testList(start, type = "start")$message, call. = FALSE)
     if (!testList(test, type = "test")$test) 
@@ -128,7 +133,7 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
             if (!is.null(responses)) 
                 PATTERN <- responses[ITEMS]
             else PATTERN <- genPattern(trueTheta, PAR, model = model, 
-                D = test$D)
+                D = test$D, seed = genSeed)
         }
         if (!is.null(ITEMS)) 
             TH <- thetaEst(PAR, PATTERN, model = model, D = test$D, 
@@ -166,7 +171,7 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
             RES <- list(trueTheta = trueTheta, model = model, 
                 maxItems = maxItems, testItems = ITEMS, itemPar = PAR, 
                 pattern = PATTERN, thetaProv = TH, seProv = SETH, 
-                thFinal = finalEst, seFinal = seFinal, ciFinal = confIntFinal, 
+                thFinal = finalEst, seFinal = seFinal, ciFinal = confIntFinal, genSeed = genSeed,
                 startFixItems = start$fixItems, startSeed = start$seed, 
                 startNrItems = start$nrItems, startTheta = start$theta, 
                 startD = start$D, startHalfRange = start$halfRange, 
@@ -199,7 +204,7 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
                 if (!is.null(responses)) 
                   PATTERN <- c(PATTERN, responses[pr$item])
                 else PATTERN <- c(PATTERN, genPattern(trueTheta, 
-                  pr$par, model = model, D = test$D))
+                  pr$par, model = model, D = test$D, seed = genSeed))
                 thProv <- thetaEst(PAR, PATTERN, model = model, 
                   D = test$D, method = test$method, priorDist = test$priorDist, 
                   priorPar = test$priorPar, range = test$range, 
@@ -237,7 +242,7 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
             RES <- list(trueTheta = trueTheta, model = model, 
                 maxItems = maxItems, testItems = ITEMS, itemPar = PAR, 
                 pattern = PATTERN, thetaProv = TH, seProv = SETH, 
-                thFinal = finalEst, seFinal = seFinal, ciFinal = confIntFinal, 
+                thFinal = finalEst, seFinal = seFinal, ciFinal = confIntFinal, genSeed = genSeed,
                 startFixItems = start$fixItems, startSeed = start$seed, 
                 startNrItems = start$nrItems, startTheta = start$theta, 
                 startD = start$D, startHalfRange = start$halfRange, 
@@ -293,7 +298,12 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
 
 print.cat<-function (x, ...) 
 {
-  if (!x$assigned.responses) cat("Random generation of a CAT response pattern", "\n","\n")
+  if (!x$assigned.responses) {
+cat("Random generation of a CAT response pattern", "\n")
+if (is.null(x$genSeed)) cat("  without fixing the random seed", "\n", "\n")
+else cat("  with random seed equal to", x$genSeed, "\n", "\n")
+}
+
   else cat("Post-hoc simulation of a full bank provided response pattern", "\n","\n")
   if (is.null(x$model)){
     if (min(x$itemPar[,4])<1) mod<-"Four-Parameter Logistic model"
@@ -316,7 +326,8 @@ print.cat<-function (x, ...)
 
   }
   cat(" Item bank calibrated under", mod,"\n","\n")
-  cat(" True ability level:", round(x$trueTheta, 2), "\n", "\n")
+  if (!is.na(x$trueTheta)) cat(" True ability level:", round(x$trueTheta, 2), "\n", "\n")
+else cat(" True ability level was not provided", "\n", "\n")
   cat(" Starting parameters:", "\n")
 if (x$startNrItems==0){
 cat("   No early item was selected","\n")
@@ -590,18 +601,21 @@ plot.cat<-function (x, ci = FALSE, alpha = 0.05, trueTh = TRUE, classThr = NULL,
         res <- x
         X <- 1:length(res$testItems)
         nra <- length(res$pattern) - length(res$thetaProv)
-if (nra<0){ 
-indic<-2:length(res$thetaProv)
-Y<-res$thetaProv[indic]
-        r1 <- res$thetaProv[indic] - qnorm(1 - alpha/2) * res$seProv[indic]
-        r2 <- res$thetaProv[indic] + qnorm(1 - alpha/2) * res$seProv[indic]
-}
-else  {
-      Y <- c(rep(NA, nra), res$thetaProv)
-        r1 <- res$thetaProv - qnorm(1 - alpha/2) * res$seProv
-        r2 <- res$thetaProv + qnorm(1 - alpha/2) * res$seProv
-}
-        vectRange <- c(res$thetaProv, res$trueTheta)
+        if (nra < 0) {
+            indic <- 2:length(res$thetaProv)
+            Y <- res$thetaProv[indic]
+            r1 <- res$thetaProv[indic] - qnorm(1 - alpha/2) * 
+                res$seProv[indic]
+            r2 <- res$thetaProv[indic] + qnorm(1 - alpha/2) * 
+                res$seProv[indic]
+        }
+        else {
+            Y <- c(rep(NA, nra), res$thetaProv)
+            r1 <- res$thetaProv - qnorm(1 - alpha/2) * res$seProv
+            r2 <- res$thetaProv + qnorm(1 - alpha/2) * res$seProv
+        }
+        if (!is.na(res$trueTheta)) vectRange <- c(res$thetaProv, res$trueTheta)
+else vectRange <- res$thetaProv
         if (ci) 
             vectRange <- c(vectRange, r1, r2)
         if (!is.null(classThr)) 
@@ -609,10 +623,10 @@ else  {
         ra <- range(vectRange)
         ra[1] <- ra[1] - 0.2
         ra[2] <- ra[2] + 0.2
-if (nra>=0){
-        r1 <- c(rep(NA, nra), r1)
-        r2 <- c(rep(NA, nra), r2)
-}
+        if (nra >= 0) {
+            r1 <- c(rep(NA, nra), r1)
+            r2 <- c(rep(NA, nra), r2)
+        }
         plot(X, Y, type = "o", xlab = "Item", ylab = "Ability estimate", 
             ylim = ra, cex = 0.7)
         if (ci) {
@@ -622,7 +636,7 @@ if (nra>=0){
                 lines(c(i - 0.2, i + 0.2), rep(r2[i], 2))
             }
         }
-        if (trueTh) 
+        if (trueTh & !is.na(res$trueTheta)) 
             abline(h = res$trueTheta)
         if (!is.null(classThr)) 
             abline(h = classThr, lty = 2)
@@ -663,5 +677,4 @@ if (nra>=0){
     }
     else cat("The plot was not captured!", "\n", sep = "")
 }
-
 

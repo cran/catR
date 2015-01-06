@@ -1,196 +1,209 @@
-simulateRespondents <- function (thetas, itemBank, responsesMatrix = NULL, model = NULL, maxItems = 50, cbControl = NULL, rmax = 1, Mrmax = "restricted",
-                                 start = list(fixItems = NULL, seed = NULL, nrItems = 1, theta = 0, halfRange = 2, startSelect = "MFI"),
-                                 test = list(method = "BM", priorDist = "norm", priorPar = c(0, 1), range = c(-4, 4), 
-                                             D = 1, parInt = c(-4, 4, 33), itemSelect = "MFI", 
-                                             infoType = "observed", randomesque = 1, AP = 1),
-                                 stop = list(rule = "length", thr = 20, alpha = 0.05),
-                                 final = list(method = "BM", priorDist = "norm", priorPar = c(0, 1), range = c(-4, 4),
-                                              D = 1, parInt = c(-4, 4, 33), alpha = 0.05), 
-                                 save.output = FALSE, output = c("","catR", "csv")) {
-if (length(thetas)==1) {
-  if(!is.null(responsesMatrix)) {
-    resp <- as.matrix(responsesMatrix) 
-    res<-randomCAT(trueTheta=thetas,itemBank=itemBank, responses = resp[1,],  model=model, maxItems=maxItems, cbControl=cbControl,
-                   start=start,test=test,stop=stop,final=final,save.output=save.output,output=output,allTheta=TRUE)
-  }
-  else {
-    res<-randomCAT(trueTheta=thetas,itemBank=itemBank, model=model,maxItems=maxItems,cbControl=cbControl,
-                   start=start,test=test,stop=stop,final=final,save.output=save.output,output=output,allTheta=TRUE)
-    }
-  return(res)
-}
-else {
-  internalSR<-function() {
-    start.time <- Sys.time()
-    respondents <- length(thetas)
-    nAvailable <- NULL
-    if (respondents < 1)
-      stop(paste("Length of 'thetas' has and invalid value: ", length(respondents), sep=""))
-    bank_size <- nrow(itemBank)
-    estimatedThetas <- NULL
-    vItemExposure <- NULL
-    kpar <- rep(1, bank_size)
-    last_shown <- -1
-    exposure <- rep(0, bank_size)
-    exposureRates <- rep(0, bank_size)
-    numberItems <- NULL
-    totalSeFinal <- c()
-    thrOK <- NULL
-    if(!is.null(responsesMatrix)) 
-      resp <- as.matrix(responsesMatrix) 
-    if (stop$rule == "length") 
-      itemsRow = stop$thr
-    if (stop$rule == "precision" | stop$rule == "classification")
-      itemsRow = maxItems
-    row.head1 <- rep("items.administrated", itemsRow)
-    row.head1[1:length(row.head1)] <- paste(row.head1[1:length(row.head1)],1:length(row.head1), sep=".")
-    row.head2 <- rep("responses", itemsRow)
-    row.head2[1:length(row.head2)] <- paste(row.head2[1:length(row.head2)],1:length(row.head2), sep=".")
-    row.head3 <- rep("estimated.theta", itemsRow)
-    row.head3[1:length(row.head3)] <- paste(row.head3[1:length(row.head3)],1:length(row.head3), sep=".")
-    row.head <- c()
-    row.head <- c(row.head, "respondent", "true.theta", row.head1, row.head2, "start.theta", row.head3)
-    responses.df <- data.frame()
-    for (i in 1:respondents) {
-      if (!floor((i-1)*10/respondents)==last_shown) {
-        last_shown <- floor((i-1)*10/respondents)
-        cat("Simulation process: ", last_shown*10, "%\n")
-      }
-      if (rmax < 1) {
-        nAvailable <- rep(1, bank_size)
-        if (Mrmax == "restricted")
-          nAvailable[exposureRates>=rmax] <- 0
-        if (Mrmax == "IE") {
-          kpar[(exposureRates/kpar)<=rmax] <- 1
-          kpar[(exposureRates/kpar)>rmax] <- rmax*kpar[(exposureRates/kpar)>rmax]/exposureRates[(exposureRates/kpar)>rmax]
-          nAvailable[runif(bank_size)>kpar] <- 0
+simulateRespondents<-function (thetas, itemBank, responsesMatrix = NULL, model = NULL, genSeed=NULL,
+    maxItems = 50, cbControl = NULL, rmax = 1, Mrmax = "restricted", 
+    start = list(fixItems = NULL, seed = NULL, nrItems = 1, theta = 0, 
+        halfRange = 2, startSelect = "MFI"), test = list(method = "BM", 
+        priorDist = "norm", priorPar = c(0, 1), range = c(-4, 
+            4), D = 1, parInt = c(-4, 4, 33), itemSelect = "MFI", 
+        infoType = "observed", randomesque = 1, AP = 1), stop = list(rule = "length", 
+        thr = 20, alpha = 0.05), final = list(method = "BM", 
+        priorDist = "norm", priorPar = c(0, 1), range = c(-4, 
+            4), D = 1, parInt = c(-4, 4, 33), alpha = 0.05), 
+    save.output = FALSE, output = c("", "catR", "csv")) 
+{
+    if (length(thetas) == 1) {
+        if (!is.null(responsesMatrix)) {
+            resp <- as.matrix(responsesMatrix)
+            res <- randomCAT(trueTheta = thetas, itemBank = itemBank, 
+                responses = resp[1, ], model = model, maxItems = maxItems, 
+                cbControl = cbControl, start = start, test = test, 
+                stop = stop, final = final, save.output = save.output, 
+                output = output, allTheta = TRUE)
         }
-      }
-      if(!is.null(responsesMatrix)) {
-        rCAT <- randomCAT(trueTheta=thetas[i], itemBank=itemBank, responses = resp[i,],  model=model,
-                      maxItems=maxItems, cbControl=cbControl, nAvailable=nAvailable, start=start, test=test,
-                      stop=stop, final=final, allTheta=TRUE)
-      }
-      else {
-        rCAT <- randomCAT(trueTheta=thetas[i], itemBank=itemBank, model=model,
-                      maxItems=maxItems, cbControl=cbControl, nAvailable=nAvailable, start=start, test=test,
-                      stop=stop, final=final, allTheta=TRUE)
-      }
-      estimatedThetas <- c(estimatedThetas, rCAT$thFinal)
-      vItemExposure <- c(vItemExposure, rCAT$testItems)
-      exposure[rCAT$testItems[1:length(rCAT$testItems)]] <- exposure[rCAT$testItems[1:length(rCAT$testItems)]] + 1
-      exposureRates = exposure / i
-      numberItems <- c(numberItems,length(rCAT$testItems))
-      totalSeFinal <- c(totalSeFinal, rCAT$seFinal)
-      if (stop$rule=="precision") 
-        thrOK <- c(thrOK,rCAT$seFinal<=stop$thr)
-      if (stop$rule == "classification") 
-        thrOK <- c(thrOK,(rCAT$trueTheta - stop$thr) * (rCAT$thFinal - stop$thr) >= 0)
-      if (stop$rule == "length") 
-        thrOK <- c(thrOK,1)
-      items.administrated <- rep(-99, itemsRow)
-      responses <- rep(-99, itemsRow)
-      provisional.theta <- rep(-99, itemsRow)
-      items.administrated[1:length(rCAT$testItems)] <- rCAT$testItems
-      responses[1:length(rCAT$pattern)] <- rCAT$pattern
-      if (start$nrItems == 0)
-        rCAT$thetaProv <- rCAT$thetaProv[2:length(rCAT$thetaProv)]
-      provisional.theta[1:length(rCAT$thetaProv)] <- rCAT$thetaProv
-      row <- c()
-      row <- c(row, i, rCAT$trueTheta, items.administrated, responses, rCAT$startTheta, provisional.theta)
-      responses.df <- rbind(responses.df, row)
-      }
-    colnames(responses.df) <- row.head  
-    final.values.df <- data.frame(thetas,estimatedThetas,totalSeFinal,numberItems)
-    colnames(final.values.df) <- c("true.theta","estimated.theta","final.SE", "total.items.administrated")
-    resCor <- cor(thetas, estimatedThetas)
-    RMSE <- sqrt(sum((estimatedThetas-thetas)^2)/respondents)
-    bias <- sum(estimatedThetas-thetas)/respondents
-    testLength = sum(exposureRates)
-    position_min <- which(exposureRates==min(exposureRates))
-    position_max <- which(exposureRates==max(exposureRates))
-    overlap <- sum(exposureRates ** 2)/testLength
-    condTheta <- rep(0,10)
-    condRMSE <- rep(0,10)
-    condBias <- rep(0,10)
-    condnItems <- rep(0,10)
-    condSE <- rep(0,10)
-    condthrOK <- rep(0,10)
-    ndecile <- rep(0,10)
-    for (z in 1:10) {
-      if (z < 10)
-        subset <- which(findInterval(thetas,quantile(thetas,seq(0,1,0.1)))==z)
-      else
-        subset <- c(which(findInterval(thetas,quantile(thetas,seq(0,1,0.1)))==z),which(thetas==max(thetas)))
-      condTheta[z] <- mean(thetas[subset])
-      condRMSE[z] <- sqrt(sum((estimatedThetas[subset] - thetas[subset])^2)/length(subset))
-      condBias[z] <- sum(estimatedThetas[subset] - thetas[subset])/length(subset)
-      condnItems[z] <- mean(numberItems[subset])
-      condSE[z] <- mean(totalSeFinal[subset])
-      condthrOK[z] <- mean(thrOK[subset])
-      ndecile[z] <- length(subset)
+        else {
+            res <- randomCAT(trueTheta = thetas, itemBank = itemBank, 
+                model = model, maxItems = maxItems, cbControl = cbControl, 
+                start = start, test = test, stop = stop, final = final, 
+                save.output = save.output, output = output, allTheta = TRUE)
+        }
+        return(res)
     }
-    finish.time <- Sys.time()
-    cat("Simulation process: ", 100, "%\n")
-    res <- list(thetas =thetas,
-                itemBank=itemBank,
-                responsesMatrix=responsesMatrix,
-                model=model,
-                maxItems=maxItems,
-                cbControl=cbControl,
-                rmax=rmax,
-                Mrmax=Mrmax,
-                start=start,
-                test=test,
-                stop=stop,
-                final=final,
-                save.output=save.output,
-                output=output,
-                estimatedThetas=estimatedThetas,
-                correlation = resCor,
-                bias = bias,
-                RMSE = RMSE,
-                thrOK = thrOK,
-                exposureRates = exposureRates, 
-                testLength = testLength,
-                overlap = overlap,
-                numberItems = numberItems,
-                condTheta = condTheta,
-                condBias = condBias,
-                condRMSE = condRMSE,                
-                condnItems = condnItems,
-                condSE = condSE,
-                condthrOK = condthrOK,
-                ndecile = ndecile,
-                final.values.df = final.values.df,
-                responses.df = responses.df,                
-                start.time = start.time,
+    else {
+if (!is.null(genSeed)){
+if (length(genSeed)!=length(thetas)) stop("'thetas' and 'genSeed' must have the same length!",call.=FALSE)
+}
+        internalSR <- function() {
+            start.time <- Sys.time()
+            respondents <- length(thetas)
+            nAvailable <- NULL
+            if (respondents < 1) 
+                stop(paste("Length of 'thetas' has and invalid value: ", 
+                  length(respondents), sep = ""))
+            bank_size <- nrow(itemBank)
+            estimatedThetas <- NULL
+            vItemExposure <- NULL
+            kpar <- rep(1, bank_size)
+            last_shown <- -1
+            exposure <- rep(0, bank_size)
+            exposureRates <- rep(0, bank_size)
+            numberItems <- NULL
+            totalSeFinal <- c()
+            thrOK <- NULL
+            if (!is.null(responsesMatrix)) 
+                resp <- as.matrix(responsesMatrix)
+            if (stop$rule == "length") 
+                itemsRow = stop$thr
+            if (stop$rule == "precision" | stop$rule == "classification") 
+                itemsRow = maxItems
+            row.head1 <- rep("items.administrated", itemsRow)
+            row.head1[1:length(row.head1)] <- paste(row.head1[1:length(row.head1)], 
+                1:length(row.head1), sep = ".")
+            row.head2 <- rep("responses", itemsRow)
+            row.head2[1:length(row.head2)] <- paste(row.head2[1:length(row.head2)], 
+                1:length(row.head2), sep = ".")
+            row.head3 <- rep("estimated.theta", itemsRow)
+            row.head3[1:length(row.head3)] <- paste(row.head3[1:length(row.head3)], 
+                1:length(row.head3), sep = ".")
+            row.head <- c()
+            row.head <- c(row.head, "respondent", "true.theta", 
+                row.head1, row.head2, "start.theta", row.head3)
+            responses.df <- data.frame()
+            for (i in 1:respondents) {
+                if (!floor((i - 1) * 10/respondents) == last_shown) {
+                  last_shown <- floor((i - 1) * 10/respondents)
+                  cat("Simulation process: ", last_shown * 10, 
+                    "%\n")
+                }
+                if (rmax < 1) {
+                  nAvailable <- rep(1, bank_size)
+                  if (Mrmax == "restricted") 
+                    nAvailable[exposureRates >= rmax] <- 0
+                  if (Mrmax == "IE") {
+                    kpar[(exposureRates/kpar) <= rmax] <- 1
+                    kpar[(exposureRates/kpar) > rmax] <- rmax * 
+                      kpar[(exposureRates/kpar) > rmax]/exposureRates[(exposureRates/kpar) > 
+                      rmax]
+                    nAvailable[runif(bank_size) > kpar] <- 0
+                  }
+                }
+                if (!is.null(responsesMatrix)) {
+                  rCAT <- randomCAT(trueTheta = thetas[i], itemBank = itemBank, 
+                    responses = resp[i, ], model = model, genSeed=genSeed[i],maxItems = maxItems, 
+                    cbControl = cbControl, nAvailable = nAvailable, 
+                    start = start, test = test, stop = stop, 
+                    final = final, allTheta = TRUE)
+                }
+                else {
+                  rCAT <- randomCAT(trueTheta = thetas[i], itemBank = itemBank, 
+                    model = model, genSeed=genSeed[i], maxItems = maxItems, cbControl = cbControl, 
+                    nAvailable = nAvailable, start = start, test = test, 
+                    stop = stop, final = final, allTheta = TRUE)
+                }
+                estimatedThetas <- c(estimatedThetas, rCAT$thFinal)
+                vItemExposure <- c(vItemExposure, rCAT$testItems)
+                exposure[rCAT$testItems[1:length(rCAT$testItems)]] <- exposure[rCAT$testItems[1:length(rCAT$testItems)]] + 
+                  1
+                exposureRates = exposure/i
+                numberItems <- c(numberItems, length(rCAT$testItems))
+                totalSeFinal <- c(totalSeFinal, rCAT$seFinal)
+                if (rCAT$stopRule == "precision") 
+                  thrOK <- c(thrOK, rCAT$seFinal <= stop$thr)
+                if (rCAT$stopRule == "classification") 
+                  thrOK <- c(thrOK, (rCAT$trueTheta - stop$thr) * 
+                    (rCAT$thFinal - stop$thr) >= 0)
+                if (rCAT$stopRule == "length") 
+                  thrOK <- c(thrOK, 1)
+                items.administrated <- rep(-99, itemsRow)
+                responses <- rep(-99, itemsRow)
+                provisional.theta <- rep(-99, itemsRow)
+                items.administrated[1:length(rCAT$testItems)] <- rCAT$testItems
+                responses[1:length(rCAT$pattern)] <- rCAT$pattern
+                if (rCAT$startNrItems == 0) 
+                  rCAT$thetaProv <- rCAT$thetaProv[2:length(rCAT$thetaProv)]
+                provisional.theta[1:length(rCAT$thetaProv)] <- rCAT$thetaProv
+                row <- c()
+                row <- c(row, i, rCAT$trueTheta, items.administrated, 
+                  responses, rCAT$startTheta, provisional.theta)
+                responses.df <- rbind(responses.df, row)
+            }
+            colnames(responses.df) <- row.head
+            final.values.df <- data.frame(thetas, estimatedThetas, 
+                totalSeFinal, numberItems)
+            colnames(final.values.df) <- c("true.theta", "estimated.theta", 
+                "final.SE", "total.items.administrated")
+            resCor <- cor(thetas, estimatedThetas)
+            RMSE <- sqrt(sum((estimatedThetas - thetas)^2)/respondents)
+            bias <- sum(estimatedThetas - thetas)/respondents
+            testLength = sum(exposureRates)
+            position_min <- which(exposureRates == min(exposureRates))
+            position_max <- which(exposureRates == max(exposureRates))
+            overlap <- sum(exposureRates^2)/testLength
+            condTheta <- rep(0, 10)
+            condRMSE <- rep(0, 10)
+            condBias <- rep(0, 10)
+            condnItems <- rep(0, 10)
+            condSE <- rep(0, 10)
+            condthrOK <- rep(0, 10)
+            ndecile <- rep(0, 10)
+            for (z in 1:10) {
+                if (z < 10) 
+                  subset <- which(findInterval(thetas, quantile(thetas, 
+                    seq(0, 1, 0.1))) == z)
+                else subset <- c(which(findInterval(thetas, quantile(thetas, 
+                  seq(0, 1, 0.1))) == z), which(thetas == max(thetas)))
+                condTheta[z] <- mean(thetas[subset])
+                condRMSE[z] <- sqrt(sum((estimatedThetas[subset] - 
+                  thetas[subset])^2)/length(subset))
+                condBias[z] <- sum(estimatedThetas[subset] - 
+                  thetas[subset])/length(subset)
+                condnItems[z] <- mean(numberItems[subset])
+                condSE[z] <- mean(totalSeFinal[subset])
+                condthrOK[z] <- mean(thrOK[subset])
+                ndecile[z] <- length(subset)
+            }
+            finish.time <- Sys.time()
+            cat("Simulation process: ", 100, "%\n")
+            res <- list(thetas = thetas, itemBank = itemBank, 
+                responsesMatrix = responsesMatrix, model = model, genSeed = genSeed,
+                maxItems = maxItems, cbControl = cbControl, rmax = rmax, 
+                Mrmax = Mrmax, start = start, test = test, stop = stop, 
+                final = final, save.output = save.output, output = output, 
+                estimatedThetas = estimatedThetas, correlation = resCor, 
+                bias = bias, RMSE = RMSE, thrOK = thrOK, exposureRates = exposureRates, 
+                testLength = testLength, overlap = overlap, numberItems = numberItems, 
+                condTheta = condTheta, condBias = condBias, condRMSE = condRMSE, 
+                condnItems = condnItems, condSE = condSE, condthrOK = condthrOK, 
+                ndecile = ndecile, final.values.df = final.values.df, 
+                responses.df = responses.df, start.time = start.time, 
                 finish.time = finish.time)
-    class(res) <- "catResult"
-    return(res)
-}
-
-resToReturn <- internalSR()
-if (save.output) {
-  if (output[2] != "")
-    output[2] <- paste0(output[2],".")
-  if (output[1]=="")
-    wd <- paste(getwd(), "/",sep = "")
-  else  wd <- output[1]
-  fileName1 <- paste(wd, output[2], "main.", output[3], sep = "")
-  fileName2 <- paste(wd, output[2], "responses.", output[3], sep = "")
-  fileName3 <- paste(wd, output[2], "tables.", output[3], sep = "")
-  fileName4 <- paste(wd, output[2], "deciles.", output[3], sep ="")
-  capture.output(resToReturn,file=fileName1)
-  if (output[3] == "csv")
-    sep <- ";"
-  else
-    sep <- "\t"
-  write.table(resToReturn$responses.df, fileName2, quote=FALSE, sep=sep, row.names = FALSE)
-  write.table(resToReturn$final.values.df, file=fileName3, sep=sep, quote=FALSE, row.names = FALSE)
-}
-return(resToReturn)
-}
+            class(res) <- "catResult"
+            return(res)
+        }
+        resToReturn <- internalSR()
+        if (save.output) {
+            if (output[2] != "") 
+                output[2] <- paste0(output[2], ".")
+            if (output[1] == "") 
+                wd <- paste(getwd(), "/", sep = "")
+            else wd <- output[1]
+            fileName1 <- paste(wd, output[2], "main.", output[3], 
+                sep = "")
+            fileName2 <- paste(wd, output[2], "responses.", output[3], 
+                sep = "")
+            fileName3 <- paste(wd, output[2], "tables.", output[3], 
+                sep = "")
+            fileName4 <- paste(wd, output[2], "deciles.", output[3], 
+                sep = "")
+            capture.output(resToReturn, file = fileName1)
+            if (output[3] == "csv") 
+                sep <- ";"
+            else sep <- "\t"
+            write.table(resToReturn$responses.df, fileName2, 
+                quote = FALSE, sep = sep, row.names = FALSE)
+            write.table(resToReturn$final.values.df, file = fileName3, 
+                sep = sep, quote = FALSE, row.names = FALSE)
+        }
+        return(resToReturn)
+    }
 }
 
 
@@ -199,8 +212,11 @@ print.catResult <- function(x, ...) {
   if (is.null(x$responsesMatrix))
     simulation <- FALSE else
     simulation <- TRUE
-  if (!simulation) 
+  if (!simulation) {
     cat("\n","** Simulation of multiple examinees **", "\n", "\n")
+if (is.null(x$genSeed)) cat("Random seed was not fixed", "\n", "\n")
+else cat("Random seed was fixed (see argument 'genSeed')", "\n", "\n")
+}
   else
     cat("\n","** Post-hoc simulation of multiple examinees **", "\n", "\n")
   if (difftime(x$finish.time, x$start.time, units="hours") > 1) {

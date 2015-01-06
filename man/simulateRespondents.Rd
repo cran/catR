@@ -10,7 +10,7 @@ This command runs a set of adaptive tests, for a given item bank, a set of abili
 
 \usage{
 simulateRespondents(thetas, itemBank, responsesMatrix = NULL, model = NULL, 
-  	maxItems = 50, cbControl = NULL, rmax = 1, Mrmax = "restricted", 
+  	genSeed = NULL, maxItems = 50, cbControl = NULL, rmax = 1, Mrmax = "restricted", 
   	start = list(fixItems = NULL, seed = NULL, nrItems = 1, theta = 0, 
   	halfRange = 2, startSelect = "MFI"),test = list(method = "BM", 
   	priorDist = "norm", priorPar = c(0,1), range = c(-4, 4), D = 1, 
@@ -26,13 +26,14 @@ simulateRespondents(thetas, itemBank, responsesMatrix = NULL, model = NULL,
 
 \arguments{
  \item{thetas}{numeric: a vector of true ability values for which a CAT must be generated for each component.}
- \item{itemBank}{numeric: a suitable matrix of item parameters (possibly augmented by group memebership for content balancing). See \bold{Details}.}
+ \item{itemBank}{numeric: a suitable matrix of item parameters (possibly augmented by group membership for content balancing). See \bold{Details}.}
  \item{responsesMatrix}{numeric: either \code{NULL} (default) or a suitable matrix of item responses. See \bold{Details}.}
  \item{model}{either \code{NULL} (default) for dichotomous models, or any suitable acronym for polytomous models. Possible values are \code{"GRM"}, \code{"MGRM"}, \code{"PCM"}, \code{"GPCM"}, \code{"RSM"} and \code{"NRM"}. See \bold{Details}.}
+\item{genSeed}{either a vector of numeric values to fix the random seed of each generated pattern, or \code{NULL} (default). Ignored if \code{responsesMatrix} is not \code{NULL}. See \bold{Details}.}
  \item{maxItems}{numeric: the maximal number of items to be administered (default is 50).}
  \item{cbControl}{either a list of accurate format to control for content balancing, or \code{NULL}. See \bold{Details}.}
 \item{rmax}{numeric: the maximum exposure rate (default is 1).}
-\item{Mrmax}{character: the method for controling maximum exposure rate. Possible values are \code{"restricted"}(default) or \code{"IE"}. See \bold{Details}.}
+\item{Mrmax}{character: the method for controlling maximum exposure rate. Possible values are \code{"restricted"}(default) or \code{"IE"}. See \bold{Details}.}
  \item{start}{a list with the options for starting the adaptive test. See \bold{Details}.}
  \item{test}{a list with the options for provisional ability estimation and next item selection. See \bold{Details}.}
  \item{stop}{a list with the options of the stopping rule. See \bold{Details}.}
@@ -42,7 +43,7 @@ simulateRespondents(thetas, itemBank, responsesMatrix = NULL, model = NULL,
  \item{x}{an object of class "cat", typically an output of \code{simulateRespondents} function.}
  \item{type}{character: the type of plot to display. Possible values are \code{"all"} (default), \code{"trueEst"}, \code{"expRate"}, \code{"cumExpRate"},
 \code{"cumNumberItems"}, \code{"expRatePara"}, \code{"condBias"}, \code{"condRMSE"}, \code{"numberItems"}, \code{"sError"} and \code{="condThr"}. See \bold{Details}.}
- \item{deciles}{wheter the deciles number (\code{"deciles"}) or the mean ability level per decile (\code{"theta"}) will be used in the axis of the plots.}
+ \item{deciles}{whether the deciles number (\code{"deciles"}) or the mean ability level per decile (\code{"theta"}) will be used in the axis of the plots.}
  \item{save.plot}{logical: should the plot be saved in an external figure? (default is \code{FALSE}).}
  \item{save.options}{character: a vector of three components. The first component is either the file path or \code{""} (default), the second component is the name of the output file or ,\code{"plot"} (default), and the third component is the file extension, either \code{"pdf"} (default) or \code{"jpeg"}. Ignored if \code{save.plot} is \code{FALSE}. See \bold{Details}.}
  \item{res}{numeric: the resolution for JPEG figures (default value is 300).}
@@ -56,6 +57,7 @@ simulateRespondents(thetas, itemBank, responsesMatrix = NULL, model = NULL,
 \item{itemBank}{the value of the \code{itemBank} argument.}
 \item{responsesMatrix}{the value of the \code{responsesMatrix} argument.}
 \item{model}{the value of the \code{model} argument.}
+\item{genSeed}{the value of the \code{genSeed} argument.}
 \item{maxItems}{the value of the \code{maxItems} argument.}
 \item{cbControl}{the value of the \code{cbControl} argument.}
 \item{rmax}{the value of the \code{rmax} argument.}
@@ -70,7 +72,7 @@ simulateRespondents(thetas, itemBank, responsesMatrix = NULL, model = NULL,
 \item{correlation}{the correlation between the \code{thetas} vector and estimated ability levels.} 
 \item{bias}{the value of the bias between true and estimated ability levels.} 
 \item{RMSE}{the value of the RMSE between true and estimated ability levels.}
-\item{thrOK}{a vector indicating wether the respondents finished the test satisfying (1) or not (0) the stop criteria.}
+\item{thrOK}{a vector indicating whether the respondents finished the test satisfying (1) or not (0) the stop criteria.}
 \item{exposureRates}{a vector with empirical exposure rates of all item in the bank.} 
 \item{testLength}{the mean test length.} 
 \item{overlap}{the item overlap rate.}
@@ -83,16 +85,16 @@ simulateRespondents(thetas, itemBank, responsesMatrix = NULL, model = NULL,
 \item{condthrOK}{a vector with conditional proportion of respondents that finish the test satisfying the stop criteria per decile.}
 \item{ndecile}{a vector with the number of respondents per decile.}
 \item{final.values.df}{a data frame with true ability levels, final ability estimates and standard errors, and test lengths.}
- \item{responses.df}{a data.frame with all items administered, all item responses and all provisional ability estimates. -99 is displayed when the actual test length is smaller than \code{maxItems} for those item positions where no item was administered as the stop criterion was already reached.}
+ \item{responses.df}{a data frame with all items administered, all item responses and all provisional ability estimates. -99 is displayed when the actual test length is smaller than \code{maxItems} for those item positions where no item was administered as the stop criterion was already reached.}
 \item{start.time}{the CPU time at the start of the CAT generation.}
 \item{finish.time}{the CPU time at the end of all CAT generations.}
 }
 
 
 \details{
- The \code{simulateRespondents} function permits to generate several adaptive tests to a set of respondents defined by their ability levels. It makes a repeated call to an adaptive test using an item bank specified by arguments \code{itemBank} \code{model}, and with the same \code{start}, \code{test}, \code{stop} and \code{final} lists. Content balancing can also be controled for each respondent with the \code{cbControl} argument. All arguments of \code{simulateRespondents} are used in exactly the same manner as in \code{\link{randomCAT}} (so refer to this function for further information), except the following four.
+ The \code{simulateRespondents} function permits to generate several adaptive tests to a set of respondents defined by their ability levels. It makes a repeated call to an adaptive test using an item bank specified by arguments \code{itemBank} \code{model}, and with the same \code{start}, \code{test}, \code{stop} and \code{final} lists. Content balancing can also be controlled for each respondent with the \code{cbControl} argument. All arguments of \code{simulateRespondents} are used in exactly the same manner as in \code{\link{randomCAT}} (so refer to this function for further information), except the following four.
 
-First, \code{thetas} is now a vector of ability levels, and a CAT will be generated for each component of \code{thetas}. If \code{responsesMatrix} is \code{NULL}, item responses are generated from the IRT model, item bank parameters, and the ability levels. In this case, \code{thetas} can be considered as real ability levels. Otherwise, \code{responsesMatrix} must be provided as a matrix with as many rows as the length of \code{thetas} and as many columns as the number of items in \code{itemBank}. Each row contains the response pattern of one examinee whose ability level is given by the value of the corresponding component of \code{thetas}. Note that only allowable item responses can be included in \code{responsesMatrix} and missing values are not accepted.
+First, \code{thetas} is now a vector of ability levels, and a CAT will be generated for each component of \code{thetas}. If \code{responsesMatrix} is \code{NULL}, item responses are generated from the IRT model, item bank parameters, and the ability levels. In this case, \code{thetas} can be considered as real ability levels. Otherwise, \code{responsesMatrix} must be provided as a matrix with as many rows as the length of \code{thetas} and as many columns as the number of items in \code{itemBank}. Each row contains the response pattern of one examinee whose ability level is given by the value of the corresponding component of \code{thetas}. Note that only allowable item responses can be included in \code{responsesMatrix} and missing values are not accepted. Fixing the random seed can also be done with the \code{genSeed} argument. The latter must hold as many components as the vector \code{thetas}, otherwise an error message is returned. Each component of \code{genSeed} is used to fix the seed for ach pattern generation.
 
 The option of providing a response matrix through \code{responsesMatrix} is considered for two possible uses: 
 \enumerate{
@@ -103,7 +105,7 @@ Note that if \code{thetas} holds a single value, then the function simply calls 
 
 Second, \code{rmax} fixes the desired maximum exposure rate for all items. Default value is 1, allowing thus items to be administered to all respondents without restrictions.
 
-Third, the \code{Mrmax} argument fixes the method to constraint exposure rates to be smaller than the maximum allowed rate. Possibles methods are the restricted method (\code{"restricted"}; Revuelta and Ponsoda, 1998) and the item-elegibility method (\code{"IE"}; van der Linden and Veldkapm, 2004). A description of both methods can be found in Barrada, Abad and Veldkamp (2009)
+Third, the \code{Mrmax} argument fixes the method to constraint exposure rates to be smaller than the maximum allowed rate. Possible methods are the restricted method (\code{"restricted"}; Revuelta and Ponsoda, 1998) and the item-eligibility method (\code{"IE"}; van der Linden and Veldkamp, 2004). A description of both methods can be found in Barrada, Abad and Veldkamp (2009)
 
 Fourth, if the length of \code{thetas} is greater than 1, \code{save.output} for \code{\link{randomCAT}} is fixed to \code{"FALSE"}. Otherwise, the same file would be overwritten for each new respondent.
 
@@ -134,7 +136,7 @@ These plots can be saved as external PDF or JPEG files, by setting \code{save.pl
  
 Revuelta, J., and Ponsoda, V. (1998). A comparison of item exposure control methods in computerized adaptive testing. \emph{Journal of Educational Measurement, 35}, 311-327. doi: 10.1111/j.1745-3984.1998.tb00541.x
 
-van der Linden, W.J., & Veldkamp, B.P. (2004). Constraining item exposure in computerized adaptive testing with shadow tests. \emph{Journal of Educational & Behavioral Statistics, 29}, 273-291. doi: 10.3102/10769986029003273
+van der Linden, W.J., and Veldkamp, B.P. (2004). Constraining item exposure in computerized adaptive testing with shadow tests. \emph{Journal of Educational & Behavioral Statistics, 29}, 273-291. doi: 10.3102/10769986029003273
 }
 
 
@@ -199,7 +201,7 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  # With content balancing #
 
  # Creation of an appropriate list for content balancing
- # Equal proprotions across subgroups of items
+ # Equal proportions across subgroups of items
  cbList <- list(names = c("Audio1", "Audio2", "Written1", "Written2", "Written3"), 
         props = c(0.1, 0.2, 0.2, 0.2, 0.3))
 

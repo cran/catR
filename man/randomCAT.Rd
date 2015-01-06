@@ -10,16 +10,16 @@
  }
 
 \usage{
-randomCAT(trueTheta, itemBank, model = NULL, responses = NULL, maxItems = 50, 
- 	cbControl = NULL, nAvailable = NULL, start = list(fixItems = NULL, 
- 	seed = NULL, nrItems = 1, theta = 0, D = 1, halfRange = 2, startSelect = "MFI"), 
- 	test = list(method = "BM", priorDist = "norm", priorPar = c(0, 1), 
- 	range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), itemSelect = "MFI", 
- 	infoType = "observed", randomesque = 1, AP = 1), stop = list(rule = "length", 
- 	thr = 20, alpha = 0.05), final = list(method = "BM", priorDist = "norm", 
- 	priorPar = c(0, 1), range = c(-4, 4), D = 1,parInt = c(-4, 4, 33), 
- 	alpha = 0.05), allTheta = FALSE, save.output = FALSE, output = c("path", 
- 	"name", "csv"))
+randomCAT(trueTheta, itemBank, model = NULL, responses = NULL, genSeed = NULL, 
+ 	maxItems = 50, cbControl = NULL, nAvailable = NULL, start = 
+ 	list(fixItems = NULL, seed = NULL, nrItems = 1, theta = 0, D = 1, halfRange = 2, 
+ 	startSelect = "MFI"), test = list(method = "BM", priorDist = "norm", 
+ 	priorPar = c(0, 1), range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), 
+ 	itemSelect = "MFI", infoType = "observed", randomesque = 1, AP = 1), 
+ 	stop = list(rule = "length", thr = 20, alpha = 0.05), final = 
+ 	list(method = "BM", priorDist = "norm", priorPar = c(0, 1), range = c(-4, 4), 
+ 	D = 1,parInt = c(-4, 4, 33), alpha = 0.05), allTheta = FALSE, 
+ 	save.output = FALSE, output = c("path", "name", "csv"))
 \method{print}{cat}(x, ...)
 \method{plot}{cat}(x, ci = FALSE, alpha = 0.05, trueTh = TRUE, classThr = NULL, 
  	save.plot = FALSE, save.options = c("path", "name", "pdf"),...)
@@ -27,9 +27,10 @@ randomCAT(trueTheta, itemBank, model = NULL, responses = NULL, maxItems = 50,
 
 \arguments{
  \item{trueTheta}{numeric: the value of the true ability level.}
- \item{itemBank}{numeric: a suitable matrix of item parameters (possibly augmented by group memebership for content balancing). See \bold{Details}.}
+ \item{itemBank}{numeric: a suitable matrix of item parameters (possibly augmented by group membership for content balancing). See \bold{Details}.}
 \item{model}{either \code{NULL} (default) for dichotomous models, or any suitable acronym for polytomous models. Possible values are \code{"GRM"}, \code{"MGRM"}, \code{"PCM"}, \code{"GPCM"}, \code{"RSM"} and \code{"NRM"}. See \bold{Details}.}
 \item{responses}{either \code{NULL} (default) or a vector of pre-specified item responses with as many components as the rows of \code{itemBank}. See \bold{Details}.}
+\item{genSeed}{either a numeric value to fix the random generation of responses pattern or \code{NULL} (default). Ignored if \code{responses} is not \code{NULL}. See \bold{Details}.}
  \item{maxItems}{numeric: the maximal number of items to be administered (default is 50).}
  \item{cbControl}{either a list of accurate format to control for content balancing, or \code{NULL}. See \bold{Details}.}
  \item{nAvailable}{either a boolean vector indicating which items (denoted by 1's) are available at the start of the test and which (denoted by 0's) are not, or \code{NULL} (default). See \bold{Details}.}
@@ -63,6 +64,7 @@ randomCAT(trueTheta, itemBank, model = NULL, responses = NULL, maxItems = 50,
  \item{thFinal}{the final ability estimate.}
  \item{seFinal}{the standrad error of the final ability estimate.}
  \item{ciFinal}{the confidence interval of the final ability estimate.}
+\item{genSeed}{the value of the \code{genSeed} argument.}
  \item{startFixItems}{the value of the \code{start$fixItems} argument (or its default value if missing).}
  \item{startSeed}{the value of the \code{start$seed} argument (or its default value if missing).}
  \item{startNrItems}{the value of the \code{start$nrItems} argument (or its default value if missing).}
@@ -107,7 +109,9 @@ Dichotomous IRT models are considered whenever \code{model} is set to \code{NULL
 
 Polytomous IRT models are specified by their respective acronym: \code{"GRM"} for Graded Response Model, \code{"MGRM"} for Modified Graded Response Model, \code{"PCM"} for Partical Credit Model, \code{"GPCM"} for Generalized Partial Credit Model, \code{"RSM"} for Rating Scale Model and \code{"NRM"} for Nominal Response Model. The \code{itemBank} still holds one row per item, end the number of columns and their content depends on the model. See \code{\link{genPolyMatrix}} for further information and illustrative examples of suitable polytomous item banks.
 
-By default all item responses will be randomly drawn from parent distribution set by the item bank parameters of the \code{itemBank} matrix (using the \code{\link{genPattern}} function for instance). It is possible, however, to provide a full response pattern of previously recorded responses to each of the item bank, for instance for post-hoc simulations. This is done by providing to the \code{responses} argument a vector of binary entries (without missing values). By default \code{responses} is set to \code{NULL} and item responses will be drawn from the item bank parameters.
+By default all item responses will be randomly drawn from parent distribution set by the item bank parameters of the \code{itemBank} matrix (using the \code{\link{genPattern}} function for instance). Moreover, the random generation of the item responses can be fixed (for e.g., replication purposes) by assigning some numeric value to the \code{genSeed} argument. By default this argument is equal to \code{NULL} so the random seed is not fixed (and two successive runs of \code{randomCAT} will usually lead to different response patterns).
+
+It is possible, however, to provide a full response pattern of previously recorded responses to each of the item bank, for instance for post-hoc simulations. This is done by providing to the \code{responses} argument a vector of binary entries (without missing values). By default \code{responses} is set to \code{NULL} and item responses will be drawn from the item bank parameters.
 
 With the aforementioned item bank structures, content balancing cannot be controled and \code{cbControl} must be set to \code{NULL} (default value). Otherwise this will most often lead to an error. In order to allow for content balancing control:
 \enumerate{

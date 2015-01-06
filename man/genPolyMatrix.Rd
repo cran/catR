@@ -1,20 +1,20 @@
 \name{genPolyMatrix}
 \alias{genPolyMatrix}
 
-\title{Random generation of polytomous IRT matrices of item parameters}
+\title{Item bank generation (polytomous models)}
 
 \description{
- This command randomly generates matrices of item parameters for any kind of polytomous IRT model currently availble in the package.
+This command generates an item bank from prespecified parent distributions for use with polytomous IRT models. Subgroups of items can also be specified for content balancing purposes.
  }
 
 \usage{
-genPolyMatrix(nrItems, nrCat, model = "GRM", seed = 1, same.nrCat = FALSE,
+genPolyMatrix(items = 100, nrCat = 3, model = "GRM", seed = 1, same.nrCat = FALSE,
  	cbControl = NULL)
  }
 
 \arguments{
- \item{nrItems}{integer: the number of items to generate.}
-\item{nrCat}{integer: the (maximum) number of response categories to generate.}
+ \item{items}{integer: the number of items to generate (default is 100).}
+\item{nrCat}{integer: the (maximum) number of response categories to generate (default is 3).}
 \item{model}{character: the type of polytomous IRT model. Possible values are \code{"GRM"} (default), \code{"MGRM"}, \code{"PCM"}, \code{"GPCM"} and \code{"NRM"}. See \bold{Details}.}
 \item{seed}{numeric: the random seed for item parameter generation (default is 1).}
 \item{same.nrCat}{logical: should all items have the same number of response categories? (default is \code{FALSE}. Ignored if \code{model} is either \code{"MGRM"} or \code{"RSM"}. See \bold{Details}.}
@@ -22,7 +22,7 @@ genPolyMatrix(nrItems, nrCat, model = "GRM", seed = 1, same.nrCat = FALSE,
 }
 
 \value{
- A matrix with \code{nrItems} rows and as many columns as required for the considered IRT model: 
+ A matrix with \code{items} rows and as many columns as required for the considered IRT model: 
 \itemize{
 \item{\eqn{\max_j \,g_j+1} columns, holding parameters \eqn{(\alpha_j, \beta_{j1}, ..., \beta_{j,g_j})} if \code{model} is \code{"GRM"};}
 \item{\eqn{g+2} columns, holding parameters \eqn{(\alpha_j, b_j, c_1, ..., c_g)} if \code{model} is \code{"MGRM"};}
