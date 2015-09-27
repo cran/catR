@@ -97,7 +97,6 @@ Note that the provisional response pattern \code{x} can also be set to \code{NUL
 } 
 
 \examples{
-\dontrun{
 
 ## Dichotomous models ##
 
@@ -163,6 +162,5 @@ it.given <- m.GRM[c(15, 20),]
 
  # With Fisher information
  MEI(m.PCM, 1, x, 0, it.given, model = "PCM", infoType = "Fisher") 
-}
  }
 

@@ -80,7 +80,6 @@ Note that the provisional response pattern \code{x} can also be set to \code{NUL
 } 
 
 \examples{
-\dontrun{
 
 ## Dichotomous models ##
 
@@ -138,5 +137,4 @@ Note that the provisional response pattern \code{x} can also be set to \code{NUL
 
  # With prior standard deviation 2
  EPV(m.PCM, 1, x, 0, it.given, model = "PCM", priorPar = c(0, 2))
- }
  }

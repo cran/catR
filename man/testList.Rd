@@ -4,8 +4,7 @@
 \title{Testing the format of the input lists}
 
 \description{
- This command tests whether format of the input lists for the random generation of adaptive tests is convenient,
- and returns a warning message otherwise.
+ This command tests whether format of the input lists for the random generation of adaptive tests is convenient, and returns a warning message otherwise.
  }
 
 \usage{
@@ -34,8 +33,7 @@ testList(list, type = "start")
  \code{"stop"} with the options setting the stopping rule; and \code{"final"} with the options for final ability estimation. 
  See the help file of \code{\link{randomCAT}} for further details about the different lists, their allowed arguments and their contents.
 
- The function returns an \code{"ok"} message if the arguments of \code{list} match the requirement of the
- corresponding \code{type}. Otherwise, a message is returned with information about list - type mismatch. This will be the case
+ The function returns an \code{"ok"} message if the arguments of \code{list} match the requirement of the corresponding \code{type}. Otherwise, a message is returned with information about list - type mismatch. This will be the case
  if:
  \itemize{
  \item{\code{list} is not a list, or has no argument names,}
@@ -61,7 +59,6 @@ testList(list, type = "start")
 } 
 
 \examples{
-\dontrun{
 
  # Creation and test of a 'start' list
  start <- list(nrItems = 3, theta = 0, halfRange = 2)
@@ -82,5 +79,4 @@ testList(list, type = "start")
 # Creation and test of a 'final' list (with mistake)
  final <- list(method = "MAP")
  testList(final, type = "final")
- }
  }

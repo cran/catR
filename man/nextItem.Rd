@@ -22,9 +22,9 @@ nextItem(itemBank, model = NULL, theta = 0, out = NULL, x = NULL,
  \item{theta}{numeric: the current value of the ability estimate (default is 0). Ignored if \code{criterion} is either \code{"MLWI"}, \code{"MPWI"} or \code{"random"}. See \bold{Details}.}
  \item{out}{either a vector of integer values specifying the items previously administered, or \code{NULL} (default).} 
  \item{x}{numeric: the provisional response pattern, with the same length as \code{out} (and \code{NULL} by default). Ignored if \code{criterion} is either \code{"MFI"}, \code{"bOtp"}, \code{"thOpt"}, \code{"proportional"}, \code{"progressive"} or \code{"random"}. See \bold{Details}.}
- \item{criterion}{character: the method for next item selection. Possible values are \code{"MFI"} (default), \code{"bOpt"}, \code{"thOpt"}, \code{"MLWI"}, \code{"MPWI"}, \code{"MEI"}, \code{"MEPV"}, \code{"progressive"}, \code{"proportional"}, \code{"KL"}, \code{"KLP"} and \code{random}. See \bold{Details}.}
+ \item{criterion}{character: the method for next item selection. Possible values are \code{"MFI"} (default), \code{"bOpt"}, \code{"thOpt"}, \code{"MLWI"}, \code{"MPWI"}, \code{"MEI"}, \code{"MEPV"}, \code{"progressive"}, \code{"proportional"}, \code{"KL"}, \code{"KLP"}, \code{"GDI"}, \code{"GDIP"} and \code{random}. See \bold{Details}.}
  \item{method}{character: the ability estimator. Possible values are \code{"BM"} (default), \code{"ML"} and \code{"WL"}. Ignored if \code{method} is not \code{"MEI"}. See \bold{Details}.}
- \item{priorDist}{character: the prior ability distribution. Possible values are \code{"norm"} (default) for the normal distribution, and \code{"unif"} for the uniform distribution. Ignored if \code{type} is neither \code{"MPWI"} nor \code{"KLP"}.}
+ \item{priorDist}{character: the prior ability distribution. Possible values are \code{"norm"} (default) for the normal distribution, and \code{"unif"} for the uniform distribution. Ignored if \code{type} is not \code{"MPWI"}, \code{"KLP"} or \code{"GDIP"}.}
  \item{priorPar}{numeric: a vector of two components with the prior parameters. If \code{priorDist} is \code{"norm"}, then \code{priorPar} contains the mean and the standard deviation of the normal distribution. If \code{priorDist} is \code{"unif"}, then \code{priorPar} contains the bounds of the uniform distribution. The default values are 0 and 1 respectively. Ignored if \code{type} is neither \code{"MPWI"} nor \code{"KLP"}.}
  \item{D}{numeric: the metric constant. Default is \code{D=1} (for logistic metric); \code{D=1.702} yields approximately the normal metric (Haley, 1952).} 
  \item{range}{numeric: vector of two components specifying the range wherein the ability estimate must be looked for (default is \code{c(-4,4)}).}
@@ -54,8 +54,10 @@ nextItem(itemBank, model = NULL, theta = 0, out = NULL, x = NULL,
 \item{the minimum expected posterior variance (MEPV),}
 \item{the Kullback-Leibler (KL) divergency criterion (Chang and Ying, 1996),}
 \item{the posterior Kullback-Leibler (KLP) criterion (Chang and Ying, 1996),}
-\item{the \emph{progressive} method (Barrada, Olea, Ponsoda, and Abad, 2008, 2010; Revuelta and Ponsoda, 1998),}
-\item{the \emph{proportional} method (Barrada, Olea, Ponsoda, and Abad, 2008, 2010; Segall, 2004),}
+\item{the progressive method (Barrada, Olea, Ponsoda, and Abad, 2008, 2010; Revuelta and Ponsoda, 1998),}
+\item{the proportional method (Barrada, Olea, Ponsoda, and Abad, 2008, 2010; Segall, 2004),}
+\item{the global-discrimination index (GDI) (Kaplan, de la Torre, and Barrada, 2015),}
+\item{the posterior global-discrimination index (GDIP) (Kaplan, de la Torre, and Barrada, 2015),}
 \item{or by selecting the next item completely \emph{randomly} among the available items.}
 }
  
@@ -75,18 +77,19 @@ The KL and KLP criteria select the item with maximum Kullback-Leibler (KL) infor
 
 With the progressive method the item selected is the one that maximizes the sum of two elements, a random part and a part determined by the Fisher information. At the beginning of the test, the importance of the random element is maximum; as the test advances, the information increases its relevance in the item selection. The speed for the transition from purely random selection to purely information based selection is determined by the acceleration parameter, set by the argument \code{AP}, where higher values imply a greater importance of the random element during the test. This method is not available with \code{rule="classification"}.
 
-Finally, in the proportional method the items are randomly selected with probabilities of selection determined by their Fisher information  raised to a given power. This power is equal to 0 at the beginning of the test and increases as the test advances. This implies that the test starts with completely random selection and approaches the MFI at the end of the test. Here, the acceleration parameter, set by the argument \code{AP}, plays a similar role than with the progressive method. This method is not available with \code{rule="classification"}.
+In the proportional method the items are randomly selected with probabilities of selection determined by their Fisher information  raised to a given power. This power is equal to 0 at the beginning of the test and increases as the test advances. This implies that the test starts with completely random selection and approaches the MFI at the end of the test. Here, the acceleration parameter, set by the argument \code{AP}, plays a similar role than with the progressive method. This method is not available with \code{rule="classification"}.
 
- The method for next item selection is specified by the \code{criterion} argument. Possible values are \code{"MFI"} for maximum Fisher information criterion, \code{"bOpt"} for bOpt's method, \code{"thOpt"} for the eponym method, \code{"MLWI"} for maximum likelihood weighted information criterion, \code{"MPWI"} for the maximum posterior weighted information criterion, \code{"MEI"} for the maximum expected information criterion, \code{"MEPV"} for minimum expected posterior variance, \code{"KL"} for Kullback-Leibler information method, \code{"KLP"} for posterior Kullback-Leibler information method, \code{"progressive"} for the progressive method, \code{"proportional"} for the proportional method, and \code{"random"} for random selection. Other values return an error message. 
+The GDI and GDIP criteria select the item with maximum global-discrimination index (GDI),  or the posterior GDI  in case of GDIP criterion. This index is computed by the \code{\link{GDI}} function.
 
- For all methods but MLWI, MPWI and random criteria, the provisional ability estimate must be supplied throught the \code{theta} argument (by default, it is equal to zero).
- For MLWI, MPWI and random criteria, this argument is ignored. 
+The method for next item selection is specified by the \code{criterion} argument. Possible values are \code{"MFI"} for maximum Fisher information criterion, \code{"bOpt"} for bOpt's method, \code{"thOpt"} for the eponym method, \code{"MLWI"} for maximum likelihood weighted information criterion, \code{"MPWI"} for the maximum posterior weighted information criterion, \code{"MEI"} for the maximum expected information criterion, \code{"MEPV"} for minimum expected posterior variance, \code{"KL"} for Kullback-Leibler information method, \code{"KLP"} for posterior Kullback-Leibler information method, \code{"progressive"} for the progressive method, \code{"proportional"} for the proportional method, \code{"GDI"} for global-discrimination index method, \code{"KLP"} for posterior global-discrimination index method, and \code{"random"} for random selection. Other values return an error message. 
+
+For all methods but MLWI, MPWI, GDI, GDIP and random criteria, the provisional ability estimate must be supplied throught the \code{theta} argument (by default, it is equal to zero). For MLWI, MPWI, G and random criteria, this argument is ignored. 
 
  The available items are those that are not specified in the \code{out} argument. By default, \code{out} is \code{NULL}, which means that all items are available. Typically \code{out} contains the item numbers that have been already administered. Alternatively one can reduce the number of available items by specifying the argument \code{nAvailable} appropriately. The latter is a vector of 0 and 1 values, where 1 corresponds to an available item and 0 to a non-availbale item. It works similarly as for the function \code{\link{startItems}}. If both \code{out} and \code{nAvailable} are supplied, then all items from both vectors are discarded for next item selection.
 
- For MEI, MEPV, MLWI, MPWI, KL and KLP methods, the provisional response pattern must be provided through the \code{x} argument. It must be of 0/1 entries and of the same length as the \code{out} argument. It is ignored with MFI, bOpt, thOpt, progressive, proportional and random criteria. Moreover, the range of integration (or posterior variance computation) is specified by the triplet \code{parInt}, where the first, second, and third value correspond to the arguments \code{lower}, \code{upper} and \code{nqp} of e.g., the \code{\link{MWI}} function, respectively. 
+For MEI, MEPV, MLWI, MPWI, KL, KLP, GDI, and GDIP methods, the provisional response pattern must be provided through the \code{x} argument. It must be of 0/1 entries and of the same length as the \code{out} argument. It is ignored with MFI, bOpt, thOpt, progressive, proportional and random criteria. Moreover, the range of integration (or posterior variance computation) is specified by the triplet \code{parInt}, where the first, second, and third value correspond to the arguments \code{lower}, \code{upper} and \code{nqp} of e.g., the \code{\link{MWI}} function, respectively. 
 
- The \code{method}, \code{priorDist}, \code{priorPar}, \code{D}, \code{range} and \code{intPar} arguments fix the choice of the ability estimator for MEI method. See the \code{\link{thetaEst}} function for further details. Note that \code{priorDist} and \code{priorPar} are also used to select the prior distribution with the MPWI and KLP methods. Finally, \code{parInt} is also used for numerical integration, among others for MLWI, MPWI, MEPV, KL and KLP methods. 
+The \code{method}, \code{priorDist}, \code{priorPar}, \code{D}, \code{range} and \code{intPar} arguments fix the choice of the ability estimator for MEI method. See the \code{\link{thetaEst}} function for further details. Note that \code{priorDist} and \code{priorPar} are also used to select the prior distribution with the MPWI and KLP methods. Finally, \code{parInt} is also used for numerical integration, among others for MLWI, MPWI, MEPV, KL and KLP methods. 
 
  Finally, for MEI criterion, the type of information function must be supplied through the \code{infoType} argument. It is equal to \code{"observed"} by default, which refers to the observed information function, and the other possible value is \code{"Fisher"} for Fisher information function. See the \code{\link{MEI}} funtion for further details. This argument is ignored if \code{criterion} is not \code{"MEI"}.
 
@@ -153,6 +156,8 @@ Chang, H.-H., and Ying, Z. (1996). A global information approach to computerized
 
  Haley, D.C. (1952). \emph{Estimation of the dosage mortality relationship when the dose is subject to error}. Technical report no 15. Palo Alto, CA: Applied Mathematics and Statistics Laboratory, Stanford University. 
 
+ Kaplan, M., de la Torre, J., and Barrada, J. R. (2015). New item selection methods for cognitive diagnosis computerized adaptive testing. \emph{Applied Psychological Measurement, 39}, 167-188. doi: 10.1177/0146621614554650
+
  Kingsbury, G. G., and Zara, A. R. (1989). Procedures for selecting items for computerized adaptive tests. \emph{Applied Measurement in Education, 2}, 359-375. doi: 10.1207/s15324818ame0204_6
 
 Leroux, A. J., Lopez, M., Hembry, I. and Dodd, B. G. (2013). A comparison of exposure control procedures in CATs using the 3PL model. \emph{Educational and Psychological Measurement, 73}, 857-874. doi: 10.1177/0013164413486802
@@ -194,7 +199,6 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
 } 
 
 \examples{
-\dontrun{
 
 ## Dichotomous models ##
 
@@ -222,6 +226,7 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  # or 63)
  nextItem(bank, theta = 0, randomesque = 3)
 
+
  ## bOpt method
 
  # Selecting the next item, current ability estimate is 0
@@ -230,6 +235,7 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  # Selecting the next item, current ability estimate is 0 and item 24 is removed
  nextItem(bank, theta = 0, out = 24, criterion = "bOpt")
 
+
  ## thOpt method
 
  # Selecting the next item, current ability estimate is 0
@@ -237,6 +243,7 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
 
  # Selecting the next item, current ability estimate is 0 and item 76 is removed
  nextItem(bank, theta = 0, out = 76, criterion = "thOpt") # item 70 is selected
+
 
  ## MLWI and MPWI methods
 
@@ -248,6 +255,7 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  # Selecting the next item, current response pattern is (0,1) and item 19 is removed
  nextItem(bank, x = c(0, 1), out = c(63, 19), criterion = "MLWI")
  nextItem(bank, x = c(0, 1), out = c(63, 19), criterion = "MPWI")
+
 
  ## MEI method
 
@@ -261,12 +269,16 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  nextItem(bank, x = 0, out = 63, theta = th, criterion = "MEI", infoType = "Fisher") 
    # item 10 is selected
 
+\dontrun{
+
  ## MEPV method
 
  # Selecting the next item, current response pattern is 0 and item 63 was administered 
  # first
  # Ability estimation by WL method
  nextItem(bank, x = 0, out = 63, theta = th, criterion = "MEPV") # item 19 is selected
+
+}
 
  ## KL and KLP methods
 
@@ -275,6 +287,15 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  # Ability estimation by WL method
  nextItem(bank, x = 0, out = 63, theta = th, criterion = "KL") # item 19 is selected
  nextItem(bank, x = 0, out = 63, theta = th, criterion = "KLP") # item 44 is selected
+
+
+## GDI and GDIP methods
+
+ # Selecting the next item, current response pattern is 0 and item 63 was administered 
+ # first
+ nextItem(bank, x = 0, out = 63, criterion = "GDI") # item 49 is selected
+ nextItem(bank, x = 0, out = 63, criterion = "GDIP") # item 44 is selected
+
 
  ## Progressive method
 
@@ -285,6 +306,7 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  nextItem(bank, out = 63, theta = 0, criterion = "progressive")
   # result can be different!
 
+
  ## Proportional method
 
  # Selecting the next item, current ability estimate is 0 and item 63 was administered 
@@ -293,6 +315,7 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  nextItem(bank, out = 63, theta = 0, criterion = "proportional") 
  nextItem(bank, out = 63, theta = 0, criterion = "proportional")
   # result can be different!
+
 
  ## Random method
 
@@ -365,5 +388,4 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  bank<-breakBank(m.PCM)
  nextItem(bank$itemPar, model = "PCM", theta = 0, criterion = "MFI", out = 15, 
           cbControl = cbList, cbGroup = bank$cbGroup)
- }
  }

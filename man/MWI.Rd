@@ -87,7 +87,6 @@ Note that the provisional response pattern \code{x} can also be set to \code{NUL
 } 
 
 \examples{
-\dontrun{
 
 ## Dichotomous models ##
 
@@ -165,5 +164,4 @@ Note that the provisional response pattern \code{x} can also be set to \code{NUL
  # MPWI for item 1, uniform prior distribution on the range [-2,2]
  MWI(m.PCM, 1, x, it.given, model = "PCM", type = "MPWI", priorDist = "unif", 
  priorPar = c(-2, 2))
- }
  }

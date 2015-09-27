@@ -9,7 +9,8 @@
 
 \usage{
 semTheta(thEst, it, x = NULL, model = NULL, D = 1, method = "BM", 
-  	priorDist = "norm", priorPar = c(0, 1), parInt = c(-4, 4, 33))
+  	priorDist = "norm", priorPar = c(0, 1), parInt = c(-4, 4, 33),
+ 	 constantPatt = NULL)
  }
 
 \arguments{
@@ -25,6 +26,7 @@ semTheta(thEst, it, x = NULL, model = NULL, D = 1, method = "BM",
  nor \code{"EAP"}, or if \code{priorDist="Jeffreys"}. See \bold{Details}.}
  \item{parInt}{numeric: vector of three components, holding respectively the values of the arguments \code{lower}, \code{upper} and \code{nqp} of the
  \code{\link{eapEst}} command. Default vector is (-4, 4, 33). Ignored if \code{method} is not \code{"EAP"}.}
+\item{constantPatt}{character: the method to estimate ability in case of constant pattern (i.e. only correct or only incorrect responses). Can be eitehr \code{NULL} (default), \code{"BM"}, \code{"EAP"}, \code{"WL"}, \code{"fixed4"}, \code{"fixed7"} or \code{"var"}. \emph{Currently only implemented for dichotomous IRT models}. See \bold{Details}.}
 }
 
 \value{
@@ -48,11 +50,13 @@ Four ability estimators are available: the maximum likelihood (ML) estimator (Lo
  The \code{eapPar} argument sets the range and the number of quadrature points for numerical integration in the EAP process. By default, it takes the vector value (-4, 4, 33), that is, 33 quadrature points on the range [-4; 4] (or, by steps of 0.25). See \code{\link{eapEst}} for further details. 
 
  Note that in the current version, the ability estimate must be specified through the \code{thEst} argument. Moreover, the response pattern must be specified through the \code{x} argument to compute the standard error of the EAP estimate. For the other estimation methods, this is not  necessary, and \code{x} is set to \code{NULL} by default for this purpose.
+
+Note also that if specific stepsize adjustment was required for constant patterns with the \code{constantPatt} argument (that is, if it takes value \code{"fixed4"}, \code{"fixed7"} or \code{"var"}) then an infinite value \code{Inf} is being returned. 
  }
 
 
 \note{
-Currently the standard error of the WL estimator is computed with the same formula as that of the ML estimator (up to the plug-in of the WL estimate instead of the ML estimate). Version of \code{catR} prior to 3.0 hold a different formula mentioned in Magis and raiche (2012), but it appeared that this formula can lead to negative values of the square of the standard error. So the usual suggestion by Warm (1989) of using the same asymptotic formulas for ML and WL is currently in application until a corrected formula can be provided.
+Currently the standard error of the WL estimator is computed with the same formula as that of the ML estimator (up to the plug-in of the WL estimate instead of the ML estimate). Version of \code{catR} prior to 3.0 holds a different formula mentioned in Magis and raiche (2012), but it appeared that this formula can lead to negative values of the square of the standard error. So the usual suggestion by Warm (1989) of using the same asymptotic formulas for ML and WL is currently in application until a corrected formula can be provided.
 }
 
 \references{
@@ -62,6 +66,8 @@ Currently the standard error of the WL estimator is computed with the same formu
  Birnbaum, A. (1969). Statistical theory for logistic mental test models with a prior distribution of ability. \emph{Journal of Mathematical Psychology, 6}, 258-276. doi: 10.1016/0022-2496(69)90005-4
 
  Bock, R. D., and Mislevy, R. J. (1982). Adaptive EAP estimation of ability in a microcomputer environment. \emph{Applied Psychological Measurement, 6}, 431-444. doi: 10.1177/014662168200600405
+
+Dodd, B. G., De Ayala, R. J., and Koch, W. R. (1995) . Computerized adaptive testing with polytomous items. \emph{Applied Psychological Measurement, 19}, 5-22. doi: 10.1177/014662169501900103
 
  Haley, D.C. (1952). \emph{Estimation of the dosage mortality relationship when the dose is subject to error}. 
  Technical report no 15. Palo Alto, CA: Applied Mathematics and Statistics Laboratory, Stanford University. 
@@ -88,7 +94,6 @@ Currently the standard error of the WL estimator is computed with the same formu
 } 
 
 \examples{
-\dontrun{
 
 ## Dichotomous models ##
 
@@ -124,6 +129,8 @@ Currently the standard error of the WL estimator is computed with the same formu
  th <- thetaEst(tcals, x, method = "EAP")
  c(th, semTheta(th, tcals, x, method = "EAP"))
 
+\dontrun{
+
  # EAP estimation, uniform prior distribution upon range [-2,2]
  th <- thetaEst(tcals, x, method = "EAP", priorDist = "unif",
                 priorPar = c(-2, 2))
@@ -138,6 +145,10 @@ Currently the standard error of the WL estimator is computed with the same formu
  th <- thetaEst(tcals, x, method = "WL")
  c(th, semTheta(th, tcals, method = "WL"))
 
+ # 'fixed4' adjustment for constant pattern
+ th <- thetaEst(tcals, rep(0, nrow(tcals)), constantPatt = "fixed4")
+ c(th, semTheta(th, tcals, constantPatt = "fixed4"))
+}
 
 ## Polytomous models ##
 
@@ -170,6 +181,8 @@ Currently the standard error of the WL estimator is computed with the same formu
  # EAP estimation, standard normal prior distribution
  th <- thetaEst(m.GRM, x, model = "GRM", method = "EAP")
  c(th, semTheta(th, m.GRM, x, model = "GRM", method = "EAP") )
+
+\dontrun{
 
  # EAP estimation, uniform prior distribution upon range [-2,2]
  th <- thetaEst(m.GRM, x, model = "GRM", method = "EAP", priorDist = "unif", 
@@ -229,5 +242,5 @@ Currently the standard error of the WL estimator is computed with the same formu
  # WL estimation
  th <- thetaEst(m.PCM, x, model = "PCM", method = "WL")
  c(th, semTheta(th, m.PCM, model = "PCM", method = "WL"))
- }
+}
  }

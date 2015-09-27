@@ -15,11 +15,12 @@ randomCAT(trueTheta, itemBank, model = NULL, responses = NULL, genSeed = NULL,
  	list(fixItems = NULL, seed = NULL, nrItems = 1, theta = 0, D = 1, halfRange = 2, 
  	startSelect = "MFI"), test = list(method = "BM", priorDist = "norm", 
  	priorPar = c(0, 1), range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), 
- 	itemSelect = "MFI", infoType = "observed", randomesque = 1, AP = 1), 
- 	stop = list(rule = "length", thr = 20, alpha = 0.05), final = 
- 	list(method = "BM", priorDist = "norm", priorPar = c(0, 1), range = c(-4, 4), 
- 	D = 1,parInt = c(-4, 4, 33), alpha = 0.05), allTheta = FALSE, 
- 	save.output = FALSE, output = c("path", "name", "csv"))
+ 	itemSelect = "MFI", infoType = "observed", randomesque = 1, AP = 1, 
+ 	constantPatt = NULL), 	stop = list(rule = "length", thr = 20, 
+ 	alpha = 0.05), final = list(method = "BM", priorDist = "norm", 
+ 	priorPar = c(0, 1), range = c(-4, 4), 	D = 1,parInt = c(-4, 4, 33), 
+ 	alpha = 0.05), allTheta = FALSE, save.output = FALSE, output = c("path", 
+ 	"name", "csv"))
 \method{print}{cat}(x, ...)
 \method{plot}{cat}(x, ci = FALSE, alpha = 0.05, trueTh = TRUE, classThr = NULL, 
  	save.plot = FALSE, save.options = c("path", "name", "pdf"),...)
@@ -82,6 +83,7 @@ randomCAT(trueTheta, itemBank, model = NULL, responses = NULL, genSeed = NULL,
  \item{infoType}{the value of the \code{test$infoType} argument (or its default value if missing). Not returned if \code{model} is not \code{NULL}.}
  \item{randomesque}{the value of the \code{test$randomesque} argument (or its default value if missing).}
  \item{AP}{the value of the \code{test$AP} argument (or its default value if missing).}
+\item{constantPattern}{the value of the \code{test$constantPatt} argument (or its default value if missing).}
  \item{cbControl}{the value of the \code{cbControl} argument (or its default value if missing).}
  \item{cbGroup}{the value of the \code{itemBank$cbGroup} element of the item bank \code{itemBank} (for dichotomous IRT models), or the \code{cbGroup} element returned by the \code{\link{breakBank}} function (for polytomous IRT models), or \code{NULL}.}
  \item{stopRule}{the value of the \code{stop$rule} argument (or its default value if missing).}
@@ -236,7 +238,6 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
 } 
 
 \examples{
-\dontrun{
 
 ## Dichotomous models ##
 
@@ -261,6 +262,8 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
 
  # CAT test
  res <- randomCAT(0, bank, start = start, test = test, stop = stop, final = final)
+
+\dontrun{
 
  # Creation of a (purely artificial) response pattern for post-hoc simulation
  resp <- rbinom(nrow(bank), 1, 0.5)
@@ -297,6 +300,7 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
 
  # CAT test with 'start', 'test', 'stop4' and 'final2' lists and content balancing 
  # using 'cbList' ('tcals' must be used now for content balancing)
+ stop4 <- list(rule = "length",thr = 10)
  res5 <- randomCAT(0, tcals, start = start, test = test, stop = stop4, final = final2, 
       cbControl = cbList)
 
@@ -324,6 +328,7 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  # With mistake
  plot(res, ci = 0.05)
  plot(res, classThr = TRUE)
+}
 
 
 ## Polytomous models ##
@@ -343,6 +348,8 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  	final = final)
  res
 
+\dontrun{
+
  # Creation of an appropriate list for content balancing
  # Equal proprotions across subgroups of items
  cbList <- list(names = c("Group1", "Group2", "Group3", "Group4"), props = rep(1,4))
@@ -361,4 +368,4 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  	final = final, cbControl = cbList, allTheta = TRUE)
  res
  }
- }
+}

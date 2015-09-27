@@ -6,7 +6,54 @@
 
 
 ------------------------------------
-- Changes in catR 3.3 (2014-11-26) -
+- Changes in catR 3.5 (2015-09-27) -
+------------------------------------
+
+MAJOR UPDATES
+
+  o  The function 'thetaEst' holds three new arguments,
+     'constantPatt', 'current.th' and 'bRange'. These 
+     arguments are required to make apropriate theta 
+     estimation adjustments when the response pattern is 
+     constant. Currently implemented only for dichotomous
+     IRT models.
+
+  o  The function 'semTheta' holds now the newly added
+     argument 'constantPatt'and the functions 'testList',
+     'randomCAT' and 'simulateRespondents' were updated
+     accordingly.
+
+  o  Two new item selection methods were added: the 
+     Global Discrimination Index (GDI) and the posterior
+     global discrimination index (GDIP). Corresponding
+     fucntion 'GDI' was added and functions 'nextItem' 
+     and 'testList' were updated.
+
+ 
+
+MINOR UPDATES
+
+  o  A bug was fixed about random seed in the 'start' list.
+     When 'seed' was provided to the 'start' list it
+     affected the whole CAT, leading to identical patterns
+     (i.e. erasing the 'genSeed' argument). This has been
+     fixed (i.e. the 'seed' argument of 'start' list only
+     determines the selection of the first items).
+
+  o  The function 'genDichoMatrix()' allows now the $props
+     elements of the 'cbControl' argument not to sum to one.
+     This argument is internally normalized to one.
+
+  o  Most of the examples in the help files are now exempt 
+     from the \dontrun{} section. Only time-consuming
+     examples are still not run.
+
+  o  Some typos were fixed.
+
+
+
+------------------------------------
+- Changes in catR 3.4 (2014-11-26) -
 ------------------------------------
 
 MAJOR UPDATES

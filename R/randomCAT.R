@@ -1,21 +1,22 @@
-randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL, genSeed = NULL,
-    maxItems = 50, cbControl = NULL, nAvailable = NULL, start = list(fixItems = NULL, 
-        seed = NULL, nrItems = 1, theta = 0, D = 1, halfRange = 2, 
-        startSelect = "MFI"), test = list(method = "BM", priorDist = "norm", 
-        priorPar = c(0, 1), range = c(-4, 4), D = 1, parInt = c(-4, 
-            4, 33), itemSelect = "MFI", infoType = "observed", 
-        randomesque = 1, AP = 1), stop = list(rule = "length", 
-        thr = 20, alpha = 0.05), final = list(method = "BM", 
+randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL, 
+    genSeed = NULL, maxItems = 50, cbControl = NULL, nAvailable = NULL, 
+    start = list(fixItems = NULL, seed = NULL, nrItems = 1, theta = 0, 
+        D = 1, halfRange = 2, startSelect = "MFI"), test = list(method = "BM", 
+        priorDist = "norm", priorPar = c(0, 1), range = c(-4, 
+            4), D = 1, parInt = c(-4, 4, 33), itemSelect = "MFI", 
+        infoType = "observed", randomesque = 1, AP = 1, constantPatt = NULL), 
+    stop = list(rule = "length", thr = 20, alpha = 0.05), final = list(method = "BM", 
         priorDist = "norm", priorPar = c(0, 1), range = c(-4, 
             4), D = 1, parInt = c(-4, 4, 33), alpha = 0.05), 
     allTheta = FALSE, save.output = FALSE, output = c("path", 
         "name", "csv")) 
 {
-if (missing(trueTheta)){
-if (is.null(responses)) stop("'trueTheta' was not provided!",call.=FALSE)
-trueTheta<-NA
-}
-else trueTheta<-trueTheta
+    if (missing(trueTheta)) {
+        if (is.null(responses)) 
+            stop("'trueTheta' was not provided!", call. = FALSE)
+        trueTheta <- NA
+    }
+    else trueTheta <- trueTheta
     if (!testList(start, type = "start")$test) 
         stop(testList(start, type = "start")$message, call. = FALSE)
     if (!testList(test, type = "test")$test) 
@@ -24,6 +25,9 @@ else trueTheta<-trueTheta
         stop(testList(stop, type = "stop")$message, call. = FALSE)
     if (!testList(final, type = "final")$test) 
         stop(testList(final, type = "final")$message, call. = FALSE)
+    if (!is.null(model) & !is.null(test$constantPatt)) 
+        stop("Treating constant patterns with specific adjustment not yet implemented with polytomous models", 
+            call. = FALSE)
     if (!is.null(responses)) 
         assigned.responses <- TRUE
     else assigned.responses <- FALSE
@@ -63,7 +67,7 @@ else trueTheta<-trueTheta
         testList <- list(method = NULL, priorDist = NULL, priorPar = c(0, 
             1), range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), 
             itemSelect = "MFI", infoType = "observed", randomesque = 1, 
-            AP = 1, rule = stop$rule, thr = stop$thr)
+            AP = 1, rule = stop$rule, thr = stop$thr, constantPatt = NULL)
         testList$method <- ifelse(is.null(test$method), "BM", 
             test$method)
         testList$priorDist <- ifelse(is.null(test$priorDist), 
@@ -89,6 +93,8 @@ else trueTheta<-trueTheta
         testList$randomesque <- ifelse(is.null(test$randomesque), 
             1, test$randomesque)
         testList$AP <- ifelse(is.null(test$AP), 1, test$AP)
+        if (!is.null(test$constantPatt)) 
+            testList$constantPatt <- test$constantPatt
         test <- testList
         finalList <- list(method = NULL, priorDist = NULL, priorPar = c(0, 
             1), range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), 
@@ -114,9 +120,9 @@ else trueTheta<-trueTheta
         finalList$alpha <- ifelse(is.null(final$alpha), 0.05, 
             final$alpha)
         final <- finalList
-       if (stop$rule == "length") maxLength <- min(c(maxItems, stop$thr,nrow(itemBank)))
-        else maxLength <- min(maxItems,nrow(itemBank))
-
+        if (stop$rule == "length") 
+            maxLength <- min(c(maxItems, stop$thr, nrow(itemBank)))
+        else maxLength <- min(maxItems, nrow(itemBank))
         if (stop$rule == "classification" & (test$itemSelect == 
             "progressive" | test$itemSelect == "proportional")) 
             stop("'classification' rule cannot be considered with neither 'progressive' nor 'proportional' item selection rules!", 
@@ -139,15 +145,17 @@ else trueTheta<-trueTheta
             TH <- thetaEst(PAR, PATTERN, model = model, D = test$D, 
                 method = test$method, priorDist = test$priorDist, 
                 priorPar = test$priorPar, range = test$range, 
-                parInt = test$parInt)
+                parInt = test$parInt, current.th = start$theta, 
+                constantPatt = test$constantPatt, bRange=range(itemBank[,2]))
         else TH <- start$theta
         if (!is.null(ITEMS)) 
             SETH <- semTheta(TH, PAR, x = PATTERN, model = model, 
                 D = test$D, method = test$method, priorDist = test$priorDist, 
-                priorPar = test$priorPar, parInt = test$parInt)
+                priorPar = test$priorPar, parInt = test$parInt, 
+                constantPatt = test$constantPatt)
         else SETH <- NA
         thProv <- TH
-         enter.cat <- TRUE
+        enter.cat <- TRUE
         if (!is.na(SETH)) {
             if (length(PATTERN) >= maxLength | (stop$rule == 
                 "precision" & SETH <= stop$thr) | (stop$rule == 
@@ -171,21 +179,22 @@ else trueTheta<-trueTheta
             RES <- list(trueTheta = trueTheta, model = model, 
                 maxItems = maxItems, testItems = ITEMS, itemPar = PAR, 
                 pattern = PATTERN, thetaProv = TH, seProv = SETH, 
-                thFinal = finalEst, seFinal = seFinal, ciFinal = confIntFinal, genSeed = genSeed,
-                startFixItems = start$fixItems, startSeed = start$seed, 
-                startNrItems = start$nrItems, startTheta = start$theta, 
-                startD = start$D, startHalfRange = start$halfRange, 
+                thFinal = finalEst, seFinal = seFinal, ciFinal = confIntFinal, 
+                genSeed = genSeed, startFixItems = start$fixItems, 
+                startSeed = start$seed, startNrItems = start$nrItems, 
+                startTheta = start$theta, startD = start$D, startHalfRange = start$halfRange, 
                 startThStart = pr0$thStart, startSelect = start$startSelect, 
                 provMethod = test$method, provDist = test$priorDist, 
                 provPar = test$priorPar, provRange = test$range, 
                 provD = test$D, itemSelect = test$itemSelect, 
                 infoType = test$infoType, randomesque = test$randomesque, 
-                AP = test$AP, cbControl = cbControl, cbGroup = cbGroup, 
-                stopRule = stop$rule, stopThr = stop$thr, stopAlpha = stop$alpha, 
-                endWarning = endWarning, finalMethod = final$method, 
-                finalDist = final$priorDist, finalPar = final$priorPar, 
-                finalRange = final$range, finalD = final$D, finalAlpha = final$alpha, 
-                save.output = save.output, output = output, assigned.responses = assigned.responses)
+                AP = test$AP, constantPattern = test$constantPatt, 
+                cbControl = cbControl, cbGroup = cbGroup, stopRule = stop$rule, 
+                stopThr = stop$thr, stopAlpha = stop$alpha, endWarning = endWarning, 
+                finalMethod = final$method, finalDist = final$priorDist, 
+                finalPar = final$priorPar, finalRange = final$range, 
+                finalD = final$D, finalAlpha = final$alpha, save.output = save.output, 
+                output = output, assigned.responses = assigned.responses)
             class(RES) <- "cat"
         }
         else {
@@ -208,12 +217,13 @@ else trueTheta<-trueTheta
                 thProv <- thetaEst(PAR, PATTERN, model = model, 
                   D = test$D, method = test$method, priorDist = test$priorDist, 
                   priorPar = test$priorPar, range = test$range, 
-                  parInt = test$parInt)
+                  parInt = test$parInt, current.th = TH[length(TH)], 
+                  constantPatt = test$constantPatt, bRange=range(itemBank[,2]))
                 TH <- c(TH, thProv)
                 seProv <- semTheta(thProv, PAR, x = PATTERN, 
                   model = model, D = test$D, method = test$method, 
                   priorDist = test$priorDist, priorPar = test$priorPar, 
-                  parInt = test$parInt)
+                  parInt = test$parInt, constantPatt = test$constantPatt)
                 SETH <- c(SETH, seProv)
                 if ((length(ITEMS) >= maxLength) | (stop$rule == 
                   "precision" & seProv <= stop$thr) | (stop$rule == 
@@ -242,21 +252,22 @@ else trueTheta<-trueTheta
             RES <- list(trueTheta = trueTheta, model = model, 
                 maxItems = maxItems, testItems = ITEMS, itemPar = PAR, 
                 pattern = PATTERN, thetaProv = TH, seProv = SETH, 
-                thFinal = finalEst, seFinal = seFinal, ciFinal = confIntFinal, genSeed = genSeed,
-                startFixItems = start$fixItems, startSeed = start$seed, 
-                startNrItems = start$nrItems, startTheta = start$theta, 
-                startD = start$D, startHalfRange = start$halfRange, 
+                thFinal = finalEst, seFinal = seFinal, ciFinal = confIntFinal, 
+                genSeed = genSeed, startFixItems = start$fixItems, 
+                startSeed = start$seed, startNrItems = start$nrItems, 
+                startTheta = start$theta, startD = start$D, startHalfRange = start$halfRange, 
                 startThStart = pr0$thStart, startSelect = start$startSelect, 
                 provMethod = test$method, provDist = test$priorDist, 
                 provPar = test$priorPar, provRange = test$range, 
                 provD = test$D, itemSelect = test$itemSelect, 
                 infoType = test$infoType, randomesque = test$randomesque, 
-                AP = test$AP, cbControl = cbControl, cbGroup = cbGroup, 
-                stopRule = stop$rule, stopThr = stop$thr, stopAlpha = stop$alpha, 
-                endWarning = endWarning, finalMethod = final$method, 
-                finalDist = final$priorDist, finalPar = final$priorPar, 
-                finalRange = final$range, finalD = final$D, finalAlpha = final$alpha, 
-                save.output = save.output, output = output, assigned.responses = assigned.responses)
+                AP = test$AP, constantPattern = test$constantPatt, 
+                cbControl = cbControl, cbGroup = cbGroup, stopRule = stop$rule, 
+                stopThr = stop$thr, stopAlpha = stop$alpha, endWarning = endWarning, 
+                finalMethod = final$method, finalDist = final$priorDist, 
+                finalPar = final$priorPar, finalRange = final$range, 
+                finalD = final$D, finalAlpha = final$alpha, save.output = save.output, 
+                output = output, assigned.responses = assigned.responses)
             class(RES) <- "cat"
         }
         if (allTheta & start$nrItems > 0) {
@@ -268,11 +279,13 @@ else trueTheta<-trueTheta
                   prov.th[k] <- thetaEst(prov.par, RES$pattern[1:k], 
                     model = model, D = test$D, method = test$method, 
                     priorDist = test$priorDist, priorPar = test$priorPar, 
-                    range = test$range, parInt = test$parInt)
+                    range = test$range, parInt = test$parInt, 
+                    constantPatt = test$constantPatt, bRange=range(itemBank[,2]))
                   prov.se[k] <- semTheta(prov.th[k], prov.par, 
                     RES$pattern[1:k], model = model, D = test$D, 
                     method = test$method, priorDist = test$priorDist, 
-                    priorPar = test$priorPar, parInt = test$parInt)
+                    priorPar = test$priorPar, parInt = test$parInt, 
+                    constantPatt = test$constantPatt)
                 }
                 RES$thetaProv <- c(prov.th, RES$thetaProv)
                 RES$seProv <- c(prov.se, RES$seProv)
@@ -292,6 +305,7 @@ else trueTheta<-trueTheta
     }
     return(resToReturn)
 }
+
 
 
 
@@ -323,7 +337,6 @@ else cat("  with random seed equal to", x$genSeed, "\n", "\n")
     if (x$model=="GPCM") mod<-"Generalized Partial Credit Model"
     if (x$model=="RSM") mod<-"Rating Scale Model"
     if (x$model=="NRM") mod<-"Nominal Response Model"
-
   }
   cat(" Item bank calibrated under", mod,"\n","\n")
   if (!is.na(x$trueTheta)) cat(" True ability level:", round(x$trueTheta, 2), "\n", "\n")
@@ -424,7 +437,8 @@ else{
                     MEI = "Maximum expected information (MEI)", MEPV = "Minimum Expected Posterior Variance (MEPV)", 
                     random = "Random selection", progressive = "Progressive method",
                     proportional = "Proportional method", thOpt = "Optimal theta selection",
-                    KL = "Kullback-Leibler (KL) information", KLP = "Posterior Kullback-Leibler (KLP) information")
+                    KL = "Kullback-Leibler (KL) information", KLP = "Posterior Kullback-Leibler (KLP) information",
+                    GDI="Global discrimination index (GDI)", GDIP = "Posterior global discrimination index (GDIP)")
   cat("   Next item selection method:", itemSel, "\n")
 if (x$itemSelect=="proportional" | x$itemSelect=="progressive")
   cat("     Acceleration parameter for", x$itemSelect,"method:", x$AP, "\n")
@@ -454,6 +468,11 @@ if (x$itemSelect=="KLP" | x$itemSelect=="MPWI"){
         "\n")
   if (x$provMethod == "ML") 
     cat("   Provisional range of ability values:", ra1, "\n")
+if (!is.null(x$model) | is.null(x$constantPattern)) adj<-"none"
+else adj<-switch(x$constantPattern,fixed4="fixed .4 stepsize",
+fixed7="fixed .7 stepsize",
+var="variable stepsize")
+ cat("   Ability estimation adjustment for constant pattern:", adj, "\n")
   cat("\n")
   cat(" Stopping rule:", "\n")
   met4 <- switch(x$stopRule, length = "length of test", precision = "precision of ability estimate", 
@@ -581,7 +600,6 @@ else fileName <- paste(wd, x$output[2], ".txt", sep = "")
     cat("\n","Output was captured and saved into file", "\n", 
         " '", fileName, "'", "\n", "on ",as.character(Sys.Date()),"\n","\n", sep = "")
   }
-  
 }
 
 
@@ -677,4 +695,6 @@ else vectRange <- res$thetaProv
     }
     else cat("The plot was not captured!", "\n", sep = "")
 }
+
+
 

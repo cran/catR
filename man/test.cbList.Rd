@@ -53,7 +53,6 @@ test.cbList(list, cbGroup)
 } 
 
 \examples{
-\dontrun{
 
 ## Dichotomous models ##
 
@@ -121,5 +120,4 @@ test.cbList(list, cbGroup)
  # Testing 'cbList' and 'cbList2'
  test.cbList(cbList, bank2$cbGroup)
  test.cbList(cbList2, bank2$cbGroup)
- }
  }

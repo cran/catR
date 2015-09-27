@@ -4,7 +4,7 @@ simulateRespondents<-function (thetas, itemBank, responsesMatrix = NULL, model =
         halfRange = 2, startSelect = "MFI"), test = list(method = "BM", 
         priorDist = "norm", priorPar = c(0, 1), range = c(-4, 
             4), D = 1, parInt = c(-4, 4, 33), itemSelect = "MFI", 
-        infoType = "observed", randomesque = 1, AP = 1), stop = list(rule = "length", 
+        infoType = "observed", randomesque = 1, AP = 1, constantPatt =NULL), stop = list(rule = "length", 
         thr = 20, alpha = 0.05), final = list(method = "BM", 
         priorDist = "norm", priorPar = c(0, 1), range = c(-4, 
             4), D = 1, parInt = c(-4, 4, 33), alpha = 0.05), 

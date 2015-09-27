@@ -62,7 +62,6 @@ Warm, T.A. (1989). Weighted likelihood estimation of ability in item response mo
 } 
 
 \examples{
-\dontrun{
 
 ## Dichotomous models ##
  
@@ -93,5 +92,4 @@ Warm, T.A. (1989). Weighted likelihood estimation of ability in item response mo
 
  # Computation of J function and derivatives for ability level 1
  Ji(1, m.PCM, model = "PCM")
- }
  }

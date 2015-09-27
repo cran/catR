@@ -55,7 +55,6 @@ Polytomous IRT models are specified by their respective acronym: \code{"GRM"} fo
 } 
 
 \examples{
-\dontrun{
 
 ## Dichotomous models ##
  
@@ -86,5 +85,4 @@ Polytomous IRT models are specified by their respective acronym: \code{"GRM"} fo
 
  # Computation of item information and derivatives for ability level 1
  Ii(1, m.PCM, model = "PCM")
- }
  }

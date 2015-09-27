@@ -75,7 +75,7 @@ The following parent distributions are considered to generate the different item
 
 The output is a matrix with one row per item and as many columns as required to hold all item parameters. In case of missing response categories, the corresponding parameters are replaced by \code{NA} values. Column names refer to the corresponding model parameters. See \bold{Details} for further explanations and \bold{Examples} for illustrative examples.
 
-Finally, the output matrix can contain an additional vector with the names of the subgroups to be used for content balancing purposes. To do so, the argument \code{cbControl} (with default value is \code{NULL}) must contain a list of two elements: (a) the \code{names} element with the names of the subgroups, and (b) the \code{props} elements with proportions of items per subgroup (of the same length of \code{names} element, with only posiitve numbers but not necessarily summing to one). The \code{cbControl} argument is similar to the one in \code{\link{nextItem}} and \code{\link{randomCAT}} functions to control for content balancing. The output matrix contains then an additional column, with the names of the subgroups randomly allocated to each item by using random multinomial draws with the probabilities given by \code{cbControl$props}. 
+Finally, the output matrix can contain an additional vector with the names of the subgroups to be used for content balancing purposes. To do so, the argument \code{cbControl} (with default value is \code{NULL}) must contain a list of two elements: (a) the \code{names} element with the names of the subgroups, and (b) the \code{props} elements with proportions of items per subgroup (of the same length of \code{names} element, with only positive numbers but not necessarily summing to one). The \code{cbControl} argument is similar to the one in \code{\link{nextItem}} and \code{\link{randomCAT}} functions to control for content balancing. The output matrix contains then an additional column, with the names of the subgroups randomly allocated to each item by using random multinomial draws with the probabilities given by \code{cbControl$props}. 
  }
 
 
@@ -110,7 +110,6 @@ Samejima, F. (1969). \emph{Estimation of latent ability using a response pattern
 } 
 
 \examples{
-\dontrun{
 
 # All generated item banks have 10 items and at most four response categories
 
@@ -158,5 +157,4 @@ Samejima, F. (1969). \emph{Estimation of latent ability using a response pattern
 
  # NRM with 100 items
  genPolyMatrix(100, 4, model = "NRM", cbControl = cbList)
-}
  }

@@ -75,7 +75,6 @@ Polytomous IRT models are specified by their respective acronym: \code{"GRM"} fo
 } 
 
 \examples{
-\dontrun{
 
 ## Dichotomous models ##
 
@@ -118,5 +117,4 @@ Polytomous IRT models are specified by their respective acronym: \code{"GRM"} fo
  # Observed information functions (various th values)
  OIi(th = 0, m.PCM, x, model = "PCM")
  OIi(th = 1, m.PCM, x, model = "PCM")
- }
  }

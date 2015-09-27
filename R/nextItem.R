@@ -8,7 +8,7 @@ nextItem<-function (itemBank, model = NULL, theta = 0, out = NULL, x = NULL,
     crit <- switch(criterion, MFI = "MFI", bOpt = "bOpt", MLWI = "MLWI", 
         MPWI = "MPWI", MEI = "MEI", MEPV = "MEPV", random = "random", 
         progressive = "progressive", proportional = "proportional", 
-        KL = "KL", KLP = "KLP", thOpt = "thOpt")
+        KL = "KL", KLP = "KLP", thOpt = "thOpt", GDI = "GDI", GDIP = "GDIP")
     if (is.null(crit)) 
         stop("invalid 'criterion' name", call. = FALSE)
     if (!is.null(model)) {
@@ -98,11 +98,9 @@ nextItem<-function (itemBank, model = NULL, theta = 0, out = NULL, x = NULL,
                   upper = parInt[2], nqp = parInt[3], priorDist = priorDist, 
                   priorPar = priorPar, D = D)
         }
-        likVal <- sort(likInfo, decreasing = TRUE)[min(c(randomesque, 
-            sum(ITEMS)))]
+        likVal <- sort(likInfo, decreasing = TRUE)[min(c(randomesque,sum(ITEMS)))]
         keep <- (1:length(ITEMS))[likInfo >= likVal]
-        select <- ifelse(length(keep) == 1, keep, sample(keep, 
-            1))
+        select <- ifelse(length(keep) == 1, keep, sample(keep,1))
         res <- list(item = select, par = itemBank[select, ], 
             info = likInfo[select], criterion = criterion, randomesque = randomesque)
     }
@@ -116,19 +114,20 @@ nextItem<-function (itemBank, model = NULL, theta = 0, out = NULL, x = NULL,
         L <- function(th, r, param) prod(Pi(th, param, D = D)$Pi^r * 
             (1 - Pi(th, param, D = D)$Pi)^(1 - r))
         X <- seq(from = parInt[1], to = parInt[2], length = parInt[3])
-        LL <- function(th, r, param, model, D = 1) {
-if (dim(param)[1]==0) res<-1
-else{
-            prob <- Pi(th, param, model = model, D = D)$Pi
-            res <- 1
-            for (i in 1:length(r)) res <- res * prob[i, r[i] + 
-                1]
-}
-            return(res)
+        LL <- function(th, r, param, model, D = D) {
+          if (dim(param)[1]==0)
+            res<-1
+          else {
+              prob <- Pi(th, param, model = model, D = D)$Pi
+              res <- 1
+              for (i in 1:length(r)) res <- res * prob[i, r[i] + 1]
+              }
+          return(res)
         }
         if (is.null(model)) 
             LF <- sapply(X, L, x, par)
-        else LF <- sapply(X, LL, x, par, model = model, D = D)
+        else
+            LF <- sapply(X, LL, x, par, model = model, D = D)
         for (i in 1:nrow(itemBank)) {
             if (ITEMS[i] == 1) 
                 klvalue[i] <- KL(itemBank, i, x, it.given = par, 
@@ -145,6 +144,47 @@ else{
         res <- list(item = select, par = itemBank[select, ], 
             info = klvalue[select], criterion = criterion, randomesque = randomesque)
     }
+    
+    
+    
+    if (crit == "GDI" | crit == "GDIP") {
+      if (length(out) == 1) 
+        par <- rbind(itemBank[out, ])
+      else par <- itemBank[out, ]
+      ITEMS <- rep(1, nrow(itemBank))
+      ITEMS[OUT] <- 0
+      gdivalue <- rep(0, nrow(itemBank))
+      L <- function(th, r, param) prod(Pi(th, param, D = D)$Pi^r * (1 - Pi(th, param, D = D)$Pi)^(1 - r))
+      X <- seq(from = parInt[1], to = parInt[2], length = parInt[3])
+      LLL <- function(th, r, param, model, D = 1) {
+        if (dim(param)[1]==0)
+          res<-1
+        else {
+          prob <- Pi(th, param, model = model, D = D)$Pi
+          res <- 1
+          for (i in 1:length(r)) res <- res * prob[i, r[i] + 1]
+        }
+        return(res)
+      }
+      if (is.null(model)) 
+        LF <- sapply(X, L, x, par)
+      else
+        LF <- sapply(X, LLL, x, par, model = model, D = D)
+      for (i in 1:nrow(itemBank)) {
+        if (ITEMS[i] == 1) 
+          gdivalue[i] <- GDI(itemBank, i, x, it.given = par, 
+                           model = model, type = criterion, 
+                           lower = parInt[1], upper = parInt[2], nqp = parInt[3], 
+                           priorDist = priorDist, priorPar = priorPar, 
+                           lik = LF, X = X, D = D)
+      }
+      gdiVal <- sort(gdivalue, decreasing = TRUE)[min(c(randomesque,sum(ITEMS)))]
+      keep <- (1:length(ITEMS))[gdivalue >= gdiVal]
+      select <- ifelse(length(keep) == 1, keep, sample(keep,1))
+      res <- list(item = select, par = itemBank[select, ], 
+                  info = gdivalue[select], criterion = criterion, randomesque = randomesque)
+    }
+
     if (crit == "MEI") {
         items <- rep(1, nrow(itemBank))
         items[OUT] <- 0

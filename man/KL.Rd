@@ -97,7 +97,6 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
 } 
 
 \examples{
-\dontrun{
 
 ## Dichotomous models ##
 
@@ -209,5 +208,4 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  # KL for item 1, uniform prior distribution on the range [-2,2]
  KL(m.PCM, 1, x, it.given, theta = theta, model = "PCM", type = "KLP", 
     priorDist = "unif", priorPar = c(-2, 2))
- }
  }

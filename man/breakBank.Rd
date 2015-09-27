@@ -44,7 +44,6 @@ Note that there is no check that the input is correct (that is, the group member
 } 
 
 \examples{
-\dontrun{
 
 ## Dichotomous models ##
 
@@ -66,5 +65,4 @@ Note that there is no check that the input is correct (that is, the group member
 
  # Breaking 'mat'
  breakBank(mat)
- }
  }

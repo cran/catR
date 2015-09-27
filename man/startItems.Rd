@@ -108,7 +108,6 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
 } 
 
 \examples{
-\dontrun{
 
 ## Dichotomous models ##
 
@@ -146,9 +145,10 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  avail <- c(rep(1, 10), rep(0, nrow(bank)-10))
  startItems(bank, nrItems = 5, theta = 2, halfRange = 3, nAvailable = avail) 
 
+\dontrun{
  # Selecting too many items among available ones
  startItems(bank, nrItems = 11, theta = 2, halfRange = 3, nAvailable = avail) 
-
+}
 
 ## Polytomous models ##
 
@@ -166,19 +166,24 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  # and half range is 2
  startItems(m.GRM, model = "GRM", nrItems = 3, theta = 1, halfRange = 2) 
 
+\dontrun{
+
  # Idem but with 'bOpt' criterion
  startItems(m.GRM, model = "GRM", nrItems = 3, theta = 1, halfRange = 2, 
             startSelect = "bOpt")
- 
+ }
+
  # Selecting only the first 10 items as available items
  avail <- c(rep(1, 10), rep(0, nrow(m.GRM)-10))
  startItems(m.GRM, model = "GRM", nrItems = 5, theta = 2, halfRange = 3, 
             nAvailable = avail) 
 
+\dontrun{
+
  # Selecting too many items among available ones
  startItems(m.GRM, model = "GRM", nrItems = 11, theta = 2, halfRange = 3, 
             nAvailable = avail) 
-
+}
 
  # Generation of an item bank under PCM with 20 items and 4 categories
  m.PCM <- genPolyMatrix(20, 4, "PCM", same.nrCat = TRUE)
@@ -194,14 +199,19 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  # and half range is 2
  startItems(m.PCM, model = "PCM", nrItems = 3, theta = 1, halfRange = 2) 
 
+\dontrun{
+
  # Idem but with 'bOpt' criterion
  startItems(m.PCM, model = "PCM", nrItems = 3, theta = 1, halfRange = 2, 
             startSelect = "bOpt")
- 
+ }
+
  # Selecting only the first 10 items as available items
  avail <- c(rep(1, 10), rep(0, nrow(m.PCM)-10))
  startItems(m.PCM, model = "PCM", nrItems = 5, theta = 2, halfRange = 3, 
             nAvailable = avail) 
+
+\dontrun{
 
  # Selecting too many items among available ones
  startItems(m.PCM, model = "PCM", nrItems = 11, theta = 2, halfRange = 3, 

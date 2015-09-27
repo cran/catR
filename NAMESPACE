@@ -5,6 +5,13 @@
 exportPattern(".")
 
 # Import all packages listed as Imports or Depends
-import(
-  
-)
+importFrom("grDevices", "dev.off", "jpeg", "pdf")
+importFrom("graphics", "abline", "lines", "par", "plot")
+importFrom("stats", "cor", "dnorm", "dunif", "lm", "qnorm", "quantile", "rbeta", "rbinom", "rlnorm", "rmultinom", "rnorm", "rpois", "runif", "uniroot")
+importFrom("utils", "capture.output", "write.table")
+
+S3method("print","cat")
+S3method("print","catResult")
+S3method("plot","cat")
+S3method("plot","catResult")
+

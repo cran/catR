@@ -18,9 +18,8 @@ else d<-rep(1,items)
 if (!is.null(cbControl)){
 props<-cbControl$props
 names<-cbControl$names
-if (sum(props)!=1 & sum(props)!=items) stop("'props' element of 'cbControl' should either sum to 1 or to 'items'!",call.=FALSE)
-if (sum(props)==1) nr<-round(items*props)
-else nr<-props
+props<-props/sum(props)
+nr<-round(items*props)
 f<-function(items,nr){
 res<-matrix(0,length(nr),items)
 for (i in 1:items){

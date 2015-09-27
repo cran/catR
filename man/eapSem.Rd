@@ -75,7 +75,6 @@ Bock, R. D., and Mislevy, R. J. (1982). Adaptive EAP estimation of ability in a 
 } 
 
 \examples{
-\dontrun{
 
 ## Dichotomous models ##
 
@@ -145,5 +144,4 @@ Bock, R. D., and Mislevy, R. J. (1982). Adaptive EAP estimation of ability in a 
  # EAP estimation, Jeffreys' prior distribution  
  th <- eapEst(m.PCM, x, model = "PCM", priorDist = "Jeffreys")
  c(th, eapSem(th, m.PCM, x, model = "PCM", priorDist = "Jeffreys"))
-}
  }

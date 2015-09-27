@@ -15,8 +15,8 @@ simulateRespondents(thetas, itemBank, responsesMatrix = NULL, model = NULL,
   	halfRange = 2, startSelect = "MFI"),test = list(method = "BM", 
   	priorDist = "norm", priorPar = c(0,1), range = c(-4, 4), D = 1, 
   	parInt = c(-4, 4, 33), itemSelect = "MFI", infoType = "observed", 
-  	randomesque = 1, AP = 1), stop = list(rule = "length", thr = 20, 
-  	alpha = 0.05), final = list(method = "BM", priorDist = "norm", 
+  	randomesque = 1, AP = 1, constantPatt = NULL), stop = list(rule = "length", 
+  	thr = 20, alpha = 0.05), final = list(method = "BM", priorDist = "norm", 
   	priorPar = c(0,1), range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), 
   	alpha = 0.05), save.output = FALSE, output = c("", "catR", "csv"))
 \method{print}{catResult}(x, ...)
@@ -160,7 +160,6 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
 } 
 
 \examples{
-\dontrun{
 
 ## Dichotomous IRT model ##
 
@@ -194,9 +193,12 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  res2 <- simulateRespondents(thetas, bank, start = start, test = test, stop = stop, 
   final = final, rmax = 0.8)
 
+\dontrun{
+
  # Output saved
  res3 <- simulateRespondents(thetas, bank, start = start, test = test, stop = stop, 
   final = final, save.output = TRUE, output = c("C:/Program Files/", "out", "txt"))
+}
 
  # With content balancing #
 
@@ -215,10 +217,12 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  plot(res)
  plot(res, deciles = "deciles")
 
+\dontrun{
+
  # Saving the plot in the "fig" pdf file in "c:/Program Files/"
  plot(res, save.plot = TRUE, save.options = c("c:/Program Files/", "fig", "pdf"))
+}
 
  # Plotting the 'trueEst' type of plot
  plot(res, type = "trueEst")
- }
  }

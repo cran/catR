@@ -73,7 +73,6 @@ Polytomous IRT models are specified by their respective acronym: \code{"GRM"} fo
 } 
 
 \examples{
-\dontrun{
 
 ## Dichotomous models ##
 
@@ -137,5 +136,4 @@ Polytomous IRT models are specified by their respective acronym: \code{"GRM"} fo
 
  # EAP estimation, Jeffreys' prior distribution  
  eapEst(m.PCM, x, model = "PCM", priorDist = "Jeffreys")
- }
  }

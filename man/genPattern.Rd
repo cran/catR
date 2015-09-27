@@ -59,7 +59,6 @@ The random pattern generation can be fixed by setting \code{seed} to some numeri
 } 
 
 \examples{
-\dontrun{
 
 ## Dichotomous models ##
  
@@ -96,5 +95,4 @@ The random pattern generation can be fixed by setting \code{seed} to some numeri
 
  # Generation of a single response for the first item only
  genPattern(0, m.PCM[1,], model = "PCM")
- }
  }

@@ -26,6 +26,7 @@ else {
         else items<-sample(which(nAvailable==1),nrItems)
           par <- itemBank[items, ]
           thStart <- startSelect<-NA
+        set.seed(NULL)
     }
     else {
       if (nrItems == 1) thStart <- theta

@@ -48,7 +48,7 @@ Possible distributions are:
 Inattention parameters \eqn{d_i} are fixed to 1 if \code{model} is not \code{"4PL"}; pseudo-guessing parameters \eqn{c_i} are fixed to zero if \code{model} is either \code{"1PL"} or \code{"2PL"}; and discrimination parameters \eqn{a_i} are
  fixed to 1 if \code{model="1PL"}. The random generation of item parameters can be controlled by the \code{seed} argument.
 
-If required, the distribution of the items across subgroups with specified names can be performed. To do so, the \code{cbControl} argument must be supplied with a list of two arguments: (a) the first argument is called \code{$names} and contains the different names of the subgroups of items; (b) the second argument is called \code{$props} and contains a vector of numeric values, either the proportions of items in each subgroup (thus summing to 1) or the numbers of items to belong to each group (thus summing to \code{items}). 
+If required, the distribution of the items across subgroups with specified names can be performed. To do so, the \code{cbControl} argument must be supplied with a list of two arguments: (a) the first argument is called \code{$names} and contains the different names of the subgroups of items; (b) the second argument is called \code{$props} and contains a vector of numeric values, of the same length of \code{names} element, with only positive numbers but not necessarily summing to one. For instance, if \code{props} is set as \code{c(1, 2, 2)} and \code{items} to \code{100}, then the three subgroups will hold respectively 20, 40 and 40 items.
 
 Several constraints apply to the arguments of the \code{cbControl} list. First, both arguments of \code{cbControl} must be of the same length. Second, as already explained, \code{cbControl$props} must either sum to 1 (in case of proportions) or to \code{items} (in case of integer values). Finally, if proportions are provided to \code{cbControl$props}, one can ensure that when multiplied by \code{items} they return integer values (so that they can sum up to \code{items}).
 
@@ -81,7 +81,6 @@ The current version of \code{genItemBank} is only designed for dichotomous IRT m
 } 
 
 \examples{
-\dontrun{
 
  # Item bank generation with 500 items
  genDichoMatrix(items = 500)
@@ -99,8 +98,8 @@ The current version of \code{genItemBank} is only designed for dichotomous IRT m
         props = c(0.2,0.4,0.3,0.1))
  genDichoMatrix(items = 100, cbControl = cbList)
 
- # Wrong definition of proportions
+ # With proportions that do not sum to one
  cbList <- list(names = c("Group1", "Group2", "Group3", "Group4"), props=c(2, 4, 3, 1))
  genDichoMatrix(items = 100, cbControl = cbList)
- }
+
  }

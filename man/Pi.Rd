@@ -77,7 +77,6 @@ Samejima, F. (1969). \emph{Estimation of latent ability using a response pattern
 } 
 
 \examples{
-\dontrun{
 
 ## Dichotomous models ##
 
@@ -107,5 +106,4 @@ Samejima, F. (1969). \emph{Estimation of latent ability using a response pattern
 
  # Computation of probabilities and derivatives for ability level 1
  Pi(1, m.PCM, model = "PCM")
- }
  }

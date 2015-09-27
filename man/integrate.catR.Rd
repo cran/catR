@@ -41,13 +41,13 @@ Maechler, M. et al. (2012). \emph{sfsmisc: Utilities from Seminar fuer Statistik
 } 
 
 \examples{
-\dontrun{
 
  # Loading the 'tcals' parameters 
  x <- seq(from = -4, to = 4, length = 33)
  y <- exp(x)
  integrate.catR(x, y) # 54.86381
 
+\dontrun{
  # Comparison with integrate.xy
  require(sfsmisc)
  integrate.xy(x, y, use.spline = FALSE) # 54.86381
