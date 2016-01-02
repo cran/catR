@@ -145,6 +145,7 @@ Magis, D. (2015). A note on weighted likelihood and Jeffreys modal estimation of
  thetaEst(tcals, x0, constantPatt = "var") 
  thetaEst(tcals, x1, constantPatt = "var") 
 
+\dontrun{
 
 ## Polytomous models ##
 
@@ -217,3 +218,4 @@ Magis, D. (2015). A note on weighted likelihood and Jeffreys modal estimation of
  # WL estimation
  thetaEst(m.PCM, x, model = "PCM", method = "WL")
  }
+}

@@ -328,7 +328,6 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  # With mistake
  plot(res, ci = 0.05)
  plot(res, classThr = TRUE)
-}
 
 
 ## Polytomous models ##
@@ -348,7 +347,6 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  	final = final)
  res
 
-\dontrun{
 
  # Creation of an appropriate list for content balancing
  # Equal proprotions across subgroups of items

@@ -101,6 +101,7 @@ Bock, R. D., and Mislevy, R. J. (1982). Adaptive EAP estimation of ability in a 
  th <- eapEst(tcals, x, priorDist = "Jeffreys")
  c(th, eapSem(th, tcals, x, priorDist = "Jeffreys"))
 
+\dontrun{
 
 ## Polytomous models ##
 
@@ -145,3 +146,4 @@ Bock, R. D., and Mislevy, R. J. (1982). Adaptive EAP estimation of ability in a 
  th <- eapEst(m.PCM, x, model = "PCM", priorDist = "Jeffreys")
  c(th, eapSem(th, m.PCM, x, model = "PCM", priorDist = "Jeffreys"))
  }
+}

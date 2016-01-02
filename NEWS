@@ -6,6 +6,24 @@
 
 
 ------------------------------------
+- Changes in catR 3.6 (2016-01-02) -
+------------------------------------
+
+MAJOR UPDATES
+
+  o  The function 'Pi' was updated to correct a major
+     bug with some polytomous IRT models. More precisely,
+     the 'Pi' function held an error for models 'PCM',
+     'GPCM' and 'RSM', leading to incorrect values for 
+     the derivatioves of response probabilities. This 
+     was subsequently impacting the values of functions
+     'I', 'Pi', 'thetaEst' and 'semTheta', among others.
+     Many thanks to Norman Verhelest (Eurometrics; 
+     (norman.verhelst@gmail.com) for noticing this issue.
+
+
+
+------------------------------------
 - Changes in catR 3.5 (2015-09-27) -
 ------------------------------------
 

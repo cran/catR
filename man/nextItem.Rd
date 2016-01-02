@@ -256,6 +256,7 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  nextItem(bank, x = c(0, 1), out = c(63, 19), criterion = "MLWI")
  nextItem(bank, x = c(0, 1), out = c(63, 19), criterion = "MPWI")
 
+\dontrun{
 
  ## MEI method
 
@@ -269,7 +270,6 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  nextItem(bank, x = 0, out = 63, theta = th, criterion = "MEI", infoType = "Fisher") 
    # item 10 is selected
 
-\dontrun{
 
  ## MEPV method
 
@@ -278,7 +278,6 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  # Ability estimation by WL method
  nextItem(bank, x = 0, out = 63, theta = th, criterion = "MEPV") # item 19 is selected
 
-}
 
  ## KL and KLP methods
 
@@ -389,3 +388,4 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  nextItem(bank$itemPar, model = "PCM", theta = 0, criterion = "MFI", out = 15, 
           cbControl = cbList, cbGroup = bank$cbGroup)
  }
+}
