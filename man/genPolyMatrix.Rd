@@ -35,7 +35,7 @@ If \code{cbControl} is not \code{NULL}, the output matrix contains an additional
  }
  
 \details{
-The \code{genPolyMatrix} permits to quickly generate a polytomous item bank in suitable format for further use in e.g. computing item response propbabilities with the \code{\link{Pi}}. 
+The \code{genPolyMatrix} permits to quickly generate a polytomous item bank in suitable format for further use in e.g. computing item response probabilities with the \code{\link{Pi}}. 
 
 The six polytomous IRT models that are supported are: 
 \enumerate{

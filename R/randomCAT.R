@@ -1,7 +1,7 @@
 randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL, 
     genSeed = NULL, maxItems = 50, cbControl = NULL, nAvailable = NULL, 
     start = list(fixItems = NULL, seed = NULL, nrItems = 1, theta = 0, 
-        D = 1, halfRange = 2, startSelect = "MFI"), test = list(method = "BM", 
+        D = 1, randomesque = 1, startSelect = "MFI"), test = list(method = "BM", 
         priorDist = "norm", priorPar = c(0, 1), range = c(-4, 
             4), D = 1, parInt = c(-4, 4, 33), itemSelect = "MFI", 
         infoType = "observed", randomesque = 1, AP = 1, constantPatt = NULL), 
@@ -44,14 +44,14 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
     }
     internalCAT <- function() {
         startList <- list(fixItems = start$fixItems, seed = start$seed, 
-            nrItems = NULL, theta = NULL, D = 1, halfRange = 2, 
+            nrItems = NULL, theta = start$theta, D = 1, randomesque = 1, 
             startSelect = "MFI")
         startList$nrItems <- ifelse(is.null(start$nrItems), 1, 
             start$nrItems)
-        startList$theta <- ifelse(is.null(start$theta), 0, start$theta)
+        if(is.null(start$theta)) startList$theta <- 0
         startList$D <- ifelse(is.null(start$D), 1, start$D)
-        startList$halfRange <- ifelse(is.null(start$halfRange), 
-            2, start$halfRange)
+        startList$randomesque <- ifelse(is.null(start$randomesque ), 
+            1, start$randomesque )
         startList$startSelect <- ifelse(is.null(start$startSelect), 
             "MFI", start$startSelect)
         start <- startList
@@ -129,7 +129,7 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
                 call. = FALSE)
         pr0 <- startItems(itemBank = itemBank, model = model, 
             fixItems = start$fixItems, seed = start$seed, nrItems = start$nrItems, 
-            theta = start$theta, D = start$D, halfRange = start$halfRange, 
+            theta = start$theta, D = start$D, randomesque = start$randomesque, 
             startSelect = start$startSelect, nAvailable = nAvailable)
         ITEMS <- pr0$items
         PAR <- rbind(pr0$par)
@@ -146,7 +146,8 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
                 method = test$method, priorDist = test$priorDist, 
                 priorPar = test$priorPar, range = test$range, 
                 parInt = test$parInt, current.th = start$theta, 
-                constantPatt = test$constantPatt, bRange=range(itemBank[,2]))
+                constantPatt = test$constantPatt, bRange = range(itemBank[, 
+                  2]))
         else TH <- start$theta
         if (!is.null(ITEMS)) 
             SETH <- semTheta(TH, PAR, x = PATTERN, model = model, 
@@ -182,8 +183,8 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
                 thFinal = finalEst, seFinal = seFinal, ciFinal = confIntFinal, 
                 genSeed = genSeed, startFixItems = start$fixItems, 
                 startSeed = start$seed, startNrItems = start$nrItems, 
-                startTheta = start$theta, startD = start$D, startHalfRange = start$halfRange, 
-                startThStart = pr0$thStart, startSelect = start$startSelect, 
+                startTheta = start$theta, startD = start$D, startRandomesque = start$randomesque, 
+                startSelect = start$startSelect, 
                 provMethod = test$method, provDist = test$priorDist, 
                 provPar = test$priorPar, provRange = test$range, 
                 provD = test$D, itemSelect = test$itemSelect, 
@@ -218,7 +219,8 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
                   D = test$D, method = test$method, priorDist = test$priorDist, 
                   priorPar = test$priorPar, range = test$range, 
                   parInt = test$parInt, current.th = TH[length(TH)], 
-                  constantPatt = test$constantPatt, bRange=range(itemBank[,2]))
+                  constantPatt = test$constantPatt, bRange = range(itemBank[, 
+                    2]))
                 TH <- c(TH, thProv)
                 seProv <- semTheta(thProv, PAR, x = PATTERN, 
                   model = model, D = test$D, method = test$method, 
@@ -255,8 +257,8 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
                 thFinal = finalEst, seFinal = seFinal, ciFinal = confIntFinal, 
                 genSeed = genSeed, startFixItems = start$fixItems, 
                 startSeed = start$seed, startNrItems = start$nrItems, 
-                startTheta = start$theta, startD = start$D, startHalfRange = start$halfRange, 
-                startThStart = pr0$thStart, startSelect = start$startSelect, 
+                startTheta = start$theta, startD = start$D, startRandomesque = start$randomesque, 
+                startSelect = start$startSelect, 
                 provMethod = test$method, provDist = test$priorDist, 
                 provPar = test$priorPar, provRange = test$range, 
                 provD = test$D, itemSelect = test$itemSelect, 
@@ -280,7 +282,8 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
                     model = model, D = test$D, method = test$method, 
                     priorDist = test$priorDist, priorPar = test$priorPar, 
                     range = test$range, parInt = test$parInt, 
-                    constantPatt = test$constantPatt, bRange=range(itemBank[,2]))
+                    constantPatt = test$constantPatt, bRange = range(itemBank[, 
+                      2]))
                   prov.se[k] <- semTheta(prov.th[k], prov.par, 
                     RES$pattern[1:k], model = model, D = test$D, 
                     method = test$method, priorDist = test$priorDist, 
@@ -305,6 +308,7 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
     }
     return(resToReturn)
 }
+
 
 
 
@@ -347,8 +351,10 @@ cat("   No early item was selected","\n")
 cat("   Starting ability level:", round(x$startTheta,3),"\n")
 }
 else{
-  if (is.null(x$startFixItems)) 
-    nr1 <- x$startNrItems
+  if (is.null(x$startFixItems)) {
+if (!is.null(x$startSeed)) nr1<-x$startNrItems
+    else nr1 <- length(x$startTheta)
+}
   else nr1 <- length(x$startFixItems)
   if (x$startSelect == "progressive" | x$startSelect == "proportional")   
     cat("   Number of early items:", 1, "\n")
@@ -411,23 +417,23 @@ else{
     cat(met1bis, "\n")
   }
   if (is.null(x$startFixItems) & is.null(x$startSeed)) {
-    retain <- x$startThStart
-    x$startThStart <- round(x$startThStart,3)
+    retain <- x$startTheta
+    x$startTheta <- round(x$startTheta,3)
     if (x$startSelect != "progressive" & x$startSelect != "proportional") {  
-      if (x$startNrItems == 1) 
-        met1bis <- paste("   Starting ability: ", x$startThStart, sep = "")
+      if (length(x$startTheta) == 1) 
+        met1bis <- paste("   Starting ability: ", x$startTheta, sep = "")
       else {
-        met1bis <- paste("   Starting abilities: ", sort(x$startThStart)[1], sep = "")
-        if (length(x$startThStart) == 2) 
-          met1bis <- paste(met1bis, " and ", sort(x$startThStart)[2], sep = "")
+        met1bis <- paste("   Starting abilities: ", sort(x$startTheta)[1], sep = "")
+        if (length(x$startTheta) == 2) 
+          met1bis <- paste(met1bis, " and ", sort(x$startTheta)[2], sep = "")
         else {
-          for (i in 2:(length(x$startThStart) - 1)) met1bis <- paste(met1bis, ", ", sort(x$startThStart)[i], sep = "")
-          met1bis <- paste(met1bis, " and ", sort(x$startThStart)[length(x$startThStart)], sep = "")
+          for (i in 2:(length(x$startTheta) - 1)) met1bis <- paste(met1bis, ", ", sort(x$startTheta)[i], sep = "")
+          met1bis <- paste(met1bis, " and ", sort(x$startTheta)[length(x$startTheta)], sep = "")
         }
       }
     cat(met1bis, "\n")
     }
-    x$startThStart <- retain
+    x$startTheta <- retain
   }
 }
   cat("\n", "Adaptive test parameters:", "\n")
@@ -486,10 +492,12 @@ var="variable stepsize")
                                         min(c(x$maxItems, x$stopThr)), x$maxItems), "items", 
       "\n")
   cat("\n", "Randomesque method:", "\n")
+ if (is.null(x$startFixItems) & is.null(x$startSeed))
+cat("   Number of 'randomesque' starting items: ",x$startRandomesque,"\n",sep="")
+else cat("   Number of 'randomesque' starting items: irrelevant","\n",sep="")
   if (x$startSelect == "progressive" | x$startSelect == "proportional")     
-    cat("   Number of 'randomesque' items: ",1,"\n",sep="")
-  else cat("   Number of 'randomesque' items: ",x$randomesque,"\n",sep="")
-  
+    cat("   Number of 'randomesque' test items: ",1,"\n",sep="")
+  else cat("   Number of 'randomesque' test items: ",x$randomesque,"\n",sep="")
   cat("\n", "Content balancing control:", "\n")
   if (is.null(x$cbControl)) cat("   No control for content balancing","\n")
   else{
@@ -632,6 +640,8 @@ plot.cat<-function (x, ci = FALSE, alpha = 0.05, trueTh = TRUE, classThr = NULL,
             r1 <- res$thetaProv - qnorm(1 - alpha/2) * res$seProv
             r2 <- res$thetaProv + qnorm(1 - alpha/2) * res$seProv
         }
+        r1[abs(r1)==Inf]<-0
+        r2[abs(r2)==Inf]<-0
         if (!is.na(res$trueTheta)) vectRange <- c(res$thetaProv, res$trueTheta)
 else vectRange <- res$thetaProv
         if (ci) 

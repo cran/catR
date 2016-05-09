@@ -1,6 +1,6 @@
 thetaEst<-function (it, x, model = NULL, D = 1, method = "BM", priorDist = "norm", 
     priorPar = c(0, 1), range = c(-4, 4), parInt = c(-4, 4, 33), 
-    constantPatt = NULL, current.th = 0, bRange=c(-2,2)) 
+    constantPatt = NULL, current.th = 0, bRange = c(-2, 2)) 
 {
     constantPattern <- function(t) ifelse(sum(t) == 0 | sum(t) == 
         length(t), TRUE, FALSE)
@@ -20,6 +20,9 @@ thetaEst<-function (it, x, model = NULL, D = 1, method = "BM", priorDist = "norm
                 bRange[2]))
         }
     }
+ind<-which(!is.na(x))
+it<-it[ind,]
+x<-x[ind]
     if (!is.null(METHOD)) {
         if (METHOD == "EAP") 
             res <- eapEst(it, x, model = model, D = D, priorDist = priorDist, 
@@ -106,3 +109,4 @@ thetaEst<-function (it, x, model = NULL, D = 1, method = "BM", priorDist = "norm
     }
     return(res)
 }
+

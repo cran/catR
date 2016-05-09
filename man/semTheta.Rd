@@ -16,7 +16,7 @@ semTheta(thEst, it, x = NULL, model = NULL, D = 1, method = "BM",
 \arguments{
  \item{thEst}{numeric: the ability estimate.}
  \item{it}{numeric: a suitable matrix of item parameters. See \bold{Details}.}
- \item{x}{numeric: a vector of item responses (default is \code{NULL}). Ignored if \code{method} is not \code{"EAP"}.}
+ \item{x}{numeric: a vector of item responses (default is \code{NULL}). Can also hold missing data (coded as \code{NA}s). Ignored if \code{method} is not \code{"EAP"} but must be provided in presence of missing responses. See \bold{Details}.}
 \item{model}{either \code{NULL} (default) for dichotomous models, or any suitable acronym for polytomous models. Possible values are \code{"GRM"}, \code{"MGRM"}, \code{"PCM"}, \code{"GPCM"}, \code{"RSM"} and \code{"NRM"}. See \bold{Details}.}
  \item{D}{numeric: the metric constant. Default is \code{D=1} (for logistic metric); \code{D=1.702} yields approximately the normal metric (Haley, 1952).} 
  \item{method}{character: the ability estimator. Possible values are \code{"BM"} (default), \code{"ML"}, \code{"WL"} and \code{"EAP"}. See \bold{Details}.}
@@ -30,7 +30,7 @@ semTheta(thEst, it, x = NULL, model = NULL, D = 1, method = "BM",
 }
 
 \value{
- The estimated standard error of the ability level.
+ The estimated standard error of the ability level (or \code{Inf} if the response pattern is constant and \code{constantPatt} is not \code{NULL}).
  }
  
 \details{
@@ -39,13 +39,13 @@ Dichotomous IRT models are considered whenever \code{model} is set to \code{NULL
 
 Polytomous IRT models are specified by their respective acronym: \code{"GRM"} for Graded Response Model, \code{"MGRM"} for Modified Graded Response Model, \code{"PCM"} for Partical Credit Model, \code{"GPCM"} for Generalized Partial Credit Model, \code{"RSM"} for Rating Scale Model and \code{"NRM"} for Nominal Response Model. The \code{it} still holds one row per item, end the number of columns and their content depends on the model. See \code{\link{genPolyMatrix}} for further information and illustrative examples of suitable polytomous item banks.
 
+The vector of response patterns \code{x} can also hold missing responses (more useful in linear testing, not in CAT). In this case the missing responses must be coded as \code{NA} values. They are discarded from the ability estimation process. Note that in presence of missing responses, the pattern \code{x} must be provided indepedently of the estimation method (to discard items with missing responses from the computation). 
+
 Four ability estimators are available: the maximum likelihood (ML) estimator (Lord, 1980), the Bayes modal (BM) estimator (Birnbaum, 1969), the expected a posteriori (EAP) estimator (Bock and Mislevy, 1982)and the weighted likelihood (WL) estimator (Warm, 1989). The selected estimator is specified by the \code{method} argument, with values \code{"ML"}, \code{"BM"}, \code{"EAP"} and \code{"WL"} respectively.
 
  For the BM and EAP estimators, three prior distributions are available: the normal distribution, the uniform distribution and the Jeffreys' prior distribution (Jeffreys, 1939, 1946). The prior distribution is specified by the argument \code{priorPar}, with values \code{"norm"}, \code{"unif"} and \code{"Jeffreys"}, respectively. The \code{priorPar} argument is ignored if \code{method="ML"} or \code{method="WL"}.
  
- The argument \code{priorPar} determines either: the prior mean and standard deviation of the normal prior distribution (if 
- \code{priorDist="norm"}), or the range for defining the prior uniform distribution (if \code{priorDist="unif"}). This argument
- is ignored if \code{priorDist="Jeffreys"}.
+ The argument \code{priorPar} determines either: the prior mean and standard deviation of the normal prior distribution (if \code{priorDist="norm"}), or the range for defining the prior uniform distribution (if \code{priorDist="unif"}). This argument is ignored if \code{priorDist="Jeffreys"}.
  
  The \code{eapPar} argument sets the range and the number of quadrature points for numerical integration in the EAP process. By default, it takes the vector value (-4, 4, 33), that is, 33 quadrature points on the range [-4; 4] (or, by steps of 0.25). See \code{\link{eapEst}} for further details. 
 
@@ -110,6 +110,12 @@ Dodd, B. G., De Ayala, R. J., and Koch, W. R. (1995) . Computerized adaptive tes
  # ML estimation
  th <- thetaEst(tcals, x, method = "ML")
  c(th, semTheta(th, tcals, method = "ML"))
+
+ # With first two responses missing
+ x.mis <- x
+ x.mis[1:2] <- NA
+ th <- thetaEst(tcals, x.mis, method = "ML")
+ c(th, semTheta(th, tcals, x.mis, method = "ML"))
 
  # BM estimation, standard normal prior distribution
  th <- thetaEst(tcals, x)

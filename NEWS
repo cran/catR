@@ -6,6 +6,49 @@
 
 
 ------------------------------------
+- Changes in catR 3.6 (2016-05-09) -
+------------------------------------
+
+MAJOR UPDATES
+
+  o  The functions 'thetaEst()' and 'semTheta()' now allow
+     missing responses in the 'x' pattern. They must be
+     coded as NA and are discarded from the estimation 
+     process (most useful for linear testing use). 
+
+  o  The function 'genPattern()' can now generate several
+     patterns at the same time, by providing several 'th'
+     values as a vector. The output is then a matrix of
+     item responses instead of a single vector.
+
+  o  The function 'startItems()' was modified to simplify 
+     the setting of the initial theta values to select the
+     first items. Now the 'theta' argument can hold a vector
+     of values, and one item is picked up for each element
+     of 'theta'. The argument 'halfRange' was consequently
+     withdrawn from this function as it became useless.
+
+  o  The function 'startItems()' holds a new argument called
+     'randomesque' and acts similarly to the 'randomesque'
+     argument of the 'nextItem()' function. That is, if it
+     takes values larger than one, the 'randomesque' most 
+     optimal items are selectd for eahc theta value, and one
+     of them is picked up randomly as starting item. Default
+     value is one so no such randomesque selection is done.
+
+
+MINOR UPDATES
+
+  o  In case of constant pattern and 'constantPatt' 
+     argument different from 'NULL', the'plot.cat()' with
+     'ci' argument set to TRUE was leading to a bug 
+     (infinite confidence intervals were obtained). This
+     has been fixed internally into 'plot.cat()'.
+
+  o  Some typos were fixed.
+
+
+------------------------------------
 - Changes in catR 3.6 (2016-01-02) -
 ------------------------------------
 

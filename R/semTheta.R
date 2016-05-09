@@ -9,6 +9,11 @@ else{
 if (sum(constantPatt==c("BM","EAP","WL"))==1) METHOD<-constantPatt
 else RES<-Inf
 }
+if (!is.null(x)){
+ind<-which(!is.na(x))
+it<-it[ind,]
+x<-x[ind]
+}
 if (!is.null(METHOD)){
     if (method == "EAP") {
         RES <- eapSem(thEst, it, x = x, model = model, D = D, 

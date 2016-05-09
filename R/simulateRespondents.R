@@ -1,11 +1,11 @@
-simulateRespondents<-function (thetas, itemBank, responsesMatrix = NULL, model = NULL, genSeed=NULL,
-    maxItems = 50, cbControl = NULL, rmax = 1, Mrmax = "restricted", 
-    start = list(fixItems = NULL, seed = NULL, nrItems = 1, theta = 0, 
-        halfRange = 2, startSelect = "MFI"), test = list(method = "BM", 
-        priorDist = "norm", priorPar = c(0, 1), range = c(-4, 
-            4), D = 1, parInt = c(-4, 4, 33), itemSelect = "MFI", 
-        infoType = "observed", randomesque = 1, AP = 1, constantPatt =NULL), stop = list(rule = "length", 
-        thr = 20, alpha = 0.05), final = list(method = "BM", 
+simulateRespondents<-function (thetas, itemBank, responsesMatrix = NULL, model = NULL, 
+    genSeed = NULL, maxItems = 50, cbControl = NULL, rmax = 1, 
+    Mrmax = "restricted", start = list(fixItems = NULL, seed = NULL, 
+        nrItems = 1, theta = 0, randomesque = 1, startSelect = "MFI"), 
+    test = list(method = "BM", priorDist = "norm", priorPar = c(0, 
+        1), range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), itemSelect = "MFI", 
+        infoType = "observed", randomesque = 1, AP = 1, constantPatt = NULL), 
+    stop = list(rule = "length", thr = 20, alpha = 0.05), final = list(method = "BM", 
         priorDist = "norm", priorPar = c(0, 1), range = c(-4, 
             4), D = 1, parInt = c(-4, 4, 33), alpha = 0.05), 
     save.output = FALSE, output = c("", "catR", "csv")) 
@@ -28,9 +28,11 @@ simulateRespondents<-function (thetas, itemBank, responsesMatrix = NULL, model =
         return(res)
     }
     else {
-if (!is.null(genSeed)){
-if (length(genSeed)!=length(thetas)) stop("'thetas' and 'genSeed' must have the same length!",call.=FALSE)
-}
+        if (!is.null(genSeed)) {
+            if (length(genSeed) != length(thetas)) 
+                stop("'thetas' and 'genSeed' must have the same length!", 
+                  call. = FALSE)
+        }
         internalSR <- function() {
             start.time <- Sys.time()
             respondents <- length(thetas)
@@ -87,16 +89,17 @@ if (length(genSeed)!=length(thetas)) stop("'thetas' and 'genSeed' must have the 
                 }
                 if (!is.null(responsesMatrix)) {
                   rCAT <- randomCAT(trueTheta = thetas[i], itemBank = itemBank, 
-                    responses = resp[i, ], model = model, genSeed=genSeed[i],maxItems = maxItems, 
-                    cbControl = cbControl, nAvailable = nAvailable, 
-                    start = start, test = test, stop = stop, 
-                    final = final, allTheta = TRUE)
+                    responses = resp[i, ], model = model, genSeed = genSeed[i], 
+                    maxItems = maxItems, cbControl = cbControl, 
+                    nAvailable = nAvailable, start = start, test = test, 
+                    stop = stop, final = final, allTheta = TRUE)
                 }
                 else {
                   rCAT <- randomCAT(trueTheta = thetas[i], itemBank = itemBank, 
-                    model = model, genSeed=genSeed[i], maxItems = maxItems, cbControl = cbControl, 
-                    nAvailable = nAvailable, start = start, test = test, 
-                    stop = stop, final = final, allTheta = TRUE)
+                    model = model, genSeed = genSeed[i], maxItems = maxItems, 
+                    cbControl = cbControl, nAvailable = nAvailable, 
+                    start = start, test = test, stop = stop, 
+                    final = final, allTheta = TRUE)
                 }
                 estimatedThetas <- c(estimatedThetas, rCAT$thFinal)
                 vItemExposure <- c(vItemExposure, rCAT$testItems)
@@ -163,12 +166,13 @@ if (length(genSeed)!=length(thetas)) stop("'thetas' and 'genSeed' must have the 
             finish.time <- Sys.time()
             cat("Simulation process: ", 100, "%\n")
             res <- list(thetas = thetas, itemBank = itemBank, 
-                responsesMatrix = responsesMatrix, model = model, genSeed = genSeed,
-                maxItems = maxItems, cbControl = cbControl, rmax = rmax, 
-                Mrmax = Mrmax, start = start, test = test, stop = stop, 
-                final = final, save.output = save.output, output = output, 
-                estimatedThetas = estimatedThetas, correlation = resCor, 
-                bias = bias, RMSE = RMSE, thrOK = thrOK, exposureRates = exposureRates, 
+                responsesMatrix = responsesMatrix, model = model, 
+                genSeed = genSeed, maxItems = maxItems, cbControl = cbControl, 
+                rmax = rmax, Mrmax = Mrmax, start = start, test = test, 
+                stop = stop, final = final, save.output = save.output, 
+                output = output, estimatedThetas = estimatedThetas, 
+                correlation = resCor, bias = bias, RMSE = RMSE, 
+                thrOK = thrOK, exposureRates = exposureRates, 
                 testLength = testLength, overlap = overlap, numberItems = numberItems, 
                 condTheta = condTheta, condBias = condBias, condRMSE = condRMSE, 
                 condnItems = condnItems, condSE = condSE, condthrOK = condthrOK, 
@@ -205,6 +209,7 @@ if (length(genSeed)!=length(thetas)) stop("'thetas' and 'genSeed' must have the 
         return(resToReturn)
     }
 }
+
 
 
 

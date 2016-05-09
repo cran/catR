@@ -11,7 +11,7 @@ testList<-function (list, type = "start")
                 sep = ""))
         else {
             elements <- switch(type, start = c("fixItems", "seed", 
-                "nrItems", "theta", "D", "halfRange", "startSelect", 
+                "nrItems", "theta", "D", "randomesque", "startSelect", 
                 "nAvailable"), test = c("method", "priorDist", 
                 "priorPar", "range", "D", "parInt", "itemSelect", 
                 "infoType", "randomesque", "AP", "constantPatt"), 
@@ -53,7 +53,7 @@ testList<-function (list, type = "start")
                     intNames <- c("fixItems")
                     seedNames <- c("seed")
                     singleIntNames <- c("nrItems")
-                    numNames <- c("theta", "halfRange", "thr", 
+                    numNames <- c("thr", 
                       "alpha", "D", "SETH", "AP")
                     metNames <- c("method")
                     priorNames <- c("priorDist")
@@ -66,6 +66,7 @@ testList<-function (list, type = "start")
                     intOnlyNames <- c("randomesque")
                     boolNames <- c("nAvailable")
                     constantNames <- c("constantPatt")
+                    severalNumNames<-c("theta")
                     i <- 0
                     repeat {
                       i <- i + 1
@@ -80,8 +81,8 @@ testList<-function (list, type = "start")
                           infoTypeNames), sum(names(list)[i] == 
                           startNames), sum(names(list)[i] == 
                           intOnlyNames), sum(names(list)[i] == 
-                          boolNames), sum(names(list)[i] == constantNames))
-                      ind <- (1:15)[vect == 1]
+                          boolNames), sum(names(list)[i] == constantNames), sum(names(list)[i] == severalNumNames))
+                      ind <- (1:16)[vect == 1]
                       prov <- switch(ind, `1` = ifelse(is.null(list[[i]]), 
                         TRUE, ifelse(is.numeric(list[[i]]), ifelse(max(abs(list[[i]] - 
                           round(list[[i]]))) <= 1e-04, TRUE, 
@@ -107,10 +108,10 @@ testList<-function (list, type = "start")
                           1e-04), `10` = (is.list(list[[i]]) == 
                           FALSE & length(list[[i]]) == 1 & sum(list[[i]] == 
                           c("MFI", "bOpt", "thOpt", "MLWI", "MPWI", 
-                            "MEI", "MEPV", "KL", "KLP", "GDI", "GDIP", "progressive", 
-                            "proportional", "random")) == 1), 
-                        `11` = (is.list(list[[i]]) == FALSE & 
-                          length(list[[i]]) == 1 & sum(list[[i]] == 
+                            "MEI", "MEPV", "KL", "KLP", "GDI", 
+                            "GDIP", "progressive", "proportional", 
+                            "random")) == 1), `11` = (is.list(list[[i]]) == 
+                          FALSE & length(list[[i]]) == 1 & sum(list[[i]] == 
                           c("observed", "Fisher")) == 1), `12` = (is.list(list[[i]]) == 
                           FALSE & length(list[[i]]) == 1 & sum(list[[i]] == 
                           c("bOpt", "thOpt", "MFI", "progressive", 
@@ -124,7 +125,7 @@ testList<-function (list, type = "start")
                             FALSE), FALSE), `15` = ifelse(is.null(list[[i]]), 
                           TRUE, ifelse(sum(list[[i]] == c("fixed4", 
                             "fixed7", "var", "BM", "EAP", "WL")) == 
-                            1, TRUE, FALSE)))
+                            1, TRUE, FALSE)), `16` = ifelse(is.numeric(list[[i]]), TRUE, FALSE))
                       if (!prov) {
                         res$test <- FALSE
                         res$message <- switch(ind, `1` = paste("element '", 
@@ -176,6 +177,9 @@ testList<-function (list, type = "start")
                             sep = ""), `15` = paste("element '", 
                             names(list)[i], "' of '", deparse(substitute(list)), 
                             "' must be either 'fixed4', 'fixed7', 'var' or NULL", 
+                            sep = ""), `16` = paste("element '", 
+                            names(list)[i], "' of '", deparse(substitute(list)), 
+                            "' must be a vector of numeric values", 
                             sep = ""))
                         break
                       }

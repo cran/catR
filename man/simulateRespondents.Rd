@@ -12,7 +12,7 @@ This command runs a set of adaptive tests, for a given item bank, a set of abili
 simulateRespondents(thetas, itemBank, responsesMatrix = NULL, model = NULL, 
   	genSeed = NULL, maxItems = 50, cbControl = NULL, rmax = 1, Mrmax = "restricted", 
   	start = list(fixItems = NULL, seed = NULL, nrItems = 1, theta = 0, 
-  	halfRange = 2, startSelect = "MFI"),test = list(method = "BM", 
+  	randomesque = 1, startSelect = "MFI"),test = list(method = "BM", 
   	priorDist = "norm", priorPar = c(0,1), range = c(-4, 4), D = 1, 
   	parInt = c(-4, 4, 33), itemSelect = "MFI", infoType = "observed", 
   	randomesque = 1, AP = 1, constantPatt = NULL), stop = list(rule = "length", 
@@ -167,8 +167,8 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  data(tcals)
  bank <- as.matrix(tcals[,1:4])
  
- # Creation of a starting list: 3 items, initial theta 0, bw 2
- start <- list(nrItems = 3, theta = 0, halfRange = 2)
+ # Creation of a starting list with three theta values
+ start <- list(theta = -1:1, randomesque = 5)
 
  # Creation of 'test' list: maximum likelihood estimation and
  # progressive method

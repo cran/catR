@@ -60,7 +60,12 @@ testList(list, type = "start")
 
 \examples{
 
+
  # Creation and test of a 'start' list
+ start <- list(nrItems = 3, theta = c(-1, 0, 2, -2), randomesque = 2)
+ testList(start, type = "start")
+
+ # Using former 'halfRange' argument yields an error now:
  start <- list(nrItems = 3, theta = 0, halfRange = 2)
  testList(start, type = "start")
 

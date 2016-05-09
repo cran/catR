@@ -12,7 +12,7 @@
 \usage{
 randomCAT(trueTheta, itemBank, model = NULL, responses = NULL, genSeed = NULL, 
  	maxItems = 50, cbControl = NULL, nAvailable = NULL, start = 
- 	list(fixItems = NULL, seed = NULL, nrItems = 1, theta = 0, D = 1, halfRange = 2, 
+ 	list(fixItems = NULL, seed = NULL, nrItems = 1, theta = 0, D = 1, randomesque = 1,
  	startSelect = "MFI"), test = list(method = "BM", priorDist = "norm", 
  	priorPar = c(0, 1), range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), 
  	itemSelect = "MFI", infoType = "observed", randomesque = 1, AP = 1, 
@@ -71,7 +71,7 @@ randomCAT(trueTheta, itemBank, model = NULL, responses = NULL, genSeed = NULL,
  \item{startNrItems}{the value of the \code{start$nrItems} argument (or its default value if missing).}
  \item{startTheta}{the value of the \code{start$theta} argument (or its default value if missing).}
  \item{startD}{the value of the \code{start$D} argument (or its default value if missing).}
- \item{startHalfRange}{the value of the \code{start$halfRange} argument (or its default value if missing).}
+ \item{startRandomesque}{the value of the \code{start$randomesque} argument (or its default value if missing).}
  \item{startThStart}{the starting ability values used for selecting the first items of the test.}
  \item{startSelect}{the value of the \code{start$startSelect} argument (or its default value if missing).}
  \item{provMethod}{the value of the \code{test$method} argument (or its default value if missing).}
@@ -130,10 +130,10 @@ See the \code{\link{nextItem}} function for further details on how to specify \c
  \itemize{
  \item{\code{fixItems}: either a vector of integer values, setting the items to be administered as first items, or \code{NULL} (default) to let the function select the items.}
  \item{\code{seed}: either a numeric value to fix the random seed for item selection, \code{NA} to randomly select the items withour fixing the random seed, or \code{NULL} (default) to select the items on the basis of their difficulty level. Ignored if \code{fixItems} is not \code{NULL}.}
- \item{\code{nrItems}: the number of first items to be selected (default is 1). Can be set to zero (see below). Ignored if \code{fixItems} is not \code{NULL}.}
- \item{\code{theta}: the central initial ability value, used to define the range of ability levels for selecting the first items (default is 0). Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}. See \code{\link{startItems}} for further details.}
+ \item{nrItems}{numeric: the number of starting items to be randomly selected (default is 1). Can be equal to zero to avoid initial selection of items (see \bold{Details}). Used only if \code{fixItems} is \code{NULL} and \code{seed} is not \code{NULL}.}
+ \item{theta}{numeric: a vector of the initial ability levels for selecting the first items (default is the single value 0). Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}. See \code{\link{startItems}} for further details.}
  \item{\code{D}: numeric, the metric constant. Default is \code{D=1} (for logistic metric); \code{D=1.702} yields approximately the normal metric (Haley, 1952). Ignored if \code{model} is not \code{NULL} and if \code{startSelect} is not \code{"MFI"}.} 
- \item{\code{halfRange}: the half range of starting ability levels for selecting the first items (default is 2). Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}. See \code{\link{startItems}} for further details.}
+ \item{randomesque}{integer: the number of 'randomesque' items to be picked up optimally for each value of \code{theta} vector, before random selection of a single one. Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}. See \code{\link{startItems}} for further details.}
  \item{\code{startSelect}: the method for selecting the first items of the test, with possible values \code{"bOpt"} and \code{"MFI"} (default). Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}. See \code{\link{startItems}} for further details.}
  }
  These arguments are passed to the function \code{\link{startItems}} to select the first items of the test.
@@ -149,9 +149,10 @@ If the argument \code{nrItems} is set to zero, then no starting item is selected
  \item{\code{D}: the value of the metric constant. Default is \code{D=1} for logistic metric. Setting \code{D=1.702} yields approximately the normal metric (Haley, 1952). Ignored if \code{model} is not \code{NULL}.}
  \item{\code{parInt}: a numeric vector of three components, holding respectively the values of the arguments \code{lower}, \code{upper} and \code{nqp} of the \code{\link{eapEst}}, \code{\link{eapSem}} and \code{MWI} commands. It specifies the range of quadrature points for numerical integration, and is used for computing the EAP estimate, its standard error, and the MLWI and MPWI values for next item selection. Default vector is (-4, 4, 33), thus setting the range from -4 to 4 by steps of 0.25. Ignored if \code{method} is not \code{"EAP"} and if \code{itemSelect} is neither \code{"MLWI"} nor \code{"MPWI"}.}
  \item{\code{itemSelect}: the rule for next item selecion, with possible values \code{"MFI"} (default) for maximum Fisher information criterion; \code{"bOpt"} for optimal ability-difficulty match (or Urry's procedure) (not available if \code{model} is not \code{NULL}); \code{"thOpt"} for optimal theta selection (not available if \code{model} is not \code{NULL}); \code{"MLWI"} and \code{"MPWI"} for respectively maximum likelihood and posterior weighted information criterion; \code{"MEPV"} for minimum expected posterior variance; \code{"MEI"} for maximum expected information; \code{"KL"} and \code{"KLP"} for Kullback-Leibler and posterior Kullback-Leibler information methods; \code{"progressive"} and \code{"proportional"} for progressive and proportional methods; ; and \code{"random"} for random selection. For further details, see \code{\link{nextItem}}.}
-\item{\code{AP}: the acceleration parameter required for progressive and proportional methods, with default value 1. Ignored with all other selection methods.}
  \item{\code{infoType}: character: the type of information function to be used for next item selection. Possible values are \code{"observed"} (default) for observed information function, and \code{"Fisher"} for Fisher information function. Ignored if \code{itemselect} is not \code{"MEI"}.}
  \item{\code{randomesque}: integer: the number of items to be chosen from the next item selection rule, among those the next item to be administered will be randomly picked up. Default value is 1 and leads to usual selection of the optimal item (Kingsbury and Zara, 1989).}
+\item{\code{AP}: the acceleration parameter required for progressive and proportional methods, with default value 1. Ignored with all other selection methods.}
+\item{\code{constantPatt}: character: the method to estimate ability in case of constant pattern (i.e. only correct or only incorrect responses). Can be either \code{NULL} (default), \code{"BM"}, \code{"EAP"}, \code{"WL"}, \code{"fixed4"}, \code{"fixed7"} or \code{"var"}. \emph{Currently only implemented for dichotomous IRT models}.}
  }
  These arguments are passed to the functions \code{\link{thetaEst}} and \code{\link{semTheta}} to estimate the ability level and the standard error of this estimate. In addition, some arguments are passed to \code{\link{nextItem}} to select the next item appropriately.
 
@@ -178,7 +179,7 @@ Usually the ability estimates and related standard errors are computed right aft
  \code{save.output} is set to \code{TRUE} (the default value \code{FALSE} does not execute the storage). In this case, the \code{(output} argument mus hold three character values: the path to where the output file must be stored, the name of
  the output file, and the type of output file. If the path is not provided (i.e. left to its default value \code{"path"}), it will be saved in the default working directory. The default name is \code{"name"}, and the default type is \code{"csv"}. Any other value yields a text file. See the \bold{Examples} section for an illustration. 
 
- The function \code{plot.cat} represents the set of provisional and final ability estimates througghout the test. Corresponding confidence intervals (with confidence level defined by the argument \code{alpha}) are also drawn if \code{ci=TRUE} (which is \emph{not} the default value). The true ability level can be drawn by a horizontal solid line by specifying \code{trueTh=TRUE} (which is the default value); setting it to \code{FALSE} will undo the drawing. Finally, any classification threshold can be additionally displayed by specifying a numeric value to the argument \code{classThr}. The default value \code{NULL} does not display any threshold.
+ The function \code{plot.cat} represents the set of provisional and final ability estimates througghout the test. Corresponding confidence intervals (with confidence level defined by the argument \code{alpha}) are also drawn if \code{ci=TRUE} (which is \emph{not} the default value), except when stepsize adjustment was made for constant patterns (as the standard error cannot be estimated at this stage). The true ability level can be drawn by a horizontal solid line by specifying \code{trueTh=TRUE} (which is the default value); setting it to \code{FALSE} will undo the drawing. Finally, any classification threshold can be additionally displayed by specifying a numeric value to the argument \code{classThr}. The default value \code{NULL} does not display any threshold.
 
  Finally, the plot can be saved in an external file, either as PDF or JPEG format. First, the argument \code{save.plot} must be set to \code{TRUE} (default is \code{FALSE}). Then, the file path for figure storage, the name of the figure and its format are specified through the argument \code{save.options}, all as character strings. See the \code{Examples} section for further information and a practical example.
 }
@@ -247,8 +248,8 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  # Matrix of item parameters (with no content balancing)
  bank <- as.matrix(tcals[,1:4])
  
- # Creation of a starting list: 5 items, initial theta 0, bw 2
- start <- list(nrItems = 5, theta = 0, halfRange = 2)
+ # Creation of a starting list: 5 items with evenly spread theta values
+ start <- list(theta = -2:2)
 
  # Creation of 'test' list: weighted likelihood estimation of provisional ability, 
  # and MFI criterion for next item selection
@@ -337,7 +338,7 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  m.GRM <- as.matrix(m.GRM)
 
  # CAT options
- start <- list(nrItems = 3,startSelect = "MFI")
+ start <- list(nrItems = c(-1, 0),startSelect = "MFI")
  test <- list(method = "BM", itemSelect = "KL")
  stop <- list(rule = "precision", thr = 0.4)
  final <- list(method = "EAP")

@@ -15,7 +15,7 @@ thetaEst(it, x, model = NULL, D = 1, method = "BM", priorDist = "norm",
 
 \arguments{
  \item{it}{numeric: a suitable matrix of item parameters. See \bold{Details}.}
- \item{x}{numeric: a vector of item responses.}
+ \item{x}{numeric: a vector of item responses. Can also hold missing data (coded as \code{NA}s). See \bold{Details}.}
 \item{model}{either \code{NULL} (default) for dichotomous models, or any suitable acronym for polytomous models. Possible values are \code{"GRM"}, \code{"MGRM"}, \code{"PCM"}, \code{"GPCM"}, \code{"RSM"} and \code{"NRM"}. See \bold{Details}.}
  \item{D}{numeric: the metric constant. Default is \code{D=1} (for logistic metric); \code{D=1.702} yields approximately the normal metric (Haley, 1952). Ignored if \code{model} is not \code{NULL}.} 
  \item{method}{character: the ability estimator. Possible values are \code{"BM"} (default), \code{"ML"}, \code{"WL"} and \code{"EAP"}. See \bold{Details}.}
@@ -37,6 +37,8 @@ Dichotomous IRT models are considered whenever \code{model} is set to \code{NULL
  (Barton and Lord, 1981). 
 
 Polytomous IRT models are specified by their respective acronym: \code{"GRM"} for Graded Response Model, \code{"MGRM"} for Modified Graded Response Model, \code{"PCM"} for Partical Credit Model, \code{"GPCM"} for Generalized Partial Credit Model, \code{"RSM"} for Rating Scale Model and \code{"NRM"} for Nominal Response Model. The \code{it} still holds one row per item, end the number of columns and their content depends on the model. See \code{\link{genPolyMatrix}} for further information and illustrative examples of suitable polytomous item banks.
+
+The vector of response patterns \code{x} can also hold missing responses (more useful in linear testing, not in CAT). In this case the missing responses must be coded as \code{NA} values. They are discarded from the ability estimation process.
 
  Four ability estimators are available: the maximum likelihood (ML) estimator (Lord, 1980), the Bayes modal (BM) estimator (Birnbaum, 1969), the expected a posteriori (EAP) estimator (Bock and Mislevy, 1982) and the weighted likelihood (WL) estimator (Warm, 1989). The selected estimator is specified by the \code{method} argument, with values \code{"ML"}, \code{"BM"}, \code{"EAP"} and \code{"WL"} respectively.
 
@@ -111,6 +113,11 @@ Magis, D. (2015). A note on weighted likelihood and Jeffreys modal estimation of
  # ML estimation
  thetaEst(tcals, x, method = "ML")
 
+ # With first two responses missing 
+ x.mis <- x
+ x.mis[1:2] <- NA
+ thetaEst(tcals, x.mis, method = "ML")
+
  # BM estimation, standard normal prior distribution
  thetaEst(tcals, x)
 
@@ -131,6 +138,7 @@ Magis, D. (2015). A note on weighted likelihood and Jeffreys modal estimation of
 
  # WL estimation
  thetaEst(tcals, x, method = "WL")
+
 
  # Creation of two constant patterns and estimation with WL, 
  # 'fixed4', 'fixed7' and 'var' stepsize adjustments
