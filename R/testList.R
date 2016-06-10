@@ -14,7 +14,7 @@ testList<-function (list, type = "start")
                 "nrItems", "theta", "D", "randomesque", "startSelect", 
                 "nAvailable"), test = c("method", "priorDist", 
                 "priorPar", "range", "D", "parInt", "itemSelect", 
-                "infoType", "randomesque", "AP", "constantPatt"), 
+                "infoType", "randomesque", "AP", "proRule", "proThr", "constantPatt"), 
                 stop = c("rule", "thr", "alpha"), final = c("method", 
                   "priorDist", "priorPar", "range", "D", "alpha", 
                   "parInt"))
@@ -53,8 +53,8 @@ testList<-function (list, type = "start")
                     intNames <- c("fixItems")
                     seedNames <- c("seed")
                     singleIntNames <- c("nrItems")
-                    numNames <- c("thr", 
-                      "alpha", "D", "SETH", "AP")
+                    numNames <- c("alpha", "D", "SETH", 
+                      "AP", "proThr")
                     metNames <- c("method")
                     priorNames <- c("priorDist")
                     parNames <- c("priorPar", "range")
@@ -66,7 +66,8 @@ testList<-function (list, type = "start")
                     intOnlyNames <- c("randomesque")
                     boolNames <- c("nAvailable")
                     constantNames <- c("constantPatt")
-                    severalNumNames<-c("theta")
+                    severalNumNames <- c("thr", "theta")
+                    proRuleNames<-c("proRule")
                     i <- 0
                     repeat {
                       i <- i + 1
@@ -81,8 +82,9 @@ testList<-function (list, type = "start")
                           infoTypeNames), sum(names(list)[i] == 
                           startNames), sum(names(list)[i] == 
                           intOnlyNames), sum(names(list)[i] == 
-                          boolNames), sum(names(list)[i] == constantNames), sum(names(list)[i] == severalNumNames))
-                      ind <- (1:16)[vect == 1]
+                          boolNames), sum(names(list)[i] == constantNames), 
+                        sum(names(list)[i] == severalNumNames),sum(names(list)[i] == proRuleNames))
+                      ind <- (1:17)[vect == 1]
                       prov <- switch(ind, `1` = ifelse(is.null(list[[i]]), 
                         TRUE, ifelse(is.numeric(list[[i]]), ifelse(max(abs(list[[i]] - 
                           round(list[[i]]))) <= 1e-04, TRUE, 
@@ -99,10 +101,9 @@ testList<-function (list, type = "start")
                         FALSE & length(list[[i]]) == 1 & sum(list[[i]] == 
                         c("norm", "unif", "Jeffreys")) == 1), 
                         `7` = (is.numeric(list[[i]]) & length(list[[i]]) == 
-                          2), `8` = (is.list(list[[i]]) == FALSE & 
-                          length(list[[i]]) == 1 & sum(list[[i]] == 
-                          c("length", "precision", "classification")) == 
-                          1), `9` = (is.list(list[[i]]) == FALSE & 
+                          2), `8` = (is.vector(list[[i]]) & 
+                          all(list[[i]] %in% c("length", "precision", "classification","minInfo"))), 
+                         `9` = (!is.list(list[[i]]) & 
                           length(list[[i]]) == 3 & is.numeric(list[[i]]) == 
                           TRUE & abs(list[[i]][3] - round(list[[i]][3])) <= 
                           1e-04), `10` = (is.list(list[[i]]) == 
@@ -125,7 +126,9 @@ testList<-function (list, type = "start")
                             FALSE), FALSE), `15` = ifelse(is.null(list[[i]]), 
                           TRUE, ifelse(sum(list[[i]] == c("fixed4", 
                             "fixed7", "var", "BM", "EAP", "WL")) == 
-                            1, TRUE, FALSE)), `16` = ifelse(is.numeric(list[[i]]), TRUE, FALSE))
+                            1, TRUE, FALSE)), `16` = ifelse(is.numeric(list[[i]]), 
+                          TRUE, FALSE), `17` = ifelse(is.vector(list[[i]]) & 
+                          sum(list[[i]] == c("length", "precision"))==1, TRUE, FALSE))
                       if (!prov) {
                         res$test <- FALSE
                         res$message <- switch(ind, `1` = paste("element '", 
@@ -151,8 +154,8 @@ testList<-function (list, type = "start")
                           "' must be a vector of two numeric values", 
                           sep = ""), `8` = paste("element '", 
                           names(list)[i], "' of '", deparse(substitute(list)), 
-                          "' must be either 'length', 'precision'", 
-                          "\n", " or 'classification'", sep = ""), 
+                          "' must hold only 'length', 'precision'", 
+                          "\n", " 'classification' or 'minInfo'", sep = ""), 
                           `9` = paste("element '", names(list)[i], 
                             "' of '", deparse(substitute(list)), 
                             "' must be a vector of two numeric and", 
@@ -180,6 +183,9 @@ testList<-function (list, type = "start")
                             sep = ""), `16` = paste("element '", 
                             names(list)[i], "' of '", deparse(substitute(list)), 
                             "' must be a vector of numeric values", 
+                            sep = ""), `17` = paste("element '", 
+                            names(list)[i], "' of '", deparse(substitute(list)), 
+                            "' must be either 'length' or 'precision'", 
                             sep = ""))
                         break
                       }

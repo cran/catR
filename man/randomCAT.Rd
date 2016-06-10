@@ -11,16 +11,16 @@
 
 \usage{
 randomCAT(trueTheta, itemBank, model = NULL, responses = NULL, genSeed = NULL, 
- 	maxItems = 50, cbControl = NULL, nAvailable = NULL, start = 
- 	list(fixItems = NULL, seed = NULL, nrItems = 1, theta = 0, D = 1, randomesque = 1,
+ 	cbControl = NULL, nAvailable = NULL, start = list(fixItems = NULL, 
+ 	seed = NULL, nrItems = 1, theta = 0, D = 1, randomesque = 1, 
  	startSelect = "MFI"), test = list(method = "BM", priorDist = "norm", 
  	priorPar = c(0, 1), range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), 
  	itemSelect = "MFI", infoType = "observed", randomesque = 1, AP = 1, 
- 	constantPatt = NULL), 	stop = list(rule = "length", thr = 20, 
- 	alpha = 0.05), final = list(method = "BM", priorDist = "norm", 
- 	priorPar = c(0, 1), range = c(-4, 4), 	D = 1,parInt = c(-4, 4, 33), 
- 	alpha = 0.05), allTheta = FALSE, save.output = FALSE, output = c("path", 
- 	"name", "csv"))
+ 	proRule = "length", proThr = 20,constantPatt = NULL), 
+ 	stop = list(rule = "length", thr = 20, alpha = 0.05), 
+ 	final = list(method = "BM", priorDist = "norm", priorPar = c(0, 1), 
+ 	range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), alpha = 0.05), 
+ 	allTheta = FALSE, save.output = FALSE, output = c("path", "name", "csv"))
 \method{print}{cat}(x, ...)
 \method{plot}{cat}(x, ci = FALSE, alpha = 0.05, trueTh = TRUE, classThr = NULL, 
  	save.plot = FALSE, save.options = c("path", "name", "pdf"),...)
@@ -32,7 +32,6 @@ randomCAT(trueTheta, itemBank, model = NULL, responses = NULL, genSeed = NULL,
 \item{model}{either \code{NULL} (default) for dichotomous models, or any suitable acronym for polytomous models. Possible values are \code{"GRM"}, \code{"MGRM"}, \code{"PCM"}, \code{"GPCM"}, \code{"RSM"} and \code{"NRM"}. See \bold{Details}.}
 \item{responses}{either \code{NULL} (default) or a vector of pre-specified item responses with as many components as the rows of \code{itemBank}. See \bold{Details}.}
 \item{genSeed}{either a numeric value to fix the random generation of responses pattern or \code{NULL} (default). Ignored if \code{responses} is not \code{NULL}. See \bold{Details}.}
- \item{maxItems}{numeric: the maximal number of items to be administered (default is 50).}
  \item{cbControl}{either a list of accurate format to control for content balancing, or \code{NULL}. See \bold{Details}.}
  \item{nAvailable}{either a boolean vector indicating which items (denoted by 1's) are available at the start of the test and which (denoted by 0's) are not, or \code{NULL} (default). See \bold{Details}.}
  \item{start}{a list with the options for starting the adaptive test. See \bold{Details}.}
@@ -56,12 +55,12 @@ randomCAT(trueTheta, itemBank, model = NULL, responses = NULL, genSeed = NULL,
  The function \code{randomCAT} returns a list of class "cat" with the following arguments:
  \item{trueTheta}{the value of the \code{trueTheta} argument.}
 \item{model}{the value of the \code{model} argument.}
- \item{maxItems}{the value of the \code{maxItems} argument.}
  \item{testItems}{a vector with the items that were administered during the test.}
  \item{itemPar}{a matrix with the parameters of the items administered during the test.}
  \item{pattern}{the generated response pattern (as vector of 0 and 1 entries).}
  \item{thetaProv}{a vector with the provisional ability estimates.}
- \item{seprov}{a vector with the standard errors of the provisional ability estimates.}
+ \item{seProv}{a vector with the standard errors of the provisional ability estimates.}
+ \item{ruleFinal}{either the stopping rule(s) that was (were) satisfied to make the CAT stop, or \code{NULL}.}
  \item{thFinal}{the final ability estimate.}
  \item{seFinal}{the standrad error of the final ability estimate.}
  \item{ciFinal}{the confidence interval of the final ability estimate.}
@@ -89,7 +88,7 @@ randomCAT(trueTheta, itemBank, model = NULL, responses = NULL, genSeed = NULL,
  \item{stopRule}{the value of the \code{stop$rule} argument (or its default value if missing).}
  \item{stopThr}{the value of the \code{stop$thr} argument (or its default value if missing).}
  \item{stopAlpha}{the value of the \code{stop$alpha} argument (or its default value if missing).}
- \item{endWarning}{a logical indactor indicating whether the adaptive test stopped because the stopping rule was satisfied or not.}
+ \item{endWarning}{a logical indactor indicating whether the adaptive test stopped because the stopping rule(s) was (were) satisfied, or becasue all items in the bank were administered.}
  \item{finalMethod}{the value of the \code{final$method} argument (or its default value if missing).}
  \item{finalDist}{the value of the \code{final$priorDist} argument (or its default value if missing).}
  \item{finalPar}{the value of the \code{final$priorPar} argument (or its default value if missing).}
@@ -152,19 +151,19 @@ If the argument \code{nrItems} is set to zero, then no starting item is selected
  \item{\code{infoType}: character: the type of information function to be used for next item selection. Possible values are \code{"observed"} (default) for observed information function, and \code{"Fisher"} for Fisher information function. Ignored if \code{itemselect} is not \code{"MEI"}.}
  \item{\code{randomesque}: integer: the number of items to be chosen from the next item selection rule, among those the next item to be administered will be randomly picked up. Default value is 1 and leads to usual selection of the optimal item (Kingsbury and Zara, 1989).}
 \item{\code{AP}: the acceleration parameter required for progressive and proportional methods, with default value 1. Ignored with all other selection methods.}
+\item{\code{proRule}: the stopping rule considered for progressive and proportional methods, with possible values \code{"length"} (default), \code{"precision"} or both. Ignored with all other selection methods.}
+\item{\code{proThr}: the stopping rule threshold considered for progressive and proportional methods. Default value is 20. Ignored with all other selection methods.}
 \item{\code{constantPatt}: character: the method to estimate ability in case of constant pattern (i.e. only correct or only incorrect responses). Can be either \code{NULL} (default), \code{"BM"}, \code{"EAP"}, \code{"WL"}, \code{"fixed4"}, \code{"fixed7"} or \code{"var"}. \emph{Currently only implemented for dichotomous IRT models}.}
  }
  These arguments are passed to the functions \code{\link{thetaEst}} and \code{\link{semTheta}} to estimate the ability level and the standard error of this estimate. In addition, some arguments are passed to \code{\link{nextItem}} to select the next item appropriately.
 
  The \code{stop} list can contain one or several of the following arguments:
  \itemize{
- \item{\code{rule}: a character string specifying the type of stopping rule. Possible values are: \code{"length"} (default),
-to stop the test after a pre-specified number of items administered; \code{"precision"}, to stop the test 
-when the provisional standard error of ability becomes less than or equal to the pre-specified value; and \code{"classification"}, for which the test ends whenever the provisional confidence interval (set by the \code{alpha} argument) does not hold the classification threshold anymore (this is also called the ACI rule; see e.g. Thomson, 2009).}
- \item{\code{thr}: a numeric value fixing the threshold of the stopping rule. If \code{rule="length"}, \code{thr} is the
-maximal number of items to be administered (in practice, it is replaced by the value of the \code{maxItems} argument if the latter is smaller than \code{thr}). If \code{rule="precision"}, \code{thr} is the precision level (i.e. the standard error) to be reached before stopping. Finally, if \code{rule="classification"}, \code{thr} corresponds to the ability level which serves as a classification rule (i.e. which must not be covered by the provisional confidence interval). The \code{"classification"} rule is not available for the progressive and proportional item selection rules.}
+ \item{\code{rule}: a vector of character strings specifying the stopping rules. Possible values are: \code{"length"} (default), to stop the test after a pre-specified number of items administered; \code{"precision"}, to stop the test 
+when the provisional standard error of ability becomes less than or equal to the pre-specified value; \code{"classification"}, for which the test ends whenever the provisional confidence interval (set by the \code{alpha} argument) does not hold the classification threshold anymore (this is also called the ACI rule; see e.g. Thomson, 2009); and \code{"minInfo"} to stop the test if the maximum item information of the available items at current ability estimate is smaller than the prespecified threshold. Can take a single value.}
+ \item{\code{thr}: a vector of numeric values fixing the threshold(s) of the stopping rule(s). If \code{rule="length"}, \code{thr} is the maximal number of items to be administered. If \code{rule="precision"}, \code{thr} is the precision level (i.e. the standard error) to be reached before stopping. If \code{rule="classification"}, \code{thr} corresponds to the ability level which serves as a classification rule (i.e. which must not be covered by the provisional confidence interval). Finally, If \code{rule="minInfo"}, \code{thr} corresponds to the minimum item information that can be observed in the bank of remaining available items. The \code{"classification"} rule is not available for the progressive and proportional item selection rules.}
  \item{\code{alpha}: the significance (or \eqn{\alpha}) level for computing the priovisional confidence interval of ability.
-Ignored if \code{rule} is not \code{"classification"}.}
+Ignored if \code{rule} is not \code{"classification"}. \emph{Important:} the \code{thr} value smust be sorted in the same order of appearance as the \code{rule} methods. }
  }
 
  Eventually, the \code{final} list can contain one or several arguments of the \code{test} list (with possiblly different values), as well as the additional \code{alpha} argument. The latter specifies the \eqn{\alpha} level of the final confidence interval of ability, which is computed as
@@ -175,9 +174,7 @@ Ignored if \code{rule} is not \code{"classification"}.}
 
 Usually the ability estimates and related standard errors are computed right after the administration of the starting items (that is, if \emph{k} starting items are administered, the first \emph{(k-1)} ability levels and standard errors are missing). This can however be avoided by fixing the argument \code{allTheta} to \code{TRUE} (by default it is \code{FALSE}). In this case, all provisional ability estimates and standard errors are computed and returned, but in the display of th output file, the first \emph{(k-1)} abilities and standard errors are printed in parentheses (otherwise they are returned as \code{NA} values). Note that \code{allTheta} is ignored if no starting item was selected (that is, if argument \code{nrItems} of the \code{start} list is set to zero).
 
- The output of \code{randomCAT}, as displayed by the \code{print.cat} function, can be stored in a text file provided that
- \code{save.output} is set to \code{TRUE} (the default value \code{FALSE} does not execute the storage). In this case, the \code{(output} argument mus hold three character values: the path to where the output file must be stored, the name of
- the output file, and the type of output file. If the path is not provided (i.e. left to its default value \code{"path"}), it will be saved in the default working directory. The default name is \code{"name"}, and the default type is \code{"csv"}. Any other value yields a text file. See the \bold{Examples} section for an illustration. 
+ The output of \code{randomCAT}, as displayed by the \code{print.cat} function, can be stored in a text file provided that  \code{save.output} is set to \code{TRUE} (the default value \code{FALSE} does not execute the storage). In this case, the \code{(output} argument mus hold three character values: the path to where the output file must be stored, the name of  the output file, and the type of output file. If the path is not provided (i.e. left to its default value \code{"path"}), it will be saved in the default working directory. The default name is \code{"name"}, and the default type is \code{"csv"}. Any other value yields a text file. See the \bold{Examples} section for an illustration. 
 
  The function \code{plot.cat} represents the set of provisional and final ability estimates througghout the test. Corresponding confidence intervals (with confidence level defined by the argument \code{alpha}) are also drawn if \code{ci=TRUE} (which is \emph{not} the default value), except when stepsize adjustment was made for constant patterns (as the standard error cannot be estimated at this stage). The true ability level can be drawn by a horizontal solid line by specifying \code{trueTh=TRUE} (which is the default value); setting it to \code{FALSE} will undo the drawing. Finally, any classification threshold can be additionally displayed by specifying a numeric value to the argument \code{classThr}. The default value \code{NULL} does not display any threshold.
 
@@ -265,6 +262,12 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  res <- randomCAT(0, bank, start = start, test = test, stop = stop, final = final)
 
 \dontrun{
+ # Update of the stopping rule: by adding a length criterion, with threshold of 15 items
+ stop <- list(rule = c("precision", "length"), thr = c(0.3, 15))
+
+ # CAT test
+ res <- randomCAT(0, bank, start = start, test = test, stop = stop, final = final)
+
 
  # Creation of a (purely artificial) response pattern for post-hoc simulation
  resp <- rbinom(nrow(bank), 1, 0.5)

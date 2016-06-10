@@ -1,5 +1,5 @@
 simulateRespondents<-function (thetas, itemBank, responsesMatrix = NULL, model = NULL, 
-    genSeed = NULL, maxItems = 50, cbControl = NULL, rmax = 1, 
+    genSeed = NULL, cbControl = NULL, rmax = 1, 
     Mrmax = "restricted", start = list(fixItems = NULL, seed = NULL, 
         nrItems = 1, theta = 0, randomesque = 1, startSelect = "MFI"), 
     test = list(method = "BM", priorDist = "norm", priorPar = c(0, 
@@ -14,14 +14,14 @@ simulateRespondents<-function (thetas, itemBank, responsesMatrix = NULL, model =
         if (!is.null(responsesMatrix)) {
             resp <- as.matrix(responsesMatrix)
             res <- randomCAT(trueTheta = thetas, itemBank = itemBank, 
-                responses = resp[1, ], model = model, maxItems = maxItems, 
+                responses = resp[1, ], model = model,
                 cbControl = cbControl, start = start, test = test, 
                 stop = stop, final = final, save.output = save.output, 
                 output = output, allTheta = TRUE)
         }
         else {
             res <- randomCAT(trueTheta = thetas, itemBank = itemBank, 
-                model = model, maxItems = maxItems, cbControl = cbControl, 
+                model = model, cbControl = cbControl, 
                 start = start, test = test, stop = stop, final = final, 
                 save.output = save.output, output = output, allTheta = TRUE)
         }
@@ -52,10 +52,10 @@ simulateRespondents<-function (thetas, itemBank, responsesMatrix = NULL, model =
             thrOK <- NULL
             if (!is.null(responsesMatrix)) 
                 resp <- as.matrix(responsesMatrix)
-            if (stop$rule == "length") 
-                itemsRow = stop$thr
-            if (stop$rule == "precision" | stop$rule == "classification") 
-                itemsRow = maxItems
+            if (sum(stop$rule == "length")==1) 
+                itemsRow = stop$thr[stop$rule == "length"]
+            else
+                itemsRow = nrow(itemBank)
             row.head1 <- rep("items.administrated", itemsRow)
             row.head1[1:length(row.head1)] <- paste(row.head1[1:length(row.head1)], 
                 1:length(row.head1), sep = ".")
@@ -90,13 +90,13 @@ simulateRespondents<-function (thetas, itemBank, responsesMatrix = NULL, model =
                 if (!is.null(responsesMatrix)) {
                   rCAT <- randomCAT(trueTheta = thetas[i], itemBank = itemBank, 
                     responses = resp[i, ], model = model, genSeed = genSeed[i], 
-                    maxItems = maxItems, cbControl = cbControl, 
+                    cbControl = cbControl, 
                     nAvailable = nAvailable, start = start, test = test, 
                     stop = stop, final = final, allTheta = TRUE)
                 }
                 else {
                   rCAT <- randomCAT(trueTheta = thetas[i], itemBank = itemBank, 
-                    model = model, genSeed = genSeed[i], maxItems = maxItems, 
+                    model = model, genSeed = genSeed[i], 
                     cbControl = cbControl, nAvailable = nAvailable, 
                     start = start, test = test, stop = stop, 
                     final = final, allTheta = TRUE)
@@ -108,13 +108,8 @@ simulateRespondents<-function (thetas, itemBank, responsesMatrix = NULL, model =
                 exposureRates = exposure/i
                 numberItems <- c(numberItems, length(rCAT$testItems))
                 totalSeFinal <- c(totalSeFinal, rCAT$seFinal)
-                if (rCAT$stopRule == "precision") 
-                  thrOK <- c(thrOK, rCAT$seFinal <= stop$thr)
-                if (rCAT$stopRule == "classification") 
-                  thrOK <- c(thrOK, (rCAT$trueTheta - stop$thr) * 
-                    (rCAT$thFinal - stop$thr) >= 0)
-                if (rCAT$stopRule == "length") 
-                  thrOK <- c(thrOK, 1)
+                if (!is.null(rCAT$ruleFinal)) thrOK <- c(thrOK, 1)
+else thrOK <- c(thrOK, 0)
                 items.administrated <- rep(-99, itemsRow)
                 responses <- rep(-99, itemsRow)
                 provisional.theta <- rep(-99, itemsRow)
@@ -167,7 +162,7 @@ simulateRespondents<-function (thetas, itemBank, responsesMatrix = NULL, model =
             cat("Simulation process: ", 100, "%\n")
             res <- list(thetas = thetas, itemBank = itemBank, 
                 responsesMatrix = responsesMatrix, model = model, 
-                genSeed = genSeed, maxItems = maxItems, cbControl = cbControl, 
+                genSeed = genSeed, cbControl = cbControl, 
                 rmax = rmax, Mrmax = Mrmax, start = start, test = test, 
                 stop = stop, final = final, save.output = save.output, 
                 output = output, estimatedThetas = estimatedThetas, 
@@ -245,14 +240,25 @@ else cat("Random seed was fixed (see argument 'genSeed')", "\n", "\n")
     cat("IRT model:",x$model, "\n", "\n")
   cat("Item selection criterion:", x$test$itemSelect,"\n")
   #cat("Starting selection rule:", x$start$startSelect  , "\n")
-  cat("Stopping rule:", x$stop$rule, "\n")
-  if (x$stop$rule=="length")
-    cat("\t", "Test length:", x$stop$thr, "\n")
-  if (x$stop$rule=="precision")
-    cat("\t", "Standard error:", x$stop$thr, "\n")
-  if (x$stop$rule=="classification")
-    cat("\t", "Ability level:", x$stop$thr, "\n")
-  cat("rmax:",  x$rmax, "\n")
+
+  if (length(x$stop$rule) == 1) 
+        cat(" Stopping rule:", "\n")
+    else cat(" Stopping rules:", "\n")
+  for (i in 1:length(x$stop$rule)) {
+        met4 <- switch(x$stop$rule[i], length = "length of test", 
+            precision = "precision of ability estimate", classification = paste("classification based on ", 
+                100 * (1 - x$stop$alpha), "% confidence interval", 
+                sep = ""), minInfo = "minimum available item information")
+        if (length(x$stop$rule) == 1) 
+            cat("\t","Stopping criterion:", met4, "\n")
+        else cat("\t","Stopping criterion ", i, ": ", met4, "\n", 
+            sep = "")
+        switch(x$stop$rule[i], precision = cat("\t","  Maximum SE value:", 
+            round(x$stop$thr[i], 2), "\n"), classification = cat("\t","  Classification threshold:", 
+            round(x$stop$thr[i], 2), "\n"), length = cat("\t","  Maximum test length:", 
+            round(x$stop$thr[i], 2), "\n"))
+    }
+  cat(" rmax:",  x$rmax, "\n")
   if (x$rmax < 1)
     cat("\t", "Restriction method:",  x$Mrmax, "\n")
   cat("\n")
@@ -263,7 +269,7 @@ else cat("Random seed was fixed (see argument 'genSeed')", "\n", "\n")
     cat("Correlation(assigned thetas,CAT estimated thetas):", round(x$correlation, 4) ,"\n")
   cat("RMSE:", round(x$RMSE,4), "\n")
   cat("Bias:", round(x$bias,4), "\n")
-  if (x$stop$rule != "length")
+  if (sum(x$stop$rule == "length")==0)
     cat("Proportion of simulees that satisfy the stop criterion:", mean(x$thrOK), "\n", "\n")
   cat("Maximum exposure rate:", round(max(x$exposureRates),4),"\n")
   cat("Number of item(s) with maximum exposure rate:", length(which(x$exposureRates==max(x$exposureRates))), "\n")
@@ -278,16 +284,8 @@ else cat("Random seed was fixed (see argument 'genSeed')", "\n", "\n")
   deccondBias <- c("Mean bias", round(x$condBias,3))
   deccondnItems <- c("Mean test length", round(x$condnItems,3))
   deccondSE <- c("Mean standard error", round(x$condSE,3))
-  if (x$stop$rule == "precision") 
-    deccondthrOK <- c("Proportion stop satisfying SE", round(x$condthrOK,3))
-  else
-    deccondthrOK <- c("Proportion correct classification", round(x$condthrOK,3))
-  decndecile <- c("Number of simulees", x$ndecile)
-  if (x$stop$rule == "length") 
-    condDeciles <- rbind(condDeciles, decTheta, decRMSE, deccondBias, decndecile)
-  if (x$stop$rule == "precision") 
-    condDeciles <- rbind(condDeciles, decTheta, decRMSE, deccondBias, deccondnItems, deccondSE, deccondthrOK, decndecile)
-  if (x$stop$rule == "classification") 
+    deccondthrOK <- c("Proportion stop rule satisfied", round(x$condthrOK,3))
+    decndecile <- c("Number of simulees", x$ndecile)
     condDeciles <- rbind(condDeciles, decTheta, decRMSE, deccondBias, deccondnItems, deccondSE, deccondthrOK, decndecile)
   colnames(condDeciles) <- c("Measure","D1","D2","D3","D4","D5","D6","D7","D8","D9","D10")  
   print(condDeciles, row.names=FALSE)
@@ -323,7 +321,7 @@ plot.catResult <- function(x, type="all", deciles="theta", save.plot=FALSE, save
     stop("'deciles' must be either 'theta' or 'deciles'",call.=FALSE)
   if (is.null(type))
     stop("invalid 'type' argument",call.=FALSE)
-  if ((type=="cumNumberItems" | type=="condThr" | type=="numberItems") & x$stop$rule=="length")
+  if ((type=="cumNumberItems" | type=="condThr" | type=="numberItems") & (length(x$stop$rule)==1 & sum(x$stop$rule=="length")==1))
     stop("mismatch between 'type' value and 'length' stopping rule",call.=FALSE)
   if (type=="expRatePara" & (x$model=="PCM" | x$model=="NRM"))
     stop("mismatch between 'expRatePara' type value and 'PCM' or 'NRM' model",call.=FALSE)
@@ -377,13 +375,11 @@ plot.catResult <- function(x, type="all", deciles="theta", save.plot=FALSE, save
       plot(xline, x$condSE, type="o", main="Conditional Standard Error", xlab=thetasDeciles, ylab="Standard Error")
     }
     plot.condThr <-function(x, ...){
-      if (x$stop$rule=="precision")
-        plot(xline, x$condthrOK, type="o", main="Stop Satisfying SE", xlab=thetasDeciles, ylab="Proportion")
-      else
-        plot(xline, x$condthrOK, type="o", main="Correct Classification", xlab=thetasDeciles, ylab="Proportion")
+      
+        plot(xline, x$condthrOK, type="o", main="Stop rule satisfied", xlab=thetasDeciles, ylab="Proportion")
     }
     if (type=="all"){
-      if (x$stop$rule == "precision" | x$stop$rule == "classification") {  
+      if (sum(x$stop$rule == "precision")==1 | sum(x$stop$rule == "classification")==1) {  
         par(mfrow=c(3,3))
         plot.trueEst(x) 
         plot.condBias(x)

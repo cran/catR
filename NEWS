@@ -6,7 +6,49 @@
 
 
 ------------------------------------
-- Changes in catR 3.6 (2016-05-09) -
+- Changes in catR 3.8 (2016-06-10) -
+------------------------------------
+
+MAJOR UPDATES
+
+  o  The setting of stopping rules was updated. It is now
+     possible to expand the 'stop$rule' vector with more
+     than one stopping rule accronym, so that the CAT stops
+     once at least one of the rules is satisfied. The 
+     'stop$thr' must also be expanded accordingly with the
+     corresponding stopping thresholds.
+
+  o  A new testing function called 'checkStopRule()' was
+     introduced. It is used internally to test whether at
+     least one of the stopping rules was satisfied. 
+
+  o  Given the two updaters above, the main argument 
+     'maxItems' of the randomCAT()' and 
+     'simulateRespondents()'functions was removed, and the
+     'testList' function was updated accordingly.
+
+  o  A bug was fixed in the 'randomCAT()' function as a
+     consequence of the modification in the previous
+     update. When several items were selected at the start,
+     a perfect response pattern was generated, and the
+     stepsize adjustment approch was chosen, then an
+     error was occurring in computing the ability estimate.
+
+
+MINOR UPDATES
+
+  o  The 'print.cat()' function had an issue in displaying
+     the output appropriately in case of constant pattern 
+     at the start of the CAT. This has been fixed.
+
+  o  The help file of 'startItems()' was updated to correct
+     a former description of the arguments.
+
+  o  Some typos were fixed.
+
+
+------------------------------------
+- Changes in catR 3.7 (2016-05-09) -
 ------------------------------------
 
 MAJOR UPDATES

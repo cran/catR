@@ -10,7 +10,7 @@ This command runs a set of adaptive tests, for a given item bank, a set of abili
 
 \usage{
 simulateRespondents(thetas, itemBank, responsesMatrix = NULL, model = NULL, 
-  	genSeed = NULL, maxItems = 50, cbControl = NULL, rmax = 1, Mrmax = "restricted", 
+  	genSeed = NULL, cbControl = NULL, rmax = 1, Mrmax = "restricted", 
   	start = list(fixItems = NULL, seed = NULL, nrItems = 1, theta = 0, 
   	randomesque = 1, startSelect = "MFI"),test = list(method = "BM", 
   	priorDist = "norm", priorPar = c(0,1), range = c(-4, 4), D = 1, 
@@ -30,7 +30,6 @@ simulateRespondents(thetas, itemBank, responsesMatrix = NULL, model = NULL,
  \item{responsesMatrix}{numeric: either \code{NULL} (default) or a suitable matrix of item responses. See \bold{Details}.}
  \item{model}{either \code{NULL} (default) for dichotomous models, or any suitable acronym for polytomous models. Possible values are \code{"GRM"}, \code{"MGRM"}, \code{"PCM"}, \code{"GPCM"}, \code{"RSM"} and \code{"NRM"}. See \bold{Details}.}
 \item{genSeed}{either a vector of numeric values to fix the random seed of each generated pattern, or \code{NULL} (default). Ignored if \code{responsesMatrix} is not \code{NULL}. See \bold{Details}.}
- \item{maxItems}{numeric: the maximal number of items to be administered (default is 50).}
  \item{cbControl}{either a list of accurate format to control for content balancing, or \code{NULL}. See \bold{Details}.}
 \item{rmax}{numeric: the maximum exposure rate (default is 1).}
 \item{Mrmax}{character: the method for controlling maximum exposure rate. Possible values are \code{"restricted"}(default) or \code{"IE"}. See \bold{Details}.}
@@ -58,7 +57,6 @@ simulateRespondents(thetas, itemBank, responsesMatrix = NULL, model = NULL,
 \item{responsesMatrix}{the value of the \code{responsesMatrix} argument.}
 \item{model}{the value of the \code{model} argument.}
 \item{genSeed}{the value of the \code{genSeed} argument.}
-\item{maxItems}{the value of the \code{maxItems} argument.}
 \item{cbControl}{the value of the \code{cbControl} argument.}
 \item{rmax}{the value of the \code{rmax} argument.}
 \item{Mrmax}{the value of the \code{Mrmax} argument.}
@@ -85,7 +83,7 @@ simulateRespondents(thetas, itemBank, responsesMatrix = NULL, model = NULL,
 \item{condthrOK}{a vector with conditional proportion of respondents that finish the test satisfying the stop criteria per decile.}
 \item{ndecile}{a vector with the number of respondents per decile.}
 \item{final.values.df}{a data frame with true ability levels, final ability estimates and standard errors, and test lengths.}
- \item{responses.df}{a data frame with all items administered, all item responses and all provisional ability estimates. -99 is displayed when the actual test length is smaller than \code{maxItems} for those item positions where no item was administered as the stop criterion was already reached.}
+ \item{responses.df}{a data frame with all items administered, all item responses and all provisional ability estimates. -99 is displayed when the actual test length is smaller than the maximum test length for those item positions where no item was administered as the stop criterion was already reached.}
 \item{start.time}{the CPU time at the start of the CAT generation.}
 \item{finish.time}{the CPU time at the end of all CAT generations.}
 }

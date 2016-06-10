@@ -63,17 +63,7 @@ If the \code{"progressive"} or \code{"proportional"} methods} are selected, this
  Otherwise, one of the first two methods will be used (see also \code{\link{testList}} for details about debugging 
  misspecifications of the starting arguments).
 
- The sequence of initial ability estimates is specified by the triplet of arguments (\code{nrItems}, \code{theta},
- \code{halfRange}). As mentioned above, \code{nrItems} is the number of items to select, and thus the length of the 
- sequence. The \code{theta} value is the central ability value, and \code{halfRange} sets half of the range of the 
- ability values. These three arguments altogether permit to define any type of (equidistant) ability values. For 
- instance, 
- \itemize{
- \item{the set (-1, 1) can be obtained by specifying the triplet to (2, 0, 1);}
- \item{the set (-1, 0, 1) can be obtained by specifying the triplet to (3, 0, 1);}
- \item{the set (-1, 0, 1, 2) can be obtained by specifying the triplet to (4, 0.5, 1.5);}
- \item{etc.}
- }  
+ The sequence of initial ability estimates is specified by the argument \code{theta}. For each component of \code{theta} one item will be picked up optimally according to the chosen \code{startSelect} argument. however, it is possible to perform randomesque selection at this stage by setting the \code{randomesque} argument to an integer value larger than one. In this case, the \code{randomesque} most optimal items are chosen per value of \code{theta}, and the final starting item is chosen randomly among the \code{randomesque} items. By default, only one item is picked up per ability level (and is therefore \emph{the} most optimal one).
 
 Only part of the full item bank can be made available for the selection of the first item(s), while others can be dropped out from this first step. This is fixed by the \code{nAvailable} argument, which is a vector with as many components as items in the bank and with zeros and ones only. Values 1 code for available items, values 0 for non-available items. By default, \code{nAvailable} is \code{NULL} and all items are available. Note that \code{nrItems} should never be larger than the number of available items (i.e. \code{sum(nAvailable)}). Otherwise an error message is returned.
  }
