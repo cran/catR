@@ -6,6 +6,34 @@
 
 
 ------------------------------------
+- Changes in catR 3.9 (2016-07-15) -
+------------------------------------
+
+MAJOR UPDATES
+
+  o  Fixing the seed when selecting item(s) with the 
+     'randomesque' method was added in the startItems()
+     and nexItem() functions. The argument 'random.seed'
+     may take a numeric value to fix this random 
+     selection, or set to NULL to avoid fixing the seed.
+     Many thanks to William Lorie (Pearson) for noticing
+     this issue.
+
+  o  Functions testList() and randomCAT() were updated
+     according to the modifications above.
+
+
+MINOR UPDATES
+
+  o  The 'print.catResult' from simulateRespondents()
+     function was updated to display the appropriate
+     dichotomous IRT model that is used (formely only
+     '4PL' was returned).
+
+  o  Some typos were fixed.
+
+
+------------------------------------
 - Changes in catR 3.8 (2016-06-10) -
 ------------------------------------
 

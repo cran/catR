@@ -1,15 +1,15 @@
 randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL, 
-    genSeed = NULL, cbControl = NULL, nAvailable = NULL, 
-    start = list(fixItems = NULL, seed = NULL, nrItems = 1, theta = 0, 
-        D = 1, randomesque = 1, startSelect = "MFI"), test = list(method = "BM", 
-        priorDist = "norm", priorPar = c(0, 1), range = c(-4, 
-            4), D = 1, parInt = c(-4, 4, 33), itemSelect = "MFI", 
-        infoType = "observed", randomesque = 1, AP = 1, proRule="length",proThr=20,constantPatt = NULL), 
-    stop = list(rule = "length", thr = 20, alpha = 0.05), final = list(method = "BM", 
-        priorDist = "norm", priorPar = c(0, 1), range = c(-4, 
-            4), D = 1, parInt = c(-4, 4, 33), alpha = 0.05), 
-    allTheta = FALSE, save.output = FALSE, output = c("path", 
-        "name", "csv")) 
+    genSeed = NULL, cbControl = NULL, nAvailable = NULL, start = list(fixItems = NULL, 
+        seed = NULL, nrItems = 1, theta = 0, D = 1, randomesque = 1, random.seed=NULL,
+        startSelect = "MFI"), test = list(method = "BM", priorDist = "norm", 
+        priorPar = c(0, 1), range = c(-4, 4), D = 1, parInt = c(-4, 
+            4, 33), itemSelect = "MFI", infoType = "observed", 
+        randomesque = 1, random.seed=NULL, AP = 1, proRule = "length", proThr = 20, 
+        constantPatt = NULL), stop = list(rule = "length", thr = 20, 
+        alpha = 0.05), final = list(method = "BM", priorDist = "norm", 
+        priorPar = c(0, 1), range = c(-4, 4), D = 1, parInt = c(-4, 
+            4, 33), alpha = 0.05), allTheta = FALSE, save.output = FALSE, 
+    output = c("path", "name", "csv")) 
 {
     if (missing(trueTheta)) {
         if (is.null(responses)) 
@@ -44,7 +44,7 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
     }
     internalCAT <- function() {
         startList <- list(fixItems = start$fixItems, seed = start$seed, 
-            nrItems = NULL, theta = start$theta, D = 1, randomesque = 1, 
+            nrItems = NULL, theta = start$theta, D = 1, randomesque = 1, random.seed=NULL,
             startSelect = "MFI")
         startList$nrItems <- ifelse(is.null(start$nrItems), 1, 
             start$nrItems)
@@ -53,6 +53,7 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
         startList$D <- ifelse(is.null(start$D), 1, start$D)
         startList$randomesque <- ifelse(is.null(start$randomesque), 
             1, start$randomesque)
+        if (!is.null(start$random.seed)) startList$random.seed<-start$random.seed 
         startList$startSelect <- ifelse(is.null(start$startSelect), 
             "MFI", start$startSelect)
         start <- startList
@@ -61,14 +62,13 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
         stop <- stopList
         testList <- list(method = NULL, priorDist = NULL, priorPar = c(0, 
             1), range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), 
-            itemSelect = "MFI", infoType = "observed", randomesque = 1, 
+            itemSelect = "MFI", infoType = "observed", randomesque = 1, random.seed=NULL,
             AP = 1, rule = test$proRule, thr = test$proThr, constantPatt = NULL)
         testList$method <- ifelse(is.null(test$method), "BM", 
             test$method)
- testList$rule <- ifelse(is.null(test$proRule), "length", 
+        testList$rule <- ifelse(is.null(test$proRule), "length", 
             test$proRule)
- testList$thr <- ifelse(is.null(test$proThr), 20, 
-            test$proThr)
+        testList$thr <- ifelse(is.null(test$proThr), 20, test$proThr)
         testList$priorDist <- ifelse(is.null(test$priorDist), 
             "norm", test$priorDist)
         if (!is.null(test$priorPar)) {
@@ -91,6 +91,7 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
             test$infoType)
         testList$randomesque <- ifelse(is.null(test$randomesque), 
             1, test$randomesque)
+        if (!is.null(test$random.seed)) testList$random.seed<-test$random.seed 
         testList$AP <- ifelse(is.null(test$AP), 1, test$AP)
         if (!is.null(test$constantPatt)) 
             testList$constantPatt <- test$constantPatt
@@ -119,13 +120,15 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
         finalList$alpha <- ifelse(is.null(final$alpha), 0.05, 
             final$alpha)
         final <- finalList
-        if ((sum(stop$rule=="classification")==1 | sum(stop$rule=="minInfo")==1) & (test$itemSelect == 
-            "progressive" | test$itemSelect == "proportional")) 
+        if ((sum(stop$rule == "classification") == 1 | sum(stop$rule == 
+            "minInfo") == 1) & (test$itemSelect == "progressive" | 
+            test$itemSelect == "proportional")) 
             stop("'classification' or 'minInfo' rule cannot be considered with \n neither 'progressive' nor 'proportional' item selection rules!", 
                 call. = FALSE)
         pr0 <- startItems(itemBank = itemBank, model = model, 
             fixItems = start$fixItems, seed = start$seed, nrItems = start$nrItems, 
-            theta = start$theta, D = start$D, randomesque = start$randomesque, 
+            theta = start$theta, D = start$D, randomesque = start$randomesque,
+            random.seed=start$random.seed, 
             startSelect = start$startSelect, nAvailable = nAvailable)
         ITEMS <- pr0$items
         PAR <- rbind(pr0$par)
@@ -152,8 +155,9 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
                 constantPatt = test$constantPatt)
         else SETH <- NA
         thProv <- TH
-        if (!is.na(SETH)) stop.cat <- checkStopRule(th=TH,se=SETH,
-         N=length(PATTERN),it=itemBank[-ITEMS,],model=model,stop=stop)
+        if (!is.na(SETH)) 
+            stop.cat <- checkStopRule(th = TH, se = SETH, N = length(PATTERN), 
+                it = itemBank[-ITEMS, ], model = model, stop = stop)
         if (stop.cat$decision) {
             finalEst <- thetaEst(PAR, PATTERN, model = model, 
                 D = final$D, method = final$method, priorDist = final$priorDist, 
@@ -167,16 +171,18 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
                 seFinal)
             endWarning <- FALSE
             RES <- list(trueTheta = trueTheta, model = model, 
-                testItems = ITEMS, itemPar = PAR, 
-                pattern = PATTERN, thetaProv = TH, seProv = SETH, ruleFinal=stop.cat$rule,
+                testItems = ITEMS, itemPar = PAR, pattern = PATTERN, 
+                thetaProv = TH, seProv = SETH, ruleFinal = stop.cat$rule, 
                 thFinal = finalEst, seFinal = seFinal, ciFinal = confIntFinal, 
                 genSeed = genSeed, startFixItems = start$fixItems, 
                 startSeed = start$seed, startNrItems = start$nrItems, 
                 startTheta = start$theta, startD = start$D, startRandomesque = start$randomesque, 
+                startRandomSeed = start$random.seed,
                 startSelect = start$startSelect, provMethod = test$method, 
                 provDist = test$priorDist, provPar = test$priorPar, 
                 provRange = test$range, provD = test$D, itemSelect = test$itemSelect, 
                 infoType = test$infoType, randomesque = test$randomesque, 
+                testRandomSeed = test$random.seed,
                 AP = test$AP, constantPattern = test$constantPatt, 
                 cbControl = cbControl, cbGroup = cbGroup, stopRule = stop$rule, 
                 stopThr = stop$thr, stopAlpha = stop$alpha, endWarning = endWarning, 
@@ -193,9 +199,9 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
                   method = test$method, parInt = test$parInt, 
                   priorDist = test$priorDist, priorPar = test$priorPar, 
                   infoType = test$infoType, D = test$D, range = test$range, 
-                  randomesque = test$randomesque, AP = test$AP, 
-                  cbControl = cbControl, cbGroup = cbGroup,  
-                  rule = test$rule, thr = test$thr, SETH = SETH[length(SETH)], 
+                  randomesque = test$randomesque, random.seed=test$random.seed, AP = test$AP, 
+                  cbControl = cbControl, cbGroup = cbGroup, rule = test$rule, 
+                  thr = test$thr, SETH = SETH[length(SETH)], 
                   nAvailable = nAvailable)
                 ITEMS <- c(ITEMS, pr$item)
                 PAR <- rbind(PAR, pr$par)
@@ -215,9 +221,11 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
                   priorDist = test$priorDist, priorPar = test$priorPar, 
                   parInt = test$parInt, constantPatt = test$constantPatt)
                 SETH <- c(SETH, seProv)
-                stop.cat<- checkStopRule(th=thProv,se=seProv,
-         N=length(PATTERN),it=itemBank[-ITEMS,],model=model,stop=stop)
-        if (stop.cat$decision | length(PATTERN)==nrow(itemBank)) break
+                stop.cat <- checkStopRule(th = thProv, se = seProv, 
+                  N = length(PATTERN), it = itemBank[-ITEMS, 
+                    ], model = model, stop = stop)
+                if (stop.cat$decision | length(PATTERN) == nrow(itemBank)) 
+                  break
             }
             finalEst <- thetaEst(PAR, PATTERN, model = model, 
                 D = final$D, method = final$method, priorDist = final$priorDist, 
@@ -229,19 +237,22 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
             confIntFinal <- c(finalEst - qnorm(1 - final$alpha/2) * 
                 seFinal, finalEst + qnorm(1 - final$alpha/2) * 
                 seFinal)
-            if (!stop.cat$decision) endWarning <- TRUE
+            if (!stop.cat$decision) 
+                endWarning <- TRUE
             else endWarning <- FALSE
             RES <- list(trueTheta = trueTheta, model = model, 
-                testItems = ITEMS, itemPar = PAR, 
-                pattern = PATTERN, thetaProv = TH, seProv = SETH, ruleFinal=stop.cat$rule,
+                testItems = ITEMS, itemPar = PAR, pattern = PATTERN, 
+                thetaProv = TH, seProv = SETH, ruleFinal = stop.cat$rule, 
                 thFinal = finalEst, seFinal = seFinal, ciFinal = confIntFinal, 
                 genSeed = genSeed, startFixItems = start$fixItems, 
                 startSeed = start$seed, startNrItems = start$nrItems, 
                 startTheta = start$theta, startD = start$D, startRandomesque = start$randomesque, 
+                startRandomSeed = start$random.seed,
                 startSelect = start$startSelect, provMethod = test$method, 
                 provDist = test$priorDist, provPar = test$priorPar, 
                 provRange = test$range, provD = test$D, itemSelect = test$itemSelect, 
-                infoType = test$infoType, randomesque = test$randomesque, 
+                infoType = test$infoType, randomesque = test$randomesque,
+                testRandomSeed = test$random.seed, 
                 AP = test$AP, constantPattern = test$constantPatt, 
                 cbControl = cbControl, cbGroup = cbGroup, stopRule = stop$rule, 
                 stopThr = stop$thr, stopAlpha = stop$alpha, endWarning = endWarning, 

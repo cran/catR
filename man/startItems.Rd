@@ -9,7 +9,8 @@
 
 \usage{
 startItems(itemBank, model = NULL, fixItems = NULL, seed = NULL, nrItems = 1, 
- 	 theta = 0, D = 1, randomesque = 1, startSelect = "MFI", nAvailable = NULL) 
+ 	 theta = 0, D = 1, randomesque = 1, random.seed = NULL, startSelect = "MFI",
+ 	 nAvailable = NULL) 
  }
 
 \arguments{
@@ -21,6 +22,7 @@ startItems(itemBank, model = NULL, fixItems = NULL, seed = NULL, nrItems = 1,
  \item{theta}{numeric: a vector of the initial ability levels for selecting the first items (default is the single value 0). Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}. See \bold{Details}.}
  \item{D}{numeric: the metric constant. Default is \code{D=1} (for logistic metric); \code{D=1.702} yields approximately the normal metric (Haley, 1952). Ignored if \code{model} is not \code{NULL} and if \code{startSelect} is not \code{"MFI"}.} 
  \item{randomesque}{integer: the number of 'randomesque' items to be picked up optimally for each value of \code{theta} vector, before random selection of a single one. Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}. See \bold{Details}.}
+\item{random.seed}{either \code{NULL} (default) or a numeric value to fix the random seed of randomesque selection of the items. Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}.}
  \item{startSelect}{character: the criterion for selecting the first items. Possible values are \code{"bOpt"}, \code{"thOpt"}, \code{"progressive"}, \code{"proportional"}, and \code{"MFI"} (default). See \bold{Details}.}
  \item{nAvailable}{either a boolean vector indicating which items (denoted by 1's) are available at the start of the test and which (denoted by 0's) are not, or \code{NULL} (default). See \bold{Details}.}
 }
@@ -126,6 +128,9 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
 
  # Same with 5 randomesque items per theta value
  startItems(bank, theta = c(-1, 0, 2), randomesque = 5)
+
+ # 5 randomesque items per theta value, with fixed random seed number
+ startItems(bank, theta = c(-1, 0, 2), randomesque = 5, random.seed = 1) 
 
  # Idem but with 'bOpt' criterion
  startItems(bank, theta = c(-1, 0, 2), startSelect = "bOpt")

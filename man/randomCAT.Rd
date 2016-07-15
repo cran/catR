@@ -13,14 +13,15 @@
 randomCAT(trueTheta, itemBank, model = NULL, responses = NULL, genSeed = NULL, 
  	cbControl = NULL, nAvailable = NULL, start = list(fixItems = NULL, 
  	seed = NULL, nrItems = 1, theta = 0, D = 1, randomesque = 1, 
- 	startSelect = "MFI"), test = list(method = "BM", priorDist = "norm", 
+ 	random.seed = NULL, startSelect = "MFI"), test = list(method = "BM", 
+ 	priorDist = "norm", priorPar = c(0, 1), range = c(-4, 4), D = 1, 
+ 	parInt = c(-4, 4, 33), itemSelect = "MFI", infoType = "observed", 
+ 	randomesque = 1, random.seed = NULL, AP = 1, proRule = "length", 
+ 	proThr = 20,constantPatt = NULL), stop = list(rule = "length", 
+ 	thr = 20, alpha = 0.05), final = list(method = "BM", priorDist = "norm", 
  	priorPar = c(0, 1), range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), 
- 	itemSelect = "MFI", infoType = "observed", randomesque = 1, AP = 1, 
- 	proRule = "length", proThr = 20,constantPatt = NULL), 
- 	stop = list(rule = "length", thr = 20, alpha = 0.05), 
- 	final = list(method = "BM", priorDist = "norm", priorPar = c(0, 1), 
- 	range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), alpha = 0.05), 
- 	allTheta = FALSE, save.output = FALSE, output = c("path", "name", "csv"))
+ 	alpha = 0.05), allTheta = FALSE, save.output = FALSE, output = c("path", 
+ 	"name", "csv"))
 \method{print}{cat}(x, ...)
 \method{plot}{cat}(x, ci = FALSE, alpha = 0.05, trueTh = TRUE, classThr = NULL, 
  	save.plot = FALSE, save.options = c("path", "name", "pdf"),...)
@@ -133,6 +134,7 @@ See the \code{\link{nextItem}} function for further details on how to specify \c
  \item{theta}{numeric: a vector of the initial ability levels for selecting the first items (default is the single value 0). Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}. See \code{\link{startItems}} for further details.}
  \item{\code{D}: numeric, the metric constant. Default is \code{D=1} (for logistic metric); \code{D=1.702} yields approximately the normal metric (Haley, 1952). Ignored if \code{model} is not \code{NULL} and if \code{startSelect} is not \code{"MFI"}.} 
  \item{randomesque}{integer: the number of 'randomesque' items to be picked up optimally for each value of \code{theta} vector, before random selection of a single one. Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}. See \code{\link{startItems}} for further details.}
+\item{random.seed}{either \code{NULL} (default) or a numeric value to fix the random seed of randomesque selection of the items. Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}.}
  \item{\code{startSelect}: the method for selecting the first items of the test, with possible values \code{"bOpt"} and \code{"MFI"} (default). Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}. See \code{\link{startItems}} for further details.}
  }
  These arguments are passed to the function \code{\link{startItems}} to select the first items of the test.
@@ -150,6 +152,7 @@ If the argument \code{nrItems} is set to zero, then no starting item is selected
  \item{\code{itemSelect}: the rule for next item selecion, with possible values \code{"MFI"} (default) for maximum Fisher information criterion; \code{"bOpt"} for optimal ability-difficulty match (or Urry's procedure) (not available if \code{model} is not \code{NULL}); \code{"thOpt"} for optimal theta selection (not available if \code{model} is not \code{NULL}); \code{"MLWI"} and \code{"MPWI"} for respectively maximum likelihood and posterior weighted information criterion; \code{"MEPV"} for minimum expected posterior variance; \code{"MEI"} for maximum expected information; \code{"KL"} and \code{"KLP"} for Kullback-Leibler and posterior Kullback-Leibler information methods; \code{"progressive"} and \code{"proportional"} for progressive and proportional methods; ; and \code{"random"} for random selection. For further details, see \code{\link{nextItem}}.}
  \item{\code{infoType}: character: the type of information function to be used for next item selection. Possible values are \code{"observed"} (default) for observed information function, and \code{"Fisher"} for Fisher information function. Ignored if \code{itemselect} is not \code{"MEI"}.}
  \item{\code{randomesque}: integer: the number of items to be chosen from the next item selection rule, among those the next item to be administered will be randomly picked up. Default value is 1 and leads to usual selection of the optimal item (Kingsbury and Zara, 1989).}
+\item{random.seed}{either \code{NULL} (default) or a numeric value to fix the random seed of randomesque selection of the items. Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}.}
 \item{\code{AP}: the acceleration parameter required for progressive and proportional methods, with default value 1. Ignored with all other selection methods.}
 \item{\code{proRule}: the stopping rule considered for progressive and proportional methods, with possible values \code{"length"} (default), \code{"precision"} or both. Ignored with all other selection methods.}
 \item{\code{proThr}: the stopping rule threshold considered for progressive and proportional methods. Default value is 20. Ignored with all other selection methods.}
@@ -341,7 +344,7 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  m.GRM <- as.matrix(m.GRM)
 
  # CAT options
- start <- list(nrItems = c(-1, 0),startSelect = "MFI")
+ start <- list(theta = c(-1, 0),startSelect = "MFI")
  test <- list(method = "BM", itemSelect = "KL")
  stop <- list(rule = "precision", thr = 0.4)
  final <- list(method = "EAP")

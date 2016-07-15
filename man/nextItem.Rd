@@ -12,8 +12,8 @@
 nextItem(itemBank, model = NULL, theta = 0, out = NULL, x = NULL, 
  	criterion = "MFI", method = "BM", priorDist = "norm", priorPar = c(0, 1), 
  	D = 1, range = c(-4, 4), parInt = c(-4, 4, 33), infoType = "observed", 
- 	randomesque = 1, rule = "length", thr = 20, SETH = NULL, AP = 1, 
- 	nAvailable = NULL, maxItems = 50, cbControl = NULL, cbGroup = NULL) 
+ 	randomesque = 1, random.seed = NULL, rule = "length", thr = 20, SETH = NULL, 
+ 	AP = 1, nAvailable = NULL, maxItems = 50, cbControl = NULL, cbGroup = NULL) 
  }
 
 \arguments{
@@ -31,6 +31,7 @@ nextItem(itemBank, model = NULL, theta = 0, out = NULL, x = NULL,
  \item{parInt}{numeric: a vector of three numeric values, specifying respectively the lower bound, the upper bound and the number of quadrature points for numerical integration (default is \code{c(-4,4,33)}). Ignored if \code{method} is either \code{"MFI"}, \code{"bOpt"}, \code{"thOpt"}, \code{"progressive"}, \code{"proportional"} or \code{"random"}. See \bold{Details}.}
  \item{infoType}{character: the type of information function to be used. Possible values are \code{"observed"} (default) and \code{"Fisher"}. Ignored if \code{criterion} is not \code{"MEI"}. See \bold{Details}.}
  \item{randomesque}{integer: the number of items to be chosen from the next item selection rule, among those the next item to be administered will be randomly picked up. Default value is 1 and leads to usual selection of the optimal item for the specified \code{criterion}. See \bold{Details}.}
+\item{random.seed}{either \code{NULL} (default) or a numeric value to fix the random seed of randomesque selection of the items. Ignored if either \code{randomesque} is equal to one.}
 \item{rule}{character: the type of stopping rule for next item selection. Possible values are \code{"length"} (default) or \code{"precision"}. Ignored if \code{criterion} is any other value than \code{"progressive"} or \code{"proportional"}. See \bold{Details}.}
 \item{thr}{numeric: the threshold related to the stopping rule. Ignored if \code{criterion} is neither \code{"progressive"} nor \code{"proportional"}. See \bold{Details}.}
 \item{SETH}{either a numeric value for the provisional standard error\code{NULL} (default). Ignored if \code{criterion} is neither \code{"progressive"} nor \code{"proportional"}, or if \code{rule} is not \code{"precision"}. See \bold{Details}.}
@@ -225,6 +226,9 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  # Item exposure control by selecting three items (selected item will be either 10, 62 
  # or 63)
  nextItem(bank, theta = 0, randomesque = 3)
+
+ # Fixing the random seed for randomesque selection
+ nextItem(bank, theta = 0, randomesque = 3, random.seed = 1)
 
 
  ## bOpt method

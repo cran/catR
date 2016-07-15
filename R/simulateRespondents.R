@@ -207,103 +207,133 @@ else thrOK <- c(thrOK, 0)
 
 
 
-
-print.catResult <- function(x, ...) {
-  if (is.null(x$responsesMatrix))
-    simulation <- FALSE else
-    simulation <- TRUE
-  if (!simulation) {
-    cat("\n","** Simulation of multiple examinees **", "\n", "\n")
-if (is.null(x$genSeed)) cat("Random seed was not fixed", "\n", "\n")
-else cat("Random seed was fixed (see argument 'genSeed')", "\n", "\n")
+print.catResult<-function (x, ...) 
+{
+    if (is.null(x$responsesMatrix)) 
+        simulation <- FALSE
+    else simulation <- TRUE
+    if (!simulation) {
+        cat("\n", "** Simulation of multiple examinees **", "\n", 
+            "\n")
+        if (is.null(x$genSeed)) 
+            cat("Random seed was not fixed", "\n", "\n")
+        else cat("Random seed was fixed (see argument 'genSeed')", 
+            "\n", "\n")
+    }
+    else cat("\n", "** Post-hoc simulation of multiple examinees **", 
+        "\n", "\n")
+    if (difftime(x$finish.time, x$start.time, units = "hours") > 
+        1) {
+        dif_time <- difftime(x$finish.time, x$start.time, units = "hours")
+        units <- "hours"
+    }
+    else if (difftime(x$finish.time, x$start.time, units = "mins") > 
+        1) {
+        dif_time <- difftime(x$finish.time, x$start.time, units = "mins")
+        units <- "minutes"
+    }
+    else {
+        dif_time <- difftime(x$finish.time, x$start.time, units = "secs")
+        units <- "seconds"
+    }
+    cat("Simulation time:", round(dif_time, digits = 4), units, 
+        "\n", "\n")
+    cat("Number of simulees:", length(x$thetas), "\n")
+    cat("Item bank size:", length(x$itemBank[, 1]), "items", 
+        "\n")
+    if (is.null(x$model)){
+ if (min(x$itemBank[, 4]) < 1) mod <- "Four-Parameter Logistic model"
+        else {
+            if (max(x$itemBank[, 3]) > 0) 
+                mod <- "Three-Parameter Logistic model"
+            else {
+                if (length(unique(x$itemBank[, 1])) > 1) 
+                  mod <- "Two-Parameter Logistic model"
+                else mod <- "One-Parameter Logistic (Rasch) model"
+            }
+}     
+    cat("IRT model:", mod, "\n", "\n")
 }
-  else
-    cat("\n","** Post-hoc simulation of multiple examinees **", "\n", "\n")
-  if (difftime(x$finish.time, x$start.time, units="hours") > 1) {
-    dif_time <- difftime(x$finish.time, x$start.time, units="hours")    
-    units <- "hours"
-  }
-  else if (difftime(x$finish.time, x$start.time, units="mins") > 1) {
-    dif_time <- difftime(x$finish.time, x$start.time, units="mins")    
-    units <- "minutes"
-  }
-  else {
-    dif_time <- difftime(x$finish.time, x$start.time, units="secs")    
-    units <- "seconds"
-  }
-  cat("Simulation time:", round(dif_time, digits=4), units ,  "\n", "\n")
-  cat("Number of simulees:", length(x$thetas), "\n")
-  cat("Item bank size:",length(x$itemBank[,1]), "items", "\n")
-  if (is.null(x$model))
-    cat("IRT model:","4PL", "\n", "\n")
-  else
-    cat("IRT model:",x$model, "\n", "\n")
-  cat("Item selection criterion:", x$test$itemSelect,"\n")
-  #cat("Starting selection rule:", x$start$startSelect  , "\n")
-
-  if (length(x$stop$rule) == 1) 
+    else cat("IRT model:", x$model, "\n", "\n")
+    cat("Item selection criterion:", x$test$itemSelect, "\n")
+    if (length(x$stop$rule) == 1) 
         cat(" Stopping rule:", "\n")
     else cat(" Stopping rules:", "\n")
-  for (i in 1:length(x$stop$rule)) {
+    for (i in 1:length(x$stop$rule)) {
         met4 <- switch(x$stop$rule[i], length = "length of test", 
             precision = "precision of ability estimate", classification = paste("classification based on ", 
                 100 * (1 - x$stop$alpha), "% confidence interval", 
                 sep = ""), minInfo = "minimum available item information")
         if (length(x$stop$rule) == 1) 
-            cat("\t","Stopping criterion:", met4, "\n")
-        else cat("\t","Stopping criterion ", i, ": ", met4, "\n", 
-            sep = "")
-        switch(x$stop$rule[i], precision = cat("\t","  Maximum SE value:", 
-            round(x$stop$thr[i], 2), "\n"), classification = cat("\t","  Classification threshold:", 
-            round(x$stop$thr[i], 2), "\n"), length = cat("\t","  Maximum test length:", 
+            cat("\t", "Stopping criterion:", met4, "\n")
+        else cat("\t", "Stopping criterion ", i, ": ", met4, 
+            "\n", sep = "")
+        switch(x$stop$rule[i], precision = cat("\t", "  Maximum SE value:", 
+            round(x$stop$thr[i], 2), "\n"), classification = cat("\t", 
+            "  Classification threshold:", round(x$stop$thr[i], 
+                2), "\n"), length = cat("\t", "  Maximum test length:", 
             round(x$stop$thr[i], 2), "\n"))
     }
-  cat(" rmax:",  x$rmax, "\n")
-  if (x$rmax < 1)
-    cat("\t", "Restriction method:",  x$Mrmax, "\n")
-  cat("\n")
-  cat("Mean test length:", x$testLength, "items", "\n")
-    if(!simulation)
-    cat("Correlation(true thetas,estimated thetas):", round(x$correlation, 4), "\n")
-  else
-    cat("Correlation(assigned thetas,CAT estimated thetas):", round(x$correlation, 4) ,"\n")
-  cat("RMSE:", round(x$RMSE,4), "\n")
-  cat("Bias:", round(x$bias,4), "\n")
-  if (sum(x$stop$rule == "length")==0)
-    cat("Proportion of simulees that satisfy the stop criterion:", mean(x$thrOK), "\n", "\n")
-  cat("Maximum exposure rate:", round(max(x$exposureRates),4),"\n")
-  cat("Number of item(s) with maximum exposure rate:", length(which(x$exposureRates==max(x$exposureRates))), "\n")
-  cat("Minimum exposure rate:", round(min(x$exposureRates),4),"\n")
-  cat("Number of item(s) with minimum exposure rate:", length(which(x$exposureRates==min(x$exposureRates))), "\n")
-  cat("Item overlap rate:", round(x$overlap,4), "\n","\n")
-  cat("Conditional results", "\n")
-  
-  condDeciles <- data.frame()
-  decTheta <- c("Mean Theta", round(x$condTheta,3))
-  decRMSE <- c("RMSE", round(x$condRMSE,3))
-  deccondBias <- c("Mean bias", round(x$condBias,3))
-  deccondnItems <- c("Mean test length", round(x$condnItems,3))
-  deccondSE <- c("Mean standard error", round(x$condSE,3))
-    deccondthrOK <- c("Proportion stop rule satisfied", round(x$condthrOK,3))
+    cat(" rmax:", x$rmax, "\n")
+    if (x$rmax < 1) 
+        cat("\t", "Restriction method:", x$Mrmax, "\n")
+    cat("\n")
+    cat("Mean test length:", x$testLength, "items", "\n")
+    if (!simulation) 
+        cat("Correlation(true thetas,estimated thetas):", round(x$correlation, 
+            4), "\n")
+    else cat("Correlation(assigned thetas,CAT estimated thetas):", 
+        round(x$correlation, 4), "\n")
+    cat("RMSE:", round(x$RMSE, 4), "\n")
+    cat("Bias:", round(x$bias, 4), "\n")
+    if (sum(x$stop$rule == "length") == 0) 
+        cat("Proportion of simulees that satisfy the stop criterion:", 
+            mean(x$thrOK), "\n", "\n")
+    cat("Maximum exposure rate:", round(max(x$exposureRates), 
+        4), "\n")
+    cat("Number of item(s) with maximum exposure rate:", length(which(x$exposureRates == 
+        max(x$exposureRates))), "\n")
+    cat("Minimum exposure rate:", round(min(x$exposureRates), 
+        4), "\n")
+    cat("Number of item(s) with minimum exposure rate:", length(which(x$exposureRates == 
+        min(x$exposureRates))), "\n")
+    cat("Item overlap rate:", round(x$overlap, 4), "\n", "\n")
+    cat("Conditional results", "\n")
+    condDeciles <- data.frame()
+    decTheta <- c("Mean Theta", round(x$condTheta, 3))
+    decRMSE <- c("RMSE", round(x$condRMSE, 3))
+    deccondBias <- c("Mean bias", round(x$condBias, 3))
+    deccondnItems <- c("Mean test length", round(x$condnItems, 
+        3))
+    deccondSE <- c("Mean standard error", round(x$condSE, 3))
+    deccondthrOK <- c("Proportion stop rule satisfied", round(x$condthrOK, 
+        3))
     decndecile <- c("Number of simulees", x$ndecile)
-    condDeciles <- rbind(condDeciles, decTheta, decRMSE, deccondBias, deccondnItems, deccondSE, deccondthrOK, decndecile)
-  colnames(condDeciles) <- c("Measure","D1","D2","D3","D4","D5","D6","D7","D8","D9","D10")  
-  print(condDeciles, row.names=FALSE)
-  cat("\n")
-  if (x$save.output) {
-    if (x$output[2] != "")
-      x$output[2] <- paste0(x$output[2],".")
-    if (x$output[1]=="")
-      wd <- paste(getwd(), "/",sep = "")
-    else
-      wd <- x$output[1]
-    fileName1 <- paste(wd, x$output[2], "main.", x$output[3], sep = "")
-    fileName2 <- paste(wd, x$output[2], "responses.", x$output[3], sep = "")
-    fileName3 <- paste(wd, x$output[2], "tables.", x$output[3], sep = "")
-    cat("These results were saved in files:","\n",fileName1,"\n",fileName2,"\n",fileName3,"\n")
-  }
-  else cat("These results can be saved by setting 'save.output' to TRUE","\n"," in the 'simulateRespondents' function","\n")  
+    condDeciles <- rbind(condDeciles, decTheta, decRMSE, deccondBias, 
+        deccondnItems, deccondSE, deccondthrOK, decndecile)
+    colnames(condDeciles) <- c("Measure", "D1", "D2", "D3", "D4", 
+        "D5", "D6", "D7", "D8", "D9", "D10")
+    print(condDeciles, row.names = FALSE)
+    cat("\n")
+    if (x$save.output) {
+        if (x$output[2] != "") 
+            x$output[2] <- paste0(x$output[2], ".")
+        if (x$output[1] == "") 
+            wd <- paste(getwd(), "/", sep = "")
+        else wd <- x$output[1]
+        fileName1 <- paste(wd, x$output[2], "main.", x$output[3], 
+            sep = "")
+        fileName2 <- paste(wd, x$output[2], "responses.", x$output[3], 
+            sep = "")
+        fileName3 <- paste(wd, x$output[2], "tables.", x$output[3], 
+            sep = "")
+        cat("These results were saved in files:", "\n", fileName1, 
+            "\n", fileName2, "\n", fileName3, "\n")
+    }
+    else cat("These results can be saved by setting 'save.output' to TRUE", 
+        "\n", " in the 'simulateRespondents' function", "\n")
 }
+
 
 
 
