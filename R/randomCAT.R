@@ -158,6 +158,7 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
         if (!is.na(SETH)) 
             stop.cat <- checkStopRule(th = TH, se = SETH, N = length(PATTERN), 
                 it = itemBank[-ITEMS, ], model = model, stop = stop)
+else stop.cat<-list(decision=FALSE,rule=NULL)
         if (stop.cat$decision) {
             finalEst <- thetaEst(PAR, PATTERN, model = model, 
                 D = final$D, method = final$method, priorDist = final$priorDist, 

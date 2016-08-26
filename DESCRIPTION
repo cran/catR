@@ -2,15 +2,15 @@ Package: catR
 Type: Package
 Title: Procedures to Generate Patterns under Computerized Adaptive
         Testing
-Version: 3.9
-Date: 2016-07-15
+Version: 3.10
+Date: 2016-08-26
 Author: David Magis (U Liege, Belgium), Gilles Raiche (UQAM, Canada), Juan Ramon Barrada (U Zaragoza, Spain)
 Maintainer: David Magis <david.magis@ulg.ac.be>
 Depends: R (>= 2.8.0)
 Description: Generation of response patterns under dichotomous and polytomous computerized adaptive testing (CAT) framework. 
 License: GPL (>= 2)
 LazyLoad: yes
-Packaged: 2016-07-15 13:16:39 UTC; David
+Packaged: 2016-08-26 09:32:13 UTC; David
 NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2016-07-15 17:12:26
+Date/Publication: 2016-08-26 15:49:22

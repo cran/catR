@@ -1,6 +1,6 @@
-bf0daeec2f445adb9779b62186dd7ae8 *DESCRIPTION
+fedaca8c414a33864cf6e9c944fe35c8 *DESCRIPTION
 487470cd02d5b5012ee5a14c207d34e9 *NAMESPACE
-af7d8504b4fa49e9c814ff80388ede14 *NEWS
+a292a0c875dcdf05b0f3d4254eac6a82 *NEWS
 28c8916816790107d504b48c9f7404e8 *R/EPV.R
 ae6ad0ed9c24d0dd4273c825de72bdaf *R/GDI.R
 b2080e015a34bbb9f1635cd00a1486ed *R/Ii.R
@@ -19,10 +19,10 @@ f951e67908bdcb72c4c64abc8782e449 *R/eapEst.R
 57f2740497f239dd898763e166f50c0b *R/genPolyMatrix.R
 acd423bbca61daa0048b94106d6d4418 *R/integrate.catR.R
 3136e3bcb1ba529f26906b08d9ab3c22 *R/nextItem.R
-65b65aa0507b3878f6e5068ddeb121ba *R/randomCAT.R
+0f463e7d5edeebd61ff5a6cbfe926f14 *R/randomCAT.R
 9fd0fa5bf791acb8eda6ad7ddb93aa06 *R/semTheta.R
 c371d02926fa84829ed6afd3fac4d5e1 *R/simulateRespondents.R
-685cf7efd3888673fa93df2e15964def *R/startItems.R
+d8099c348210e9a86c2569196f0f4a81 *R/startItems.R
 b565554de3d907e6c539167288ccf1d6 *R/test.cbList.R
 9097095fbf188f5c8001c1003ee95d3c *R/testList.R
 ad18c39b906627fa39d2d46ff1cffbe3 *R/thetaEst.R
