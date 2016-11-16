@@ -1,10 +1,11 @@
 simulateRespondents<-function (thetas, itemBank, responsesMatrix = NULL, model = NULL, 
-    genSeed = NULL, cbControl = NULL, rmax = 1, 
-    Mrmax = "restricted", start = list(fixItems = NULL, seed = NULL, 
-        nrItems = 1, theta = 0, randomesque = 1, startSelect = "MFI"), 
-    test = list(method = "BM", priorDist = "norm", priorPar = c(0, 
-        1), range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), itemSelect = "MFI", 
-        infoType = "observed", randomesque = 1, AP = 1, constantPatt = NULL), 
+    genSeed = NULL, cbControl = NULL, rmax = 1, Mrmax = "restricted", 
+    start = list(fixItems = NULL, seed = NULL, nrItems = 1, theta = 0, 
+        D=1,randomesque = 1, random.seed = NULL, startSelect = "MFI"), test = list(method = "BM", 
+        priorDist = "norm", priorPar = c(0, 1), range = c(-4, 
+            4), D = 1, parInt = c(-4, 4, 33), itemSelect = "MFI", 
+        infoType = "observed", randomesque = 1, random.seed = NULL, AP = 1, 
+proRule = "length", proThr = 20, constantPatt = NULL), 
     stop = list(rule = "length", thr = 20, alpha = 0.05), final = list(method = "BM", 
         priorDist = "norm", priorPar = c(0, 1), range = c(-4, 
             4), D = 1, parInt = c(-4, 4, 33), alpha = 0.05), 
@@ -14,16 +15,15 @@ simulateRespondents<-function (thetas, itemBank, responsesMatrix = NULL, model =
         if (!is.null(responsesMatrix)) {
             resp <- as.matrix(responsesMatrix)
             res <- randomCAT(trueTheta = thetas, itemBank = itemBank, 
-                responses = resp[1, ], model = model,
-                cbControl = cbControl, start = start, test = test, 
-                stop = stop, final = final, save.output = save.output, 
-                output = output, allTheta = TRUE)
+                responses = resp[1, ], model = model, cbControl = cbControl, 
+                start = start, test = test, stop = stop, final = final, 
+                save.output = save.output, output = output, allTheta = TRUE)
         }
         else {
             res <- randomCAT(trueTheta = thetas, itemBank = itemBank, 
-                model = model, cbControl = cbControl, 
-                start = start, test = test, stop = stop, final = final, 
-                save.output = save.output, output = output, allTheta = TRUE)
+                model = model, cbControl = cbControl, start = start, 
+                test = test, stop = stop, final = final, save.output = save.output, 
+                output = output, allTheta = TRUE)
         }
         return(res)
     }
@@ -52,10 +52,9 @@ simulateRespondents<-function (thetas, itemBank, responsesMatrix = NULL, model =
             thrOK <- NULL
             if (!is.null(responsesMatrix)) 
                 resp <- as.matrix(responsesMatrix)
-            if (sum(stop$rule == "length")==1) 
+            if (sum(stop$rule == "length") == 1) 
                 itemsRow = stop$thr[stop$rule == "length"]
-            else
-                itemsRow = nrow(itemBank)
+            else itemsRow = nrow(itemBank)
             row.head1 <- rep("items.administrated", itemsRow)
             row.head1[1:length(row.head1)] <- paste(row.head1[1:length(row.head1)], 
                 1:length(row.head1), sep = ".")
@@ -90,16 +89,15 @@ simulateRespondents<-function (thetas, itemBank, responsesMatrix = NULL, model =
                 if (!is.null(responsesMatrix)) {
                   rCAT <- randomCAT(trueTheta = thetas[i], itemBank = itemBank, 
                     responses = resp[i, ], model = model, genSeed = genSeed[i], 
-                    cbControl = cbControl, 
-                    nAvailable = nAvailable, start = start, test = test, 
-                    stop = stop, final = final, allTheta = TRUE)
-                }
-                else {
-                  rCAT <- randomCAT(trueTheta = thetas[i], itemBank = itemBank, 
-                    model = model, genSeed = genSeed[i], 
                     cbControl = cbControl, nAvailable = nAvailable, 
                     start = start, test = test, stop = stop, 
                     final = final, allTheta = TRUE)
+                }
+                else {
+                  rCAT <- randomCAT(trueTheta = thetas[i], itemBank = itemBank, 
+                    model = model, genSeed = genSeed[i], cbControl = cbControl, 
+                    nAvailable = nAvailable, start = start, test = test, 
+                    stop = stop, final = final, allTheta = TRUE)
                 }
                 estimatedThetas <- c(estimatedThetas, rCAT$thFinal)
                 vItemExposure <- c(vItemExposure, rCAT$testItems)
@@ -108,8 +106,9 @@ simulateRespondents<-function (thetas, itemBank, responsesMatrix = NULL, model =
                 exposureRates = exposure/i
                 numberItems <- c(numberItems, length(rCAT$testItems))
                 totalSeFinal <- c(totalSeFinal, rCAT$seFinal)
-                if (!is.null(rCAT$ruleFinal)) thrOK <- c(thrOK, 1)
-else thrOK <- c(thrOK, 0)
+                if (!is.null(rCAT$ruleFinal)) 
+                  thrOK <- c(thrOK, 1)
+                else thrOK <- c(thrOK, 0)
                 items.administrated <- rep(-99, itemsRow)
                 responses <- rep(-99, itemsRow)
                 provisional.theta <- rep(-99, itemsRow)
@@ -162,12 +161,11 @@ else thrOK <- c(thrOK, 0)
             cat("Simulation process: ", 100, "%\n")
             res <- list(thetas = thetas, itemBank = itemBank, 
                 responsesMatrix = responsesMatrix, model = model, 
-                genSeed = genSeed, cbControl = cbControl, 
-                rmax = rmax, Mrmax = Mrmax, start = start, test = test, 
-                stop = stop, final = final, save.output = save.output, 
-                output = output, estimatedThetas = estimatedThetas, 
-                correlation = resCor, bias = bias, RMSE = RMSE, 
-                thrOK = thrOK, exposureRates = exposureRates, 
+                genSeed = genSeed, cbControl = cbControl, rmax = rmax, 
+                Mrmax = Mrmax, start = start, test = test, stop = stop, 
+                final = final, save.output = save.output, output = output, 
+                estimatedThetas = estimatedThetas, correlation = resCor, 
+                bias = bias, RMSE = RMSE, thrOK = thrOK, exposureRates = exposureRates, 
                 testLength = testLength, overlap = overlap, numberItems = numberItems, 
                 condTheta = condTheta, condBias = condBias, condRMSE = condRMSE, 
                 condnItems = condnItems, condSE = condSE, condthrOK = condthrOK, 

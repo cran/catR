@@ -6,6 +6,29 @@
 
 
 -------------------------------------
+- Changes in catR 3.11 (2016-11-16) -
+-------------------------------------
+
+MAJOR UPDATES
+
+  o  The function 'simulateRespondents()' was updated to
+     allow the 'start' and 'test' input lists being 
+     exactly the same as in 'randomCAT()' function.
+     Several recent updates of 'randomCAT()' were not
+     passed to 'simulateRespondents()' through its input
+     lists, which is now fixed. 
+
+
+MINOR UPDATES
+
+  o  The DESCRIPTION file was updated to incorporate 
+     more details about the scope of the package.
+
+  o  Some typos were fixed.
+
+
+
+-------------------------------------
 - Changes in catR 3.10 (2016-08-26) -
 -------------------------------------
 

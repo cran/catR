@@ -8,17 +8,20 @@
 \description{
 This command runs a set of adaptive tests, for a given item bank, a set of ability levels, a possible matrix of item responses, and several lists of CAT parameters (starting items, stopping rule, provisional and final ability estimators).}
 
+
 \usage{
 simulateRespondents(thetas, itemBank, responsesMatrix = NULL, model = NULL, 
   	genSeed = NULL, cbControl = NULL, rmax = 1, Mrmax = "restricted", 
   	start = list(fixItems = NULL, seed = NULL, nrItems = 1, theta = 0, 
-  	randomesque = 1, startSelect = "MFI"),test = list(method = "BM", 
-  	priorDist = "norm", priorPar = c(0,1), range = c(-4, 4), D = 1, 
-  	parInt = c(-4, 4, 33), itemSelect = "MFI", infoType = "observed", 
-  	randomesque = 1, AP = 1, constantPatt = NULL), stop = list(rule = "length", 
-  	thr = 20, alpha = 0.05), final = list(method = "BM", priorDist = "norm", 
-  	priorPar = c(0,1), range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), 
-  	alpha = 0.05), save.output = FALSE, output = c("", "catR", "csv"))
+  	D = 1, randomesque = 1, random.seed = NULL, startSelect = "MFI"), 
+  	test = list(method = "BM", 	priorDist = "norm", priorPar = c(0,1), 
+  	range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), itemSelect = "MFI", 
+  	infoType = "observed", randomesque = 1, random.seed = NULL, AP = 1, 
+  	proRule = "length", proThr = 20, constantPatt = NULL), 
+  	stop = list(rule = "length", thr = 20, alpha = 0.05), 
+  	final = list(method = "BM", priorDist = "norm", 	priorPar = c(0,1), 
+  	range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), 	alpha = 0.05), 
+  	save.output = FALSE, output = c("", "catR", "csv"))
 \method{print}{catResult}(x, ...)
 \method{plot}{catResult}(x, type = "all", deciles = "theta", save.plot = FALSE, 
   	save.options = c("", "plot", "pdf"), res = 300, ...)
