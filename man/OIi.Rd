@@ -55,10 +55,11 @@ Polytomous IRT models are specified by their respective acronym: \code{"GRM"} fo
 
  Haley, D.C. (1952). \emph{Estimation of the dosage mortality relationship when the dose is subject to error}. Technical report no 15. Palo Alto, CA: Applied Mathematics and Statistics Laboratory, Stanford University.
 
- Magis, D., and Raiche, G. (in press). Random generation of response patterns under computerized adaptive testing
- with the R package \emph{catR}. \emph{Journal of Statistical Software}.
+Magis, D. and Barrada, J. R. (2017). Computerized Adaptive Testing with R: Recent Updates of the Package \emph{catR}. \emph{Journal of Statistical Software}, \emph{Code Snippets}, \emph{76(1)}, 1-18. \doi{10.18637/jss.v076.c01}
 
- van der Linden, W. (1998). Bayesian item selection criteria for adaptive testing. \emph{Psychometrika, 63}, 201-216. doi: 10.1007/BF02294775
+Magis, D., and Raiche, G. (2012). Random Generation of Response Patterns under Computerized Adaptive Testing with the R Package \emph{catR}. \emph{Journal of Statistical Software}, \emph{48 (8)}, 1-31. \doi{10.18637/jss.v048.i08}
+
+ van der Linden, W. (1998). Bayesian item selection criteria for adaptive testing. \emph{Psychometrika, 63}, 201-216. \doi{10.1007/BF02294775}
 
  Veerkamp, W. J. J. (1996). \emph{Statistical inference for adaptive testing}. Internal report. Enschede, The Netherlands: 
  University of Twente. 

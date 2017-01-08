@@ -1,15 +1,16 @@
 randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL, 
     genSeed = NULL, cbControl = NULL, nAvailable = NULL, start = list(fixItems = NULL, 
-        seed = NULL, nrItems = 1, theta = 0, D = 1, randomesque = 1, random.seed=NULL,
-        startSelect = "MFI"), test = list(method = "BM", priorDist = "norm", 
-        priorPar = c(0, 1), range = c(-4, 4), D = 1, parInt = c(-4, 
-            4, 33), itemSelect = "MFI", infoType = "observed", 
-        randomesque = 1, random.seed=NULL, AP = 1, proRule = "length", proThr = 20, 
-        constantPatt = NULL), stop = list(rule = "length", thr = 20, 
-        alpha = 0.05), final = list(method = "BM", priorDist = "norm", 
-        priorPar = c(0, 1), range = c(-4, 4), D = 1, parInt = c(-4, 
-            4, 33), alpha = 0.05), allTheta = FALSE, save.output = FALSE, 
-    output = c("path", "name", "csv")) 
+        seed = NULL, nrItems = 1, theta = 0, D = 1, randomesque = 1, 
+        random.seed = NULL, startSelect = "MFI",cb.control=FALSE,random.cb=NULL), test = list(method = "BM", 
+        priorDist = "norm", priorPar = c(0, 1), range = c(-4, 
+            4), D = 1, parInt = c(-4, 4, 33), itemSelect = "MFI", 
+        infoType = "observed", randomesque = 1, random.seed = NULL, 
+        AP = 1, proRule = "length", proThr = 20, constantPatt = NULL), 
+    stop = list(rule = "length", thr = 20, alpha = 0.05), final = list(method = "BM", 
+        priorDist = "norm", priorPar = c(0, 1), range = c(-4, 
+            4), D = 1, parInt = c(-4, 4, 33), alpha = 0.05), 
+    allTheta = FALSE, save.output = FALSE, output = c("path", 
+        "name", "csv")) 
 {
     if (missing(trueTheta)) {
         if (is.null(responses)) 
@@ -44,8 +45,8 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
     }
     internalCAT <- function() {
         startList <- list(fixItems = start$fixItems, seed = start$seed, 
-            nrItems = NULL, theta = start$theta, D = 1, randomesque = 1, random.seed=NULL,
-            startSelect = "MFI")
+            nrItems = NULL, theta = start$theta, D = 1, randomesque = 1, 
+            random.seed = NULL, startSelect = "MFI",cbControl=NULL,cbGroup=NULL,random.cb=NULL)
         startList$nrItems <- ifelse(is.null(start$nrItems), 1, 
             start$nrItems)
         if (is.null(start$theta)) 
@@ -53,17 +54,34 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
         startList$D <- ifelse(is.null(start$D), 1, start$D)
         startList$randomesque <- ifelse(is.null(start$randomesque), 
             1, start$randomesque)
-        if (!is.null(start$random.seed)) startList$random.seed<-start$random.seed 
+        if (!is.null(start$random.seed)) 
+            startList$random.seed <- start$random.seed
         startList$startSelect <- ifelse(is.null(start$startSelect), 
             "MFI", start$startSelect)
+stCB<-FALSE
+if (!is.null(start$cb.control)) stCB<-start$cb.control
+
+if (is.null(cbControl) | !stCB) {
+            startList$cbControl<-startList$cbGroup<-NULL
+startCB<-FALSE
+}
+else{
+startList$cbControl<-cbControl
+startList$cbGroup<-cbGroup
+startCB<-TRUE
+}
+if (startCB & is.null(startList$seed)) startCB<-FALSE
+        if (!is.null(start$random.cb)) 
+            startList$random.cb<- start$random.cb
         start <- startList
         stopList <- list(rule = stop$rule, thr = stop$thr, alpha = 0.05)
         stopList$alpha <- ifelse(is.null(stop$alpha), 0.05, stop$alpha)
         stop <- stopList
         testList <- list(method = NULL, priorDist = NULL, priorPar = c(0, 
             1), range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), 
-            itemSelect = "MFI", infoType = "observed", randomesque = 1, random.seed=NULL,
-            AP = 1, rule = test$proRule, thr = test$proThr, constantPatt = NULL)
+            itemSelect = "MFI", infoType = "observed", randomesque = 1, 
+            random.seed = NULL, AP = 1, rule = test$proRule, 
+            thr = test$proThr, constantPatt = NULL)
         testList$method <- ifelse(is.null(test$method), "BM", 
             test$method)
         testList$rule <- ifelse(is.null(test$proRule), "length", 
@@ -91,7 +109,8 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
             test$infoType)
         testList$randomesque <- ifelse(is.null(test$randomesque), 
             1, test$randomesque)
-        if (!is.null(test$random.seed)) testList$random.seed<-test$random.seed 
+        if (!is.null(test$random.seed)) 
+            testList$random.seed <- test$random.seed
         testList$AP <- ifelse(is.null(test$AP), 1, test$AP)
         if (!is.null(test$constantPatt)) 
             testList$constantPatt <- test$constantPatt
@@ -127,9 +146,10 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
                 call. = FALSE)
         pr0 <- startItems(itemBank = itemBank, model = model, 
             fixItems = start$fixItems, seed = start$seed, nrItems = start$nrItems, 
-            theta = start$theta, D = start$D, randomesque = start$randomesque,
-            random.seed=start$random.seed, 
-            startSelect = start$startSelect, nAvailable = nAvailable)
+            theta = start$theta, D = start$D, randomesque = start$randomesque, 
+            random.seed = start$random.seed, startSelect = start$startSelect, 
+            nAvailable = nAvailable,cbControl=start$cbControl,cbGroup=start$cbGroup,
+            random.cb=start$random.cb)
         ITEMS <- pr0$items
         PAR <- rbind(pr0$par)
         if (is.null(ITEMS)) 
@@ -158,7 +178,7 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
         if (!is.na(SETH)) 
             stop.cat <- checkStopRule(th = TH, se = SETH, N = length(PATTERN), 
                 it = itemBank[-ITEMS, ], model = model, stop = stop)
-else stop.cat<-list(decision=FALSE,rule=NULL)
+        else stop.cat <- list(decision = FALSE, rule = NULL)
         if (stop.cat$decision) {
             finalEst <- thetaEst(PAR, PATTERN, model = model, 
                 D = final$D, method = final$method, priorDist = final$priorDist, 
@@ -178,15 +198,15 @@ else stop.cat<-list(decision=FALSE,rule=NULL)
                 genSeed = genSeed, startFixItems = start$fixItems, 
                 startSeed = start$seed, startNrItems = start$nrItems, 
                 startTheta = start$theta, startD = start$D, startRandomesque = start$randomesque, 
-                startRandomSeed = start$random.seed,
-                startSelect = start$startSelect, provMethod = test$method, 
-                provDist = test$priorDist, provPar = test$priorPar, 
-                provRange = test$range, provD = test$D, itemSelect = test$itemSelect, 
+                startRandomSeed = start$random.seed, startSelect = start$startSelect, 
+                startCB=startCB, provMethod = test$method, provDist = test$priorDist, 
+                provPar = test$priorPar, provRange = test$range, 
+                provD = test$D, itemSelect = test$itemSelect, 
                 infoType = test$infoType, randomesque = test$randomesque, 
-                testRandomSeed = test$random.seed,
-                AP = test$AP, constantPattern = test$constantPatt, 
-                cbControl = cbControl, cbGroup = cbGroup, stopRule = stop$rule, 
-                stopThr = stop$thr, stopAlpha = stop$alpha, endWarning = endWarning, 
+                testRandomSeed = test$random.seed, AP = test$AP, 
+                constantPattern = test$constantPatt, cbControl = cbControl, 
+                cbGroup = cbGroup, stopRule = stop$rule, stopThr = stop$thr, 
+                stopAlpha = stop$alpha, endWarning = endWarning, 
                 finalMethod = final$method, finalDist = final$priorDist, 
                 finalPar = final$priorPar, finalRange = final$range, 
                 finalD = final$D, finalAlpha = final$alpha, save.output = save.output, 
@@ -200,9 +220,9 @@ else stop.cat<-list(decision=FALSE,rule=NULL)
                   method = test$method, parInt = test$parInt, 
                   priorDist = test$priorDist, priorPar = test$priorPar, 
                   infoType = test$infoType, D = test$D, range = test$range, 
-                  randomesque = test$randomesque, random.seed=test$random.seed, AP = test$AP, 
-                  cbControl = cbControl, cbGroup = cbGroup, rule = test$rule, 
-                  thr = test$thr, SETH = SETH[length(SETH)], 
+                  randomesque = test$randomesque, random.seed = test$random.seed, 
+                  AP = test$AP, cbControl = cbControl, cbGroup = cbGroup, 
+                  rule = test$rule, thr = test$thr, SETH = SETH[length(SETH)], 
                   nAvailable = nAvailable)
                 ITEMS <- c(ITEMS, pr$item)
                 PAR <- rbind(PAR, pr$par)
@@ -248,15 +268,15 @@ else stop.cat<-list(decision=FALSE,rule=NULL)
                 genSeed = genSeed, startFixItems = start$fixItems, 
                 startSeed = start$seed, startNrItems = start$nrItems, 
                 startTheta = start$theta, startD = start$D, startRandomesque = start$randomesque, 
-                startRandomSeed = start$random.seed,
-                startSelect = start$startSelect, provMethod = test$method, 
-                provDist = test$priorDist, provPar = test$priorPar, 
-                provRange = test$range, provD = test$D, itemSelect = test$itemSelect, 
-                infoType = test$infoType, randomesque = test$randomesque,
-                testRandomSeed = test$random.seed, 
-                AP = test$AP, constantPattern = test$constantPatt, 
-                cbControl = cbControl, cbGroup = cbGroup, stopRule = stop$rule, 
-                stopThr = stop$thr, stopAlpha = stop$alpha, endWarning = endWarning, 
+                startRandomSeed = start$random.seed, startSelect = start$startSelect, 
+                startCB=startCB, provMethod = test$method, provDist = test$priorDist, 
+                provPar = test$priorPar, provRange = test$range, 
+                provD = test$D, itemSelect = test$itemSelect, 
+                infoType = test$infoType, randomesque = test$randomesque, 
+                testRandomSeed = test$random.seed, AP = test$AP, 
+                constantPattern = test$constantPatt, cbControl = cbControl, 
+                cbGroup = cbGroup, stopRule = stop$rule, stopThr = stop$thr, 
+                stopAlpha = stop$alpha, endWarning = endWarning, 
                 finalMethod = final$method, finalDist = final$priorDist, 
                 finalPar = final$priorPar, finalRange = final$range, 
                 finalD = final$D, finalAlpha = final$alpha, save.output = save.output, 
@@ -304,7 +324,7 @@ else stop.cat<-list(decision=FALSE,rule=NULL)
 
 
 
-print.cat<-function (x, ...) 
+print.cat <- function (x, ...) 
 {
     if (!x$assigned.responses) {
         cat("Random generation of a CAT response pattern", "\n")
@@ -393,6 +413,8 @@ print.cat<-function (x, ...)
         if (nr1 == 1) 
             cat("   Early item selection:", met1, "\n")
         else cat("   Early items selection:", met1, "\n")
+if (x$startCB) cat("    Early items chosen to control for content balancing","\n")
+        else cat("    Early items not chosen to control for content balancing","\n")
         if (!is.null(x$startFixItems)) {
             if (length(x$startFixItems) == 1) 
                 met1bis <- paste("   Item administered: ", x$startFixItems, 
@@ -508,21 +530,23 @@ print.cat<-function (x, ...)
     cat("   Ability estimation adjustment for constant pattern:", 
         adj, "\n")
     cat("\n")
-if (length(x$stopRule)==1) cat(" Stopping rule:", "\n")
-else cat(" Stopping rules:", "\n")
-for (i in 1:length(x$stopRule)){
-    met4 <- switch(x$stopRule[i], length = "length of test", precision = "precision of ability estimate", 
-        classification = paste("classification based on ", 100 * 
-            (1 - x$stopAlpha), "% confidence interval", sep = ""),
-        minInfo="minimum available item information")
- if (length(x$stopRule)==1)  cat("   Stopping criterion:", met4, "\n")
-else cat("   Stopping criterion ", i, ": ", met4, "\n",sep="")
-
-    switch(x$stopRule[i], precision = cat("    Maximum SE value:", 
-        round(x$stopThr[i], 2), "\n"), classification = cat("    Classification threshold:", 
-        round(x$stopThr[i], 2), "\n"), length = cat("    Maximum test length:", 
-        round(x$stopThr[i], 2), "\n"))
-}
+    if (length(x$stopRule) == 1) 
+        cat(" Stopping rule:", "\n")
+    else cat(" Stopping rules:", "\n")
+    for (i in 1:length(x$stopRule)) {
+        met4 <- switch(x$stopRule[i], length = "length of test", 
+            precision = "precision of ability estimate", classification = paste("classification based on ", 
+                100 * (1 - x$stopAlpha), "% confidence interval", 
+                sep = ""), minInfo = "minimum available item information")
+        if (length(x$stopRule) == 1) 
+            cat("   Stopping criterion:", met4, "\n")
+        else cat("   Stopping criterion ", i, ": ", met4, "\n", 
+            sep = "")
+        switch(x$stopRule[i], precision = cat("    Maximum SE value:", 
+            round(x$stopThr[i], 2), "\n"), classification = cat("    Classification threshold:", 
+            round(x$stopThr[i], 2), "\n"), length = cat("    Maximum test length:", 
+            round(x$stopThr[i], 2), "\n"))
+    }
     cat("\n", "Randomesque method:", "\n")
     if (is.null(x$startFixItems) & is.null(x$startSeed)) 
         cat("   Number of 'randomesque' starting items: ", x$startRandomesque, 
@@ -571,23 +595,24 @@ else cat("   Stopping criterion ", i, ": ", met4, "\n",sep="")
     print(format(mat, justify = "right"), quote = FALSE)
     cat("\n")
     if (x$endWarning) 
-if (length(x$stopRule)==1)
-        cat("WARNING: stopping rule was not satisfied before the whole item 
-         bank was administered!","\n", "\n")
-else  cat("WARNING: none of the stopping rules were satisfied before the whole item 
-         bank was administered!","\n", "\n")
-
-if (!is.null(x$ruleFinal)){
-if (length(x$ruleFinal)==1) cat(" Satisfied stopping rule:","\n")
-else cat(" Satisfied stopping rules:","\n")
-for (i in 1:length(x$ruleFinal)){
-metF<-switch(x$ruleFinal[i], length = "   Length of test", precision = "   Precision of ability estimate", 
-        classification = paste("   Classification based on ", 100 * 
-            (1 - x$stopAlpha), "% confidence interval", sep = ""),
-        minInfo="   Minimum available item information")
-cat(metF, "\n", "\n")
-}
-}
+        if (length(x$stopRule) == 1) 
+            cat("WARNING: stopping rule was not satisfied before the whole item \n         bank was administered!", 
+                "\n", "\n")
+        else cat("WARNING: none of the stopping rules were satisfied before the whole item \n         bank was administered!", 
+            "\n", "\n")
+    if (!is.null(x$ruleFinal)) {
+        if (length(x$ruleFinal) == 1) 
+            cat(" Satisfied stopping rule:", "\n")
+        else cat(" Satisfied stopping rules:", "\n")
+        for (i in 1:length(x$ruleFinal)) {
+            metF <- switch(x$ruleFinal[i], length = "   Length of test", 
+                precision = "   Precision of ability estimate", 
+                classification = paste("   Classification based on ", 
+                  100 * (1 - x$stopAlpha), "% confidence interval", 
+                  sep = ""), minInfo = "   Minimum available item information")
+            cat(metF, "\n", "\n")
+        }
+    }
     cat(" Final results:", "\n")
     met <- switch(x$finalMethod, BM = "Bayes modal (MAP) estimator", 
         WL = "Weighted likelihood estimator", ML = "Maximum likelihood estimator", 
@@ -614,8 +639,8 @@ cat(metF, "\n", "\n")
     cat(paste("   ", (1 - x$finalAlpha) * 100, "% confidence interval: [", 
         round(x$ciFinal[1], 3), ",", round(x$ciFinal[2], 3), 
         "]", sep = ""), "\n")
-    if (sum(x$ruleFinal == "classification")==1) {
-ind<-which(x$stopRule=="classification")
+    if (sum(x$ruleFinal == "classification") == 1) {
+        ind <- which(x$stopRule == "classification")
         if (x$ciFinal[1] > x$stopThr[ind]) 
             mess <- paste("ability is larger than ", round(x$stopThr[ind], 
                 2), sep = "")
@@ -629,8 +654,24 @@ ind<-which(x$stopRule=="classification")
         cat("   Final subject classification:", mess, "\n")
     }
     if (!is.null(x$cbControl)) {
-        cat("   Proportions of items per subgroup (expected and observed):", 
-            "\n", "\n")
+if (x$startCB){
+ cat("\n", "   Proportions of starting items per subgroup (expected and observed):", 
+            "\n","\n")
+        mat <- rbind(round(x$cbControl$props/sum(x$cbControl$props), 
+            3))
+if (!is.null(x$startSeed)) NRIT<-x$startNrItems
+nr <- NULL
+        for (i in 1:length(x$cbControl$names)) nr[i] <- length(x$testItems[1:NRIT][x$cbGroup[x$testItems[1:NRIT]] == 
+            x$cbControl$names[i]])
+        nr <- nr/sum(nr)
+        mat <- rbind(mat, round(nr, 3))
+        rownames(mat) <- c("Exp.", "Obs.")
+        colnames(mat) <- x$cbControl$names
+        print(format(mat, justify = "right"), quote = FALSE)
+        cat("\n")
+}
+        cat("\n", "   Proportions of items per subgroup (expected and observed)", "\n",
+        "    at the end of the test:", "\n", "\n")
         mat <- rbind(round(x$cbControl$props/sum(x$cbControl$props), 
             3))
         nr <- NULL
@@ -674,6 +715,7 @@ ind<-which(x$stopRule=="classification")
             "\n", "\n", sep = "")
     }
 }
+
 
 
 

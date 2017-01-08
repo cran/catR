@@ -1,6 +1,7 @@
 startItems<-function (itemBank, model = NULL, fixItems = NULL, seed = NULL, 
     nrItems = 1, theta = 0, D = 1, randomesque = 1, random.seed = NULL, 
-    startSelect = "MFI", nAvailable = NULL) 
+    startSelect = "MFI", nAvailable = NULL, cbControl = NULL, 
+    cbGroup = NULL, random.cb=NULL) 
 {
     if (!is.null(nAvailable)) {
         if (length(nAvailable) != nrow(itemBank)) 
@@ -10,6 +11,20 @@ startItems<-function (itemBank, model = NULL, fixItems = NULL, seed = NULL,
             stop("less available items (in 'nAvailable') than requested by 'nrItems'!", 
                 call. = FALSE)
     }
+if (!is.null(cbControl)){
+nr.it<-rep(0,length(cbControl$names))
+if (!is.null(random.cb)) set.seed(random.cb)
+for (i in 1:nrItems){
+if (sum(nr.it)==0) emp.prop<-nr.it
+else emp.prop<-nr.it/sum(nr.it)
+if (min(emp.prop)==0) allow<-which(emp.prop==0)
+else allow<-1:length(nr.it)
+grs<-which((cbControl$props[allow]-emp.prop[allow])==max(cbControl$props[allow]-emp.prop[allow]))
+GR<-ifelse(length(grs)>1,sample(allow[grs],1),allow[grs])
+nr.it[GR]<-nr.it[GR]+1
+}
+set.seed(NULL)
+}
     if (nrItems > 0) 
         if (startSelect == "progressive" | startSelect == "proportional") {
             fixItems <- NULL
@@ -28,10 +43,20 @@ startItems<-function (itemBank, model = NULL, fixItems = NULL, seed = NULL,
             if (!is.null(seed)) {
                 if (!is.na(seed)) 
                   set.seed(seed)
+if (is.null(cbControl)){
                 if (is.null(nAvailable)) 
                   items <- sample(1:nrow(itemBank), nrItems)
                 else items <- sample(which(nAvailable == 1), 
                   nrItems)
+}
+else{
+items<-NULL
+if (is.null(nAvailable)) nAv<-rep(1,nrow(itemBank))
+else nAv<-nAvailable
+for (i in 1:length(nr.it)){
+if (nr.it[i]>0) items<-c(items,sample(which(nAv==1 & cbGroup==cbControl$names[i]),nr.it[i],replace=FALSE))
+}
+}
                 par <- itemBank[items, ]
                 thStart <- startSelect <- NA
                 set.seed(NULL)
@@ -58,11 +83,13 @@ startItems<-function (itemBank, model = NULL, fixItems = NULL, seed = NULL,
                     if (!is.null(nAvailable)) 
                       pos.adm <- (1 - selected) * nAvailable
                     else pos.adm <- 1 - selected
-pr<-sort(item.dist[pos.adm == 1])
-keep<-pr[randomesque]
-prov<-which(pos.adm==1 & item.dist<=keep)
-items[i] <- ifelse(length(prov) == 1, prov, sample(prov, 1))
-selected[items[i]] <- 1
+                    pr <- sort(item.dist[pos.adm == 1])
+                    keep <- pr[randomesque]
+                    prov <- which(pos.adm == 1 & item.dist <= 
+                      keep)
+                    items[i] <- ifelse(length(prov) == 1, prov, 
+                      sample(prov, 1))
+                    selected[items[i]] <- 1
                   }
                 }
                 if (startSelect == "thOpt") {
@@ -84,11 +111,13 @@ selected[items[i]] <- 1
                     if (!is.null(nAvailable)) 
                       pos.adm <- (1 - selected) * nAvailable
                     else pos.adm <- 1 - selected
-                    pr<-sort(item.dist[pos.adm == 1])
-keep<-pr[randomesque]
-prov<-which(pos.adm==1 & item.dist<=keep)
-items[i] <- ifelse(length(prov) == 1, prov, sample(prov, 1))
-selected[items[i]] <- 1
+                    pr <- sort(item.dist[pos.adm == 1])
+                    keep <- pr[randomesque]
+                    prov <- which(pos.adm == 1 & item.dist <= 
+                      keep)
+                    items[i] <- ifelse(length(prov) == 1, prov, 
+                      sample(prov, 1))
+                    selected[items[i]] <- 1
                   }
                 }
                 if (startSelect == "MFI") {
@@ -103,11 +132,14 @@ selected[items[i]] <- 1
                     if (!is.null(nAvailable)) 
                       pos.adm <- (1 - selected) * nAvailable
                     else pos.adm <- 1 - selected
-pr<-sort(item.info[pos.adm == 1],decreasing=TRUE)
-keep<-pr[randomesque]
-prov<-which(pos.adm==1 & item.info>=keep)
-items[i] <- ifelse(length(prov) == 1, prov, sample(prov, 1))
-selected[items[i]] <- 1                  }
+                    pr <- sort(item.info[pos.adm == 1], decreasing = TRUE)
+                    keep <- pr[randomesque]
+                    prov <- which(pos.adm == 1 & item.info >= 
+                      keep)
+                    items[i] <- ifelse(length(prov) == 1, prov, 
+                      sample(prov, 1))
+                    selected[items[i]] <- 1
+                  }
                 }
                 par = itemBank[items, ]
             }

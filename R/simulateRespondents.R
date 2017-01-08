@@ -1,7 +1,7 @@
 simulateRespondents<-function (thetas, itemBank, responsesMatrix = NULL, model = NULL, 
     genSeed = NULL, cbControl = NULL, rmax = 1, Mrmax = "restricted", 
     start = list(fixItems = NULL, seed = NULL, nrItems = 1, theta = 0, 
-        D=1,randomesque = 1, random.seed = NULL, startSelect = "MFI"), test = list(method = "BM", 
+        D=1,randomesque = 1, random.seed = NULL, startSelect = "MFI", cb.control=FALSE,random.cb=NULL), test = list(method = "BM", 
         priorDist = "norm", priorPar = c(0, 1), range = c(-4, 
             4), D = 1, parInt = c(-4, 4, 33), itemSelect = "MFI", 
         infoType = "observed", randomesque = 1, random.seed = NULL, AP = 1, 

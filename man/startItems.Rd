@@ -10,7 +10,7 @@
 \usage{
 startItems(itemBank, model = NULL, fixItems = NULL, seed = NULL, nrItems = 1, 
  	 theta = 0, D = 1, randomesque = 1, random.seed = NULL, startSelect = "MFI",
- 	 nAvailable = NULL) 
+ 	 nAvailable = NULL, cbControl = NULL, cbGroup = NULL, random.cb=NULL) 
  }
 
 \arguments{
@@ -25,6 +25,9 @@ startItems(itemBank, model = NULL, fixItems = NULL, seed = NULL, nrItems = 1,
 \item{random.seed}{either \code{NULL} (default) or a numeric value to fix the random seed of randomesque selection of the items. Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}.}
  \item{startSelect}{character: the criterion for selecting the first items. Possible values are \code{"bOpt"}, \code{"thOpt"}, \code{"progressive"}, \code{"proportional"}, and \code{"MFI"} (default). See \bold{Details}.}
  \item{nAvailable}{either a boolean vector indicating which items (denoted by 1's) are available at the start of the test and which (denoted by 0's) are not, or \code{NULL} (default). See \bold{Details}.}
+ \item{cbControl}{either a list of accurate format to control for content balancing, or \code{NULL}. See \bold{Details}.}
+ \item{cbGroup}{either a factor vector of accurate format to control for content balancing, or \code{NULL}. See \bold{Details}.}
+\item{random.cb}{either \code{NULL} (default) or a numeric value to fix the selection of subgroups of items for random sampling the starting items. See \bold{Details}.}
 }
 
 \value{
@@ -68,6 +71,13 @@ If the \code{"progressive"} or \code{"proportional"} methods} are selected, this
  The sequence of initial ability estimates is specified by the argument \code{theta}. For each component of \code{theta} one item will be picked up optimally according to the chosen \code{startSelect} argument. however, it is possible to perform randomesque selection at this stage by setting the \code{randomesque} argument to an integer value larger than one. In this case, the \code{randomesque} most optimal items are chosen per value of \code{theta}, and the final starting item is chosen randomly among the \code{randomesque} items. By default, only one item is picked up per ability level (and is therefore \emph{the} most optimal one).
 
 Only part of the full item bank can be made available for the selection of the first item(s), while others can be dropped out from this first step. This is fixed by the \code{nAvailable} argument, which is a vector with as many components as items in the bank and with zeros and ones only. Values 1 code for available items, values 0 for non-available items. By default, \code{nAvailable} is \code{NULL} and all items are available. Note that \code{nrItems} should never be larger than the number of available items (i.e. \code{sum(nAvailable)}). Otherwise an error message is returned.
+
+Finally, in case of random selection of the first item(s), it is possible to force this selection to approximately match the content balancing control options set by arguments \code{cbControl}  and \code{cbGroup}. Detailed description of these arguments (and their accurate format) are described in \code{\link{nextItem}} function. Note that \code{cbControl} should be tested with the \code{\link{test.cbList}} function prior to using \code{\link{nextItem}}.
+
+In practice, when fixing both the number of items to select (through \code{nrItems}) and the proportions of items per subgroups (through \code{cbControl$props}), the selection is made in two steps. First, the number of items per each subgroup is determined in order to reach closest distribution to the theoretical one. Second, within each subgroup the required number of items are randomly drawn (this draw can be fixed with the \code{seed} argument; fixing it to \code{NA} withdraws this option).
+
+In the first step, it is possible that several subgroups are equally proable for selection; in this case the selection of the subgroups can be fixed by the argument \code{random.cb}. Otherwise the subgroups are sampled without any random seed control.
+
  }
 
 \note{
@@ -80,10 +90,11 @@ Currently only the \code{"MFI"} value for \code{startSelect} is allowed for poly
  Haley, D.C. (1952). \emph{Estimation of the dosage mortality relationship when the dose is subject to error.} 
  Technical report no 15. Palo Alto, CA: Applied Mathematics and Statistics Laboratory, Stanford University. 
 
-Magis, D; (2013). A note on the item information function of the four-parameter logistic model. \emph{Applied Psychological Measurement}, \emph{37}, 304-315. doi: 10.1177/0146621613475471
+Magis, D. (2013). A note on the item information function of the four-parameter logistic model. \emph{Applied Psychological Measurement}, \emph{37}, 304-315. \doi{10.1177/0146621613475471}
 
- Magis, D., and Raiche, G. (2012). Random Generation of Response Patterns under Computerized Adaptive Testing with the R 
- Package \emph{catR}. \emph{Journal of Statistical Software}, \emph{48 (8)}, 1-31. URL \url{http://www.jstatsoft.org/v48/i08/}
+Magis, D. and Barrada, J. R. (2017). Computerized Adaptive Testing with R: Recent Updates of the Package \emph{catR}. \emph{Journal of Statistical Software}, \emph{Code Snippets}, \emph{76(1)}, 1-18. \doi{10.18637/jss.v076.c01}
+
+ Magis, D., and Raiche, G. (2012). Random Generation of Response Patterns under Computerized Adaptive Testing with the R Package \emph{catR}. \emph{Journal of Statistical Software}, \emph{48 (8)}, 1-31. \doi{10.18637/jss.v048.i08}
 }
 
 \author{
@@ -116,6 +127,18 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  # Random selection of 4 starting items without fixing the seed
  startItems(bank, seed = NA, nrItems = 4)
  startItems(bank, seed = NA, nrItems = 4) # may provide a different result!
+
+ ## With content balancing control
+ prov <- breakBank(tcals)
+ cbGroup <- prov$cbGroup
+
+ # Creation of the 'cbList' list with arbitrary proportions
+ cbList <- list(names = c("Audio1", "Audio2", "Written1", "Written2", "Written3"), 
+        props = c(0.1, 0.2, 0.2, 0.2, 0.3))
+
+ startItems(bank, seed = 1, nrItems = 3, cbControl = cbList, cbGroup = cbGroup)
+ startItems(bank, seed = NA, nrItems = 3, cbControl = cbList, cbGroup = cbGroup,
+            random.cb = 1)
 
  # Selection of the first 5 starting items
  startItems(bank, fixItems = 1:5)

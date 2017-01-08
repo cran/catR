@@ -13,15 +13,15 @@ This command runs a set of adaptive tests, for a given item bank, a set of abili
 simulateRespondents(thetas, itemBank, responsesMatrix = NULL, model = NULL, 
   	genSeed = NULL, cbControl = NULL, rmax = 1, Mrmax = "restricted", 
   	start = list(fixItems = NULL, seed = NULL, nrItems = 1, theta = 0, 
-  	D = 1, randomesque = 1, random.seed = NULL, startSelect = "MFI"), 
-  	test = list(method = "BM", 	priorDist = "norm", priorPar = c(0,1), 
-  	range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), itemSelect = "MFI", 
-  	infoType = "observed", randomesque = 1, random.seed = NULL, AP = 1, 
-  	proRule = "length", proThr = 20, constantPatt = NULL), 
-  	stop = list(rule = "length", thr = 20, alpha = 0.05), 
-  	final = list(method = "BM", priorDist = "norm", 	priorPar = c(0,1), 
-  	range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), 	alpha = 0.05), 
-  	save.output = FALSE, output = c("", "catR", "csv"))
+  	D = 1, randomesque = 1, random.seed = NULL, startSelect = "MFI", 
+  	cb.control = FALSE, random.cb = NULL), 	test = list(method = "BM", 
+  	priorDist = "norm", priorPar = c(0,1), range = c(-4, 4), D = 1, 
+  	parInt = c(-4, 4, 33), itemSelect = "MFI", 	infoType = "observed", 
+  	randomesque = 1, random.seed = NULL, AP = 1, proRule = "length", 
+  	proThr = 20, constantPatt = NULL), stop = list(rule = "length", 
+  	thr = 20, alpha = 0.05), final = list(method = "BM", priorDist = "norm", 
+  	priorPar = c(0,1), range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), 
+  	alpha = 0.05), save.output = FALSE, output = c("", "catR", "csv"))
 \method{print}{catResult}(x, ...)
 \method{plot}{catResult}(x, type = "all", deciles = "theta", save.plot = FALSE, 
   	save.options = c("", "plot", "pdf"), res = 300, ...)
@@ -133,11 +133,13 @@ These plots can be saved as external PDF or JPEG files, by setting \code{save.pl
 \references{
  Barrada, J. R., Abad, F. J., and Veldkamp, B. P. (2009). Comparison of methods for controlling maximum exposure rates in computerized adaptive testing. \emph{Psicothema}, \emph{21}, 313-320.
 
- Magis, D., and Raiche, G. (2012). Random Generation of Response Patterns under Computerized Adaptive Testing with the R Package \emph{catR}. \emph{Journal of Statistical Software}, \emph{48 (8)}, 1-31. URL \url{http://www.jstatsoft.org/v48/i08/}
- 
-Revuelta, J., and Ponsoda, V. (1998). A comparison of item exposure control methods in computerized adaptive testing. \emph{Journal of Educational Measurement, 35}, 311-327. doi: 10.1111/j.1745-3984.1998.tb00541.x
+Magis, D. and Barrada, J. R. (2017). Computerized Adaptive Testing with R: Recent Updates of the Package \emph{catR}. \emph{Journal of Statistical Software}, \emph{Code Snippets}, \emph{76(1)}, 1-18. \doi{10.18637/jss.v076.c01}
 
-van der Linden, W.J., and Veldkamp, B.P. (2004). Constraining item exposure in computerized adaptive testing with shadow tests. \emph{Journal of Educational & Behavioral Statistics, 29}, 273-291. doi: 10.3102/10769986029003273
+ Magis, D., and Raiche, G. (2012). Random Generation of Response Patterns under Computerized Adaptive Testing with the R Package \emph{catR}. \emph{Journal of Statistical Software}, \emph{48 (8)}, 1-31. \doi{10.18637/jss.v048.i08}
+ 
+Revuelta, J., and Ponsoda, V. (1998). A comparison of item exposure control methods in computerized adaptive testing. \emph{Journal of Educational Measurement, 35}, 311-327. \doi{10.1111/j.1745-3984.1998.tb00541.x}
+
+van der Linden, W.J., and Veldkamp, B.P. (2004). Constraining item exposure in computerized adaptive testing with shadow tests. \emph{Journal of Educational and Behavioral Statistics, 29}, 273-291. \doi{10.3102/10769986029003273}
 }
 
 

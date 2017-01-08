@@ -6,6 +6,51 @@
 
 
 -------------------------------------
+- Changes in catR 3.12 (2017-01-07) -
+-------------------------------------
+
+MAJOR UPDATES
+
+  o  The function 'startItems()' was updated to include
+     the arguments 'cbControl' and 'cbGroup' from
+     function 'randomCAT()' for instance. This is to
+     allow random selection of the first item(s) by
+     approximately matching the theoretical proportions
+     of items per subgroup. Moreover, the argument
+     'random.cb' was added to fix the random seed when
+     selecting the subgroups of items from which to 
+     sample the items.
+
+  o  The function 'testList()' was updated accordingly.
+
+  o  In the function 'randomCAT()' the 'start' list holds
+     two new arguments: 'cb.control', a logical value
+     to indicate whether content balancing control 
+     should be done with starting items, and 'random.cb'
+     argument from 'startItems()' function.
+
+  o  The function 'simulateRespondents()' was updated
+     accordingly.
+
+     
+
+MINOR UPDATES
+
+  o  The DESCRIPTION file was updated to meet CRAN 
+     policies.
+
+  o  The CITATION file was updated for publication in 
+     Journal of Statistical Software.
+
+  o  The help file references were updated.
+
+  o  The writing of DOI reference numbers was updated.
+
+  o  Some typos were fixed.
+
+
+
+-------------------------------------
 - Changes in catR 3.11 (2016-11-16) -
 -------------------------------------
 

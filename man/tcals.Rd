@@ -30,11 +30,11 @@
 
 
 \references{
- Laurier, M., Froio, L., Pearo C., and Fournier, M. (1998). \emph{Test de classement d'anglais langue seconde au collegial}. 
- Montreal, Canada: College de Maisonneuve.
+ Laurier, M., Froio, L., Pearo C., and Fournier, M. (1998). \emph{Test de classement d'anglais langue seconde au collegial}. Montreal, Canada: College de Maisonneuve.
 
- Magis, D., and Raiche, G. (2012). Random Generation of Response Patterns under Computerized Adaptive Testing with the R 
- Package \emph{catR}. \emph{Journal of Statistical Software}, \emph{48 (8)}, 1-31. URL \url{http://www.jstatsoft.org/v48/i08/}
+Magis, D. and Barrada, J. R. (2017). Computerized Adaptive Testing with R: Recent Updates of the Package \emph{catR}. \emph{Journal of Statistical Software}, \emph{Code Snippets}, \emph{76(1)}, 1-18. \doi{10.18637/jss.v076.c01}
+
+ Magis, D., and Raiche, G. (2012). Random Generation of Response Patterns under Computerized Adaptive Testing with the R Package \emph{catR}. \emph{Journal of Statistical Software}, \emph{48 (8)}, 1-31. \doi{10.18637/jss.v048.i08}
 
  Raiche, G. (2002). \emph{Le depistage du sous-classement aux tests de classement en anglais, langue seconde, au collegial
  [The detection of under classification to the collegial English as a second language placement tests]}. Gatineau, QC: College de l'Outaouais.

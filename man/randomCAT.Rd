@@ -13,15 +13,15 @@
 randomCAT(trueTheta, itemBank, model = NULL, responses = NULL, genSeed = NULL, 
  	cbControl = NULL, nAvailable = NULL, start = list(fixItems = NULL, 
  	seed = NULL, nrItems = 1, theta = 0, D = 1, randomesque = 1, 
- 	random.seed = NULL, startSelect = "MFI"), test = list(method = "BM", 
- 	priorDist = "norm", priorPar = c(0, 1), range = c(-4, 4), D = 1, 
- 	parInt = c(-4, 4, 33), itemSelect = "MFI", infoType = "observed", 
- 	randomesque = 1, random.seed = NULL, AP = 1, proRule = "length", 
- 	proThr = 20,constantPatt = NULL), stop = list(rule = "length", 
- 	thr = 20, alpha = 0.05), final = list(method = "BM", priorDist = "norm", 
- 	priorPar = c(0, 1), range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), 
- 	alpha = 0.05), allTheta = FALSE, save.output = FALSE, output = c("path", 
- 	"name", "csv"))
+ 	random.seed = NULL, startSelect = "MFI", cb.control = FALSE, random.cb = NULL), 
+ 	test = list(method = "BM", 	priorDist = "norm", priorPar = c(0, 1), 
+ 	range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), itemSelect = "MFI", 
+ 	infoType = "observed", randomesque = 1, random.seed = NULL, AP = 1, 
+ 	proRule = "length", proThr = 20,constantPatt = NULL), 
+ 	stop = list(rule = "length", thr = 20, alpha = 0.05),
+ 	final = list(method = "BM", priorDist = "norm", 	priorPar = c(0, 1), 
+ 	range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), 	alpha = 0.05), 
+ 	allTheta = FALSE, save.output = FALSE, output = c("path", "name", "csv"))
 \method{print}{cat}(x, ...)
 \method{plot}{cat}(x, ci = FALSE, alpha = 0.05, trueTh = TRUE, classThr = NULL, 
  	save.plot = FALSE, save.options = c("path", "name", "pdf"),...)
@@ -74,6 +74,7 @@ randomCAT(trueTheta, itemBank, model = NULL, responses = NULL, genSeed = NULL,
  \item{startRandomesque}{the value of the \code{start$randomesque} argument (or its default value if missing).}
  \item{startThStart}{the starting ability values used for selecting the first items of the test.}
  \item{startSelect}{the value of the \code{start$startSelect} argument (or its default value if missing).}
+\item{startCB}{logical value, being \code{TRUE} if both \code{cbControl} is not \code{NULL} and \code{start$cb.control} is \code{TRUE}, and \code{FALSE} otherwise.}
  \item{provMethod}{the value of the \code{test$method} argument (or its default value if missing).}
  \item{provDist}{the value of the \code{test$priorDist} argument (or its default value if missing).}
  \item{provPar}{the value of the \code{test$priorPar} argument (or its default value if missing).}
@@ -130,12 +131,14 @@ See the \code{\link{nextItem}} function for further details on how to specify \c
  \itemize{
  \item{\code{fixItems}: either a vector of integer values, setting the items to be administered as first items, or \code{NULL} (default) to let the function select the items.}
  \item{\code{seed}: either a numeric value to fix the random seed for item selection, \code{NA} to randomly select the items withour fixing the random seed, or \code{NULL} (default) to select the items on the basis of their difficulty level. Ignored if \code{fixItems} is not \code{NULL}.}
- \item{nrItems}{numeric: the number of starting items to be randomly selected (default is 1). Can be equal to zero to avoid initial selection of items (see \bold{Details}). Used only if \code{fixItems} is \code{NULL} and \code{seed} is not \code{NULL}.}
- \item{theta}{numeric: a vector of the initial ability levels for selecting the first items (default is the single value 0). Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}. See \code{\link{startItems}} for further details.}
+ \item{\code{nrItems}: numeric, the number of starting items to be randomly selected (default is 1). Can be equal to zero to avoid initial selection of items (see \bold{Details}). Used only if \code{fixItems} is \code{NULL} and \code{seed} is not \code{NULL}.}
+ \item{\code{theta}: numeric, a vector of the initial ability levels for selecting the first items (default is the single value 0). Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}. See \code{\link{startItems}} for further details.}
  \item{\code{D}: numeric, the metric constant. Default is \code{D=1} (for logistic metric); \code{D=1.702} yields approximately the normal metric (Haley, 1952). Ignored if \code{model} is not \code{NULL} and if \code{startSelect} is not \code{"MFI"}.} 
- \item{randomesque}{integer: the number of 'randomesque' items to be picked up optimally for each value of \code{theta} vector, before random selection of a single one. Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}. See \code{\link{startItems}} for further details.}
-\item{random.seed}{either \code{NULL} (default) or a numeric value to fix the random seed of randomesque selection of the items. Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}.}
+ \item{\code{randomesque}: integer, the number of 'randomesque' items to be picked up optimally for each value of \code{theta} vector, before random selection of a single one. Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}. See \code{\link{startItems}} for further details.}
+\item{\code{random.seed}: either \code{NULL} (default) or a numeric value to fix the random seed of randomesque selection of the items. Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}.}
  \item{\code{startSelect}: the method for selecting the first items of the test, with possible values \code{"bOpt"} and \code{"MFI"} (default). Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}. See \code{\link{startItems}} for further details.}
+\item{\code{cb.control}: logical value indicating whether control for content balancing should also be done when selecting the starting items. Default is \code{FALSE}. Ignored if argument \code{cbControl} is \code{NULL}.}
+\item{\code{random.cb}: either \code{NULL} (default) or a numeric value to fix the selection of subgroups of items in case of content balancing control with starting items. Ignored if either \code{cbControl} is \code{NULL} or if \code{start$cb.control} is \code{FALSE}.}
  }
  These arguments are passed to the function \code{\link{startItems}} to select the first items of the test.
 
@@ -152,7 +155,7 @@ If the argument \code{nrItems} is set to zero, then no starting item is selected
  \item{\code{itemSelect}: the rule for next item selecion, with possible values \code{"MFI"} (default) for maximum Fisher information criterion; \code{"bOpt"} for optimal ability-difficulty match (or Urry's procedure) (not available if \code{model} is not \code{NULL}); \code{"thOpt"} for optimal theta selection (not available if \code{model} is not \code{NULL}); \code{"MLWI"} and \code{"MPWI"} for respectively maximum likelihood and posterior weighted information criterion; \code{"MEPV"} for minimum expected posterior variance; \code{"MEI"} for maximum expected information; \code{"KL"} and \code{"KLP"} for Kullback-Leibler and posterior Kullback-Leibler information methods; \code{"progressive"} and \code{"proportional"} for progressive and proportional methods; ; and \code{"random"} for random selection. For further details, see \code{\link{nextItem}}.}
  \item{\code{infoType}: character: the type of information function to be used for next item selection. Possible values are \code{"observed"} (default) for observed information function, and \code{"Fisher"} for Fisher information function. Ignored if \code{itemselect} is not \code{"MEI"}.}
  \item{\code{randomesque}: integer: the number of items to be chosen from the next item selection rule, among those the next item to be administered will be randomly picked up. Default value is 1 and leads to usual selection of the optimal item (Kingsbury and Zara, 1989).}
-\item{random.seed}{either \code{NULL} (default) or a numeric value to fix the random seed of randomesque selection of the items. Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}.}
+\item{\code{random.seed}: either \code{NULL} (default) or a numeric value to fix the random seed of randomesque selection of the items. Ignored if either \code{fixItems} or \code{seed} is not \code{NULL}.}
 \item{\code{AP}: the acceleration parameter required for progressive and proportional methods, with default value 1. Ignored with all other selection methods.}
 \item{\code{proRule}: the stopping rule considered for progressive and proportional methods, with possible values \code{"length"} (default), \code{"precision"} or both. Ignored with all other selection methods.}
 \item{\code{proThr}: the stopping rule threshold considered for progressive and proportional methods. Default value is 20. Ignored with all other selection methods.}
@@ -185,16 +188,16 @@ Usually the ability estimates and related standard errors are computed right aft
 }
 
 \references{
- Barrada, J. R., Olea, J., Ponsoda, V., and Abad, F. J. (2010). A method for the comparison of item selection rules in computerized adaptive testing. \emph{Applied Psychological Measurement}, \emph{20}, 213-229. doi: 10.1177/0146621610370152
+ Barrada, J. R., Olea, J., Ponsoda, V., and Abad, F. J. (2010). A method for the comparison of item selection rules in computerized adaptive testing. \emph{Applied Psychological Measurement}, \emph{20}, 213-229. \doi{10.1177/0146621610370152}
 
  Barton, M.A., and Lord, F.M. (1981). \emph{An upper asymptote for the three-parameter logistic item-response model}.
  Research Bulletin 81-20. Princeton, NJ: Educational Testing Service.
 
  Birnbaum, A. (1969). Statistical theory for logistic mental test models with a prior distribution of ability.
- \emph{Journal of Mathematical Psychology, 6}, 258-276. doi: 10.1016/0022-2496(69)90005-4
+ \emph{Journal of Mathematical Psychology, 6}, 258-276. \doi{10.1016/0022-2496(69)90005-4}
 
  Bock, R. D., and Mislevy, R. J. (1982). Adaptive EAP estimation of ability in a microcomputer environment. 
- \emph{Applied Psychological Measurement, 6}, 431-444. doi: 10.1177/014662168200600405
+ \emph{Applied Psychological Measurement, 6}, 431-444. \doi{10.1177/014662168200600405}
 
  Haley, D.C. (1952). \emph{Estimation of the dosage mortality relationship when the dose is subject to error}. Technical report no 15. Palo Alto, CA: Applied Mathematics and Statistics Laboratory, Stanford University. 
  
@@ -202,22 +205,23 @@ Usually the ability estimates and related standard errors are computed right aft
 
  Jeffreys, H. (1946). An invariant form for the prior probability in estimation problems. \emph{Proceedings of the Royal Society of London. Series A, Mathematical and Physical Sciences, 186}, 453-461.
 
- Kingsbury, G. G., and Zara, A. R. (1989). Procedures for selecting items for computerized adaptive tests. \emph{Applied Measurement in Education, 2}, 359-375. doi: 10.1207/s15324818ame0204_6
+ Kingsbury, G. G., and Zara, A. R. (1989). Procedures for selecting items for computerized adaptive tests. \emph{Applied Measurement in Education, 2}, 359-375. \doi{10.1207/s15324818ame0204_6}
 
  Lord, F. M. (1980). \emph{Applications of item response theory to practical testing problems}. Hillsdale, NJ: Lawrence Erlbaum.
 
- Magis, D., and Raiche, G. (2012). Random Generation of Response Patterns under Computerized Adaptive Testing with the R 
- Package \emph{catR}. \emph{Journal of Statistical Software}, \emph{48 (8)}, 1-31. URL \url{http://www.jstatsoft.org/v48/i08/}
+Magis, D. and Barrada, J. R. (2017). Computerized Adaptive Testing with R: Recent Updates of the Package \emph{catR}. \emph{Journal of Statistical Software}, \emph{Code Snippets}, \emph{76(1)}, 1-18. \doi{10.18637/jss.v076.c01}
 
-Thompson, N. A. (2009). Item selection in computerized classification testing. \emph{Educational and Psychological Measurement, 69}, 778-793. doi: 10.1177/0013164408324460
+ Magis, D., and Raiche, G. (2012). Random Generation of Response Patterns under Computerized Adaptive Testing with the R Package \emph{catR}. \emph{Journal of Statistical Software}, \emph{48 (8)}, 1-31. \doi{10.18637/jss.v048.i08}
+
+Thompson, N. A. (2009). Item selection in computerized classification testing. \emph{Educational and Psychological Measurement, 69}, 778-793. \doi{10.1177/0013164408324460}
 
  Urry, V. W. (1970). \emph{A Monte Carlo investigation of logistic test models.} Unpublished doctoral dissertation. West Lafayette, IN: Purdue University.
 
- van der Linden, W. J. (1998). Bayesian item selection criteria for adaptive testing. \emph{Psychometrika, 63}, 201-216. doi: 10.1007/BF02294775
+ van der Linden, W. J. (1998). Bayesian item selection criteria for adaptive testing. \emph{Psychometrika, 63}, 201-216. \doi{10.1007/BF02294775}
 
- Veerkamp, W. J. J., and Berger, M. P. F. (1997). Some new item selection criteria for adaptive testing. \emph{Journal of Educational and Behavioral Statistics, 22}, 203-226. doi: 10.3102/10769986022002203
+ Veerkamp, W. J. J., and Berger, M. P. F. (1997). Some new item selection criteria for adaptive testing. \emph{Journal of Educational and Behavioral Statistics, 22}, 203-226. \doi{10.3102/10769986022002203}
 
- Warm, T.A. (1989). Weighted likelihood estimation of ability in item response models. \emph{Psychometrika, 54}, 427-450. doi: 10.1007/BF02294627
+ Warm, T.A. (1989). Weighted likelihood estimation of ability in item response models. \emph{Psychometrika, 54}, 427-450. \doi{10.1007/BF02294627}
 }
 
 
@@ -309,6 +313,11 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  # using 'cbList' ('tcals' must be used now for content balancing)
  stop4 <- list(rule = "length",thr = 10)
  res5 <- randomCAT(0, tcals, start = start, test = test, stop = stop4, final = final2, 
+      cbControl = cbList)
+
+ # new 'start' list to force content balancing control at the starting step
+ start2 <- list(seed = 1, nrItems = 3, cb.control = TRUE)
+ res6 <- randomCAT(0, tcals, start = start2, test = test, stop = stop4, final = final2, 
       cbControl = cbList)
 
  # Using progressive item selection rule and requiring all ability estimates and SEs
