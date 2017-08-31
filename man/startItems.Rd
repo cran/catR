@@ -4,7 +4,7 @@
 \title{Selection of the first items}
 
 \description{
- This command selects the first items of the adaptive test, either randomly or on the basis of their difficulty level (for dichotomous items only).
+ This command selects the first items of the adaptive test, either randomly or on the basis of their information function.
  }
 
 \usage{
@@ -31,11 +31,12 @@ startItems(itemBank, model = NULL, fixItems = NULL, seed = NULL, nrItems = 1,
 }
 
 \value{
- A list with four arguments:
+ A list with five arguments:
  \item{items}{the selected items (identified by their number in the item bank) or \code{NULL} (if \code{nrItems} is 0).}
  \item{par}{the matrix of item parameters of the selected items (one row per item) or \code{NULL} (if \code{nrItems} is 0).}
  \item{thStart}{the sequence of starting ability values used for selecting the items or \code{NA} (if not applicable) or \code{NULL} (if \code{nrItems} is 0).}
  \item{startSelect}{the value of the \code{startSelect} argument or \code{NA} (if not applicable) or \code{NULL} (if \code{nrItems} is 0).}
+\item{names}{either a vector with the names of the selected item(s) or \code{NULL} (if the item bank has no item names).}
  }
  
 
@@ -72,12 +73,11 @@ If the \code{"progressive"} or \code{"proportional"} methods} are selected, this
 
 Only part of the full item bank can be made available for the selection of the first item(s), while others can be dropped out from this first step. This is fixed by the \code{nAvailable} argument, which is a vector with as many components as items in the bank and with zeros and ones only. Values 1 code for available items, values 0 for non-available items. By default, \code{nAvailable} is \code{NULL} and all items are available. Note that \code{nrItems} should never be larger than the number of available items (i.e. \code{sum(nAvailable)}). Otherwise an error message is returned.
 
-Finally, in case of random selection of the first item(s), it is possible to force this selection to approximately match the content balancing control options set by arguments \code{cbControl}  and \code{cbGroup}. Detailed description of these arguments (and their accurate format) are described in \code{\link{nextItem}} function. Note that \code{cbControl} should be tested with the \code{\link{test.cbList}} function prior to using \code{\link{nextItem}}.
+Finally, in case of random selection of the first item(s), it is possible to force this selection to approximately match the content balancing control options set by arguments \code{cbControl}  and \code{cbGroup}. Detailed description of these arguments (and their accurate format) are described in \code{\link{nextItem}} function. Note that \code{cbControl} should be tested with the \code{\link{test.cbList}} function prior to using \code{\link{startItems}}.
 
 In practice, when fixing both the number of items to select (through \code{nrItems}) and the proportions of items per subgroups (through \code{cbControl$props}), the selection is made in two steps. First, the number of items per each subgroup is determined in order to reach closest distribution to the theoretical one. Second, within each subgroup the required number of items are randomly drawn (this draw can be fixed with the \code{seed} argument; fixing it to \code{NA} withdraws this option).
 
 In the first step, it is possible that several subgroups are equally proable for selection; in this case the selection of the subgroups can be fixed by the argument \code{random.cb}. Otherwise the subgroups are sampled without any random seed control.
-
  }
 
 \note{
@@ -201,33 +201,33 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
             nAvailable = avail) 
 }
 
- # Generation of an item bank under PCM with 20 items and 4 categories
- m.PCM <- genPolyMatrix(20, 4, "PCM", same.nrCat = TRUE)
- m.PCM <- as.matrix(m.PCM)
+ # Loading the cat_pav data
+ data(cat_pav)
+ cat_pav <- as.matrix(cat_pav)
 
  # Random selection of 4 starting items
- startItems(m.PCM, model = "PCM", seed = 1, nrItems = 4)
+ startItems(cat_pav, model = "GPCM", seed = 1, nrItems = 4)
 
  # Selection of the first 5 starting items
- startItems(m.PCM, model = "PCM", fixItems = 1:5)
+ startItems(cat_pav, model = "GPCM", fixItems = 1:5)
 
  # Selecting 3 starting items for theta values -1, 0 and 2
- startItems(m.PCM, model = "PCM", theta = c(-1, 0, 2)) 
+ startItems(cat_pav, model = "GPCM", theta = c(-1, 0, 2)) 
 
 \dontrun{
 
  # Idem but with 'bOpt' criterion
- startItems(m.PCM, model = "PCM", theta = c(-1, 0, 2), startSelect = "bOpt")
+ startItems(cat_pav, model = "GPCM", theta = c(-1, 0, 2), startSelect = "bOpt")
  }
 
  # Selecting only the first 10 items as available items
- avail <- c(rep(1, 10), rep(0, nrow(m.PCM)-10))
- startItems(m.PCM, model = "PCM", theta = c(-1, 0, 2), nAvailable = avail) 
+ avail <- c(rep(1, 10), rep(0, nrow(cat_pav)-10))
+ startItems(cat_pav, model = "GPCM", theta = c(-1, 0, 2), nAvailable = avail) 
 
 \dontrun{
 
  # Selecting too many items among available ones
- startItems(m.PCM, model = "PCM", theta = seq(from = -2, to = 2, length = 11), 
+ startItems(cat_pav, model = "GPCM", theta = seq(from = -2, to = 2, length = 11), 
             nAvailable = avail) 
  }
  }

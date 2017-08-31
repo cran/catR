@@ -88,10 +88,10 @@ Warm, T.A. (1989). Weighted likelihood estimation of ability in item response mo
  # Computation of J function and derivatives for ability level 0
  Ji(0, m.GRM, model = "GRM")
 
- # Generation of a item bank under PCM with 20 items and at most 3 categories
- m.PCM <- genPolyMatrix(20, 3, "PCM")
- m.PCM <- as.matrix(m.PCM)
+ # Loading the cat_pav data
+ data(cat_pav)
+ cat_pav <- as.matrix(cat_pav)
 
  # Computation of J function and derivatives for ability level 1
- Ji(1, m.PCM, model = "PCM")
+ Ji(1, cat_pav, model = "GPCM")
  }

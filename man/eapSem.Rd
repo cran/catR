@@ -128,24 +128,24 @@ Magis, D. and Barrada, J. R. (2017). Computerized Adaptive Testing with R: Recen
  c(th, eapSem(th, m.GRM, x, model = "GRM", priorDist = "Jeffreys"))
 
 
- # Generation of a item bank under PCM with 20 items and at most 3 categories
- m.PCM <- genPolyMatrix(20, 3, "PCM")
- m.PCM <- as.matrix(m.PCM)
+# Loading the cat_pav data
+ data(cat_pav)
+ cat_pav <- as.matrix(cat_pav)
 
  # Creation of a response pattern (true ability level 0)
  set.seed(1)
- x <- genPattern(0, m.PCM, model = "PCM")
+ x <- genPattern(0, cat_pav, model = "GPCM")
 
  # EAP estimation, standard normal prior distribution
- th <- eapEst(m.PCM, x, model = "PCM")
- c(th, eapSem(th, m.PCM, x, model = "PCM"))
+ th <- eapEst(cat_pav, x, model = "GPCM")
+ c(th, eapSem(th, cat_pav, x, model = "GPCM"))
 
  # EAP estimation, uniform prior distribution upon range [-2,2]
- th <- eapEst(m.PCM, x, model = "PCM", priorDist = "unif", priorPar = c(-2, 2))
- c(th, eapSem(th, m.PCM, x, model = "PCM", priorDist = "unif", priorPar = c(-2, 2)))
+ th <- eapEst(cat_pav, x, model = "GPCM", priorDist = "unif", priorPar = c(-2, 2))
+ c(th, eapSem(th, cat_pav, x, model = "GPCM", priorDist = "unif", priorPar = c(-2, 2)))
 
  # EAP estimation, Jeffreys' prior distribution  
- th <- eapEst(m.PCM, x, model = "PCM", priorDist = "Jeffreys")
- c(th, eapSem(th, m.PCM, x, model = "PCM", priorDist = "Jeffreys"))
+ th <- eapEst(cat_pav, x, model = "GPCM", priorDist = "Jeffreys")
+ c(th, eapSem(th, cat_pav, x, model = "GPCM", priorDist = "Jeffreys"))
  }
 }

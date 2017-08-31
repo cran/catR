@@ -1,8 +1,8 @@
 nextItem<-function (itemBank, model = NULL, theta = 0, out = NULL, x = NULL, 
     criterion = "MFI", method = "BM", priorDist = "norm", priorPar = c(0, 
         1), D = 1, range = c(-4, 4), parInt = c(-4, 4, 33), infoType = "observed", 
-    randomesque = 1, random.seed=NULL, rule = "length", thr = 20, SETH = NULL, 
-    AP = 1, nAvailable = NULL, maxItems = 50, cbControl = NULL, 
+    randomesque = 1, random.seed = NULL, rule = "length", thr = 20, 
+    SETH = NULL, AP = 1, nAvailable = NULL, maxItems = 50, cbControl = NULL, 
     cbGroup = NULL) 
 {
     crit <- switch(criterion, MFI = "MFI", bOpt = "bOpt", MLWI = "MLWI", 
@@ -38,14 +38,16 @@ nextItem<-function (itemBank, model = NULL, theta = 0, out = NULL, x = NULL,
         thProp <- cbControl$props
         if (min(empProp) == 0) {
             indGroup <- (1:nrGroup)[empProp == 0]
-if (!is.null(random.seed)) set.seed(random.seed)
+            if (!is.null(random.seed)) 
+                set.seed(random.seed)
             selGroup <- ifelse(length(indGroup) == 1, indGroup, 
                 sample(indGroup, 1))
         }
         else {
             indGroup <- (1:nrGroup)[(thProp - empProp) == max(thProp - 
                 empProp)]
-if (!is.null(random.seed)) set.seed(random.seed)
+            if (!is.null(random.seed)) 
+                set.seed(random.seed)
             selGroup <- ifelse(length(indGroup) == 1, indGroup, 
                 sample(indGroup, 1))
         }
@@ -65,11 +67,13 @@ if (!is.null(random.seed)) set.seed(random.seed)
         keep <- NULL
         for (i in 1:length(keepRank)) keep <- c(keep, which(ranks == 
             keepRank[i] & items == 1))
-if (!is.null(random.seed)) set.seed(random.seed)
+        if (!is.null(random.seed)) 
+            set.seed(random.seed)
         select <- ifelse(length(keep) == 1, keep, sample(c(keep), 
             1))
         res <- list(item = select, par = itemBank[select, ], 
-            info = info[select], criterion = criterion, randomesque = randomesque)
+            info = info[select], criterion = criterion, randomesque = randomesque,
+name=NULL)
     }
     if (crit == "bOpt") {
         if (!is.null(model)) 
@@ -86,11 +90,13 @@ if (!is.null(random.seed)) set.seed(random.seed)
         keep <- NULL
         for (i in 1:length(keepRank)) keep <- c(keep, which(ranks == 
             keepRank[i] & items == 1))
-if (!is.null(random.seed)) set.seed(random.seed)
+        if (!is.null(random.seed)) 
+            set.seed(random.seed)
         select <- ifelse(length(keep) == 1, keep, sample(keep, 
             1))
         res <- list(item = select, par = itemBank[select, ], 
-            info = distance[select], criterion = criterion, randomesque = randomesque)
+            info = distance[select], criterion = criterion, randomesque = randomesque,
+name=NULL)
     }
     if (crit == "MLWI" | crit == "MPWI") {
         if (length(out) == 1) 
@@ -109,11 +115,13 @@ if (!is.null(random.seed)) set.seed(random.seed)
         likVal <- sort(likInfo, decreasing = TRUE)[min(c(randomesque, 
             sum(ITEMS)))]
         keep <- (1:length(ITEMS))[likInfo >= likVal]
-if (!is.null(random.seed)) set.seed(random.seed)
+        if (!is.null(random.seed)) 
+            set.seed(random.seed)
         select <- ifelse(length(keep) == 1, keep, sample(keep, 
             1))
         res <- list(item = select, par = itemBank[select, ], 
-            info = likInfo[select], criterion = criterion, randomesque = randomesque)
+            info = likInfo[select], criterion = criterion, randomesque = randomesque,
+name=NULL)
     }
     if (crit == "KL" | crit == "KLP") {
         if (length(out) == 1) 
@@ -150,11 +158,13 @@ if (!is.null(random.seed)) set.seed(random.seed)
         klVal <- sort(klvalue, decreasing = TRUE)[min(c(randomesque, 
             sum(ITEMS)))]
         keep <- (1:length(ITEMS))[klvalue >= klVal]
-if (!is.null(random.seed)) set.seed(random.seed)
+        if (!is.null(random.seed)) 
+            set.seed(random.seed)
         select <- ifelse(length(keep) == 1, keep, sample(keep, 
             1))
         res <- list(item = select, par = itemBank[select, ], 
-            info = klvalue[select], criterion = criterion, randomesque = randomesque)
+            info = klvalue[select], criterion = criterion, randomesque = randomesque,
+name=NULL)
     }
     if (crit == "GDI" | crit == "GDIP") {
         if (length(out) == 1) 
@@ -190,11 +200,13 @@ if (!is.null(random.seed)) set.seed(random.seed)
         gdiVal <- sort(gdivalue, decreasing = TRUE)[min(c(randomesque, 
             sum(ITEMS)))]
         keep <- (1:length(ITEMS))[gdivalue >= gdiVal]
-if (!is.null(random.seed)) set.seed(random.seed)
+        if (!is.null(random.seed)) 
+            set.seed(random.seed)
         select <- ifelse(length(keep) == 1, keep, sample(keep, 
             1))
         res <- list(item = select, par = itemBank[select, ], 
-            info = gdivalue[select], criterion = criterion, randomesque = randomesque)
+            info = gdivalue[select], criterion = criterion, randomesque = randomesque,
+name=NULL)
     }
     if (crit == "MEI") {
         items <- rep(1, nrow(itemBank))
@@ -210,11 +222,13 @@ if (!is.null(random.seed)) set.seed(random.seed)
         infoVal <- sort(infos, decreasing = TRUE)[min(c(randomesque, 
             sum(items)))]
         keep <- (1:nrow(itemBank))[infos >= infoVal]
-if (!is.null(random.seed)) set.seed(random.seed)
+        if (!is.null(random.seed)) 
+            set.seed(random.seed)
         select <- ifelse(length(keep) == 1, keep, sample(keep, 
             1))
         res <- list(item = select, par = itemBank[select, ], 
-            info = infos[select], criterion = criterion, randomesque = randomesque)
+            info = infos[select], criterion = criterion, randomesque = randomesque,
+name=NULL)
     }
     if (crit == "MEPV") {
         items <- rep(1, nrow(itemBank))
@@ -229,11 +243,13 @@ if (!is.null(random.seed)) set.seed(random.seed)
         }
         epVal <- sort(epvs)[min(c(randomesque, sum(items)))]
         keep <- (1:nrow(itemBank))[epvs <= epVal]
-if (!is.null(random.seed)) set.seed(random.seed)
+        if (!is.null(random.seed)) 
+            set.seed(random.seed)
         select <- ifelse(length(keep) == 1, keep, sample(keep, 
             1))
         res <- list(item = select, par = itemBank[select, ], 
-            info = epvs[select], criterion = criterion, randomesque = randomesque)
+            info = epvs[select], criterion = criterion, randomesque = randomesque,
+name=NULL)
     }
     if (crit == "random") {
         items <- rep(1, nrow(itemBank))
@@ -241,7 +257,8 @@ if (!is.null(random.seed)) set.seed(random.seed)
         gen <- as.integer(runif(1, 0, 1) * (sum(items))) + 1
         ind <- (1:nrow(itemBank))[items > 0][gen]
         res <- list(item = ind, par = itemBank[ind, ], info = NA, 
-            criterion = criterion, randomesque = randomesque)
+            criterion = criterion, randomesque = randomesque,
+name=NULL)
     }
     if (crit == "progressive") {
         items_administered <- length(out)
@@ -268,11 +285,13 @@ if (!is.null(random.seed)) set.seed(random.seed)
         funcPR <- info * wq + randomValues * (1 - wq)
         funcPR[OUT] <- 0
         keep <- which(funcPR == max(funcPR))
-if (!is.null(random.seed)) set.seed(random.seed)
+        if (!is.null(random.seed)) 
+            set.seed(random.seed)
         select <- ifelse(length(keep) == 1, keep, sample(keep, 
             1))
         res <- list(item = select, par = itemBank[select, ], 
-            info = info[select], criterion = criterion, randomesque = randomesque)
+            info = info[select], criterion = criterion, randomesque = randomesque,
+name=NULL)
     }
     if (crit == "proportional") {
         items_administered <- length(out)
@@ -297,10 +316,12 @@ if (!is.null(random.seed)) set.seed(random.seed)
         infoPR[OUT] <- 0
         totalInfoPR <- sum(infoPR[items == 1])
         probSelect <- infoPR/totalInfoPR
-if (!is.null(random.seed)) set.seed(random.seed)
+        if (!is.null(random.seed)) 
+            set.seed(random.seed)
         select <- sample(1:length(items), size = 1, prob = probSelect)
         res <- list(item = select, par = itemBank[select, ], 
-            info = info[select], criterion = criterion, randomesque = randomesque)
+            info = info[select], criterion = criterion, randomesque = randomesque,
+name=NULL)
     }
     if (crit == "thOpt") {
         if (!is.null(model)) 
@@ -325,23 +346,27 @@ if (!is.null(random.seed)) set.seed(random.seed)
         for (i in 1:length(keepRank)) {
             keep <- c(keep, which(ranks == keepRank[i]))
         }
-if (!is.null(random.seed)) set.seed(random.seed)
+        if (!is.null(random.seed)) 
+            set.seed(random.seed)
         select <- ifelse(length(keep) == 1, keep, sample(keep, 
             1))
         res <- list(item = select, par = itemBank[select, ], 
-            info = distance[select], criterion = criterion, randomesque = randomesque)
+            info = distance[select], criterion = criterion, randomesque = randomesque,
+name=NULL)
     }
     if (is.null(cbControl)) 
-        res[[6]] <- res[[7]] <- res[[8]] <- NA
+        res[[7]] <- res[[8]] <- res[[9]] <- NA
     else {
-        res[[6]] <- empProp
+        res[[7]] <- empProp
         postProp <- NULL
         for (i in 1:nrGroup) postProp[i] <- length(c(res$item, 
             out)[cbGroup[c(res$item, out)] == cbControl$names[i]])
-        res[[7]] <- postProp/sum(postProp)
-        res[[8]] <- thProp
+        res[[8]] <- postProp/sum(postProp)
+        res[[9]] <- thProp
     }
-    names(res)[6:8] <- c("prior.prop", "post.prop", "cb.prop")
-set.seed(NULL)
+    names(res)[7:9] <- c("prior.prop", "post.prop", "cb.prop")
+    if (!is.null(row.names(itemBank))) 
+        res$name <- row.names(itemBank)[res$item]
+    set.seed(NULL)
     return(res)
 }

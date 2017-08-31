@@ -145,23 +145,23 @@ it.given <- m.GRM[c(15, 20),]
  # With Fisher information
  MEI(m.GRM, 1, x, 0, it.given, model = "GRM", infoType = "Fisher")
 
- # Generation of an item bank under PCM with 20 items and 4 categories
- m.PCM <- genPolyMatrix(20, 4, "PCM", same.nrCat = TRUE)
- m.PCM <- as.matrix(m.PCM)
+ # Loading the cat_pav data
+ data(cat_pav)
+ cat_pav <- as.matrix(cat_pav)
 
  # Selection of two arbitrary items (15 and 20) 
- it.given <- m.PCM[c(15, 20),]
+ it.given <- cat_pav[c(15, 20),]
 
  # Generation of a response pattern (true ability level 0)
- x <- genPattern(0, it.given, model = "PCM")
+ x <- genPattern(0, it.given, model = "GPCM")
 
  # EPV for item 1, provisional ability level 0
- MEI(m.PCM, 1, x, 0, it.given, model = "PCM")
+ MEI(cat_pav, 1, x, 0, it.given, model = "GPCM")
 
  # With WL method
- MEI(m.PCM, 1, x, 0, it.given, model = "PCM", method = "WL")
+ MEI(cat_pav, 1, x, 0, it.given, model = "GPCM", method = "WL")
 
  # With Fisher information
- MEI(m.PCM, 1, x, 0, it.given, model = "PCM", infoType = "Fisher") 
+ MEI(cat_pav, 1, x, 0, it.given, model = "GPCM", infoType = "Fisher") 
  }
 

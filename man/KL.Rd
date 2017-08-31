@@ -178,35 +178,35 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
     priorDist = "unif", priorPar = c(-2, 2))
 
 
- # Generation of an item bank under PCM with 20 items and 4 categories
- m.PCM <- genPolyMatrix(20, 4, "PCM", same.nrCat = TRUE)
- m.PCM <- as.matrix(m.PCM)
+ # Loading the cat_pav data
+ data(cat_pav)
+ cat_pav <- as.matrix(cat_pav)
 
  # Selection of two arbitrary items (15 and 20) 
- it.given <- m.PCM[c(15, 20),]
+ it.given <- cat_pav[c(15, 20),]
 
  # Generation of a response pattern (true ability level 0)
- x <- genPattern(0, it.given, model = "PCM")
+ x <- genPattern(0, it.given, model = "GPCM")
 
   # KL for item 1, ML estimate of ability computed
- KL(m.PCM, 1, x, it.given, model = "PCM")
+ KL(cat_pav, 1, x, it.given, model = "GPCM")
 
  # Current (ML) ability estimate 
- theta <- thetaEst(it.given, x, method = "ML", model = "PCM")
- KL(m.PCM, 1, x, it.given, theta = theta, model = "PCM")
+ theta <- thetaEst(it.given, x, method = "ML", model = "GPCM")
+ KL(cat_pav, 1, x, it.given, theta = theta, model = "GPCM")
 
  # WL ability estimate instead
- theta <- thetaEst(it.given, x, method = "WL", model = "PCM")
- KL(m.PCM, 1, x, it.given, theta = theta, model = "PCM")
+ theta <- thetaEst(it.given, x, method = "WL", model = "GPCM")
+ KL(cat_pav, 1, x, it.given, theta = theta, model = "GPCM")
 
  # KLP for item 1
- KL(m.PCM, 1, x, it.given, theta = theta, model = "PCM", type = "KLP")
+ KL(cat_pav, 1, x, it.given, theta = theta, model = "GPCM", type = "KLP")
 
  # KLP for item 1, different integration range
- KL(m.PCM, 1, x, it.given, theta = theta, model = "PCM", type = "KLP", lower = -2, 
+ KL(cat_pav, 1, x, it.given, theta = theta, model = "GPCM", type = "KLP", lower = -2, 
     upper = 2, nqp = 20)
 
  # KL for item 1, uniform prior distribution on the range [-2,2]
- KL(m.PCM, 1, x, it.given, theta = theta, model = "PCM", type = "KLP", 
+ KL(cat_pav, 1, x, it.given, theta = theta, model = "GPCM", type = "KLP", 
     priorDist = "unif", priorPar = c(-2, 2))
  }

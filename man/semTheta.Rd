@@ -207,48 +207,48 @@ Magis, D. and Barrada, J. R. (2017). Computerized Adaptive Testing with R: Recen
  c(th, semTheta(th, m.GRM, model = "GRM", method = "WL"))
 
 
- # Generation of an item bank under PCM with 20 items and 4 categories
- m.PCM <- genPolyMatrix(20, 4, "PCM", same.nrCat = TRUE)
- m.PCM <- as.matrix(m.PCM)
+ # Loading the cat_pav data
+ data(cat_pav)
+ cat_pav <- as.matrix(cat_pav)
 
  # Creation of a response pattern (true ability level 0)
  set.seed(1)
- x <- genPattern(0, m.PCM, model = "PCM")
+ x <- genPattern(0, cat_pav, model = "GPCM")
 
 # ML estimation
- th <- thetaEst(m.PCM, x, model = "PCM", method = "ML")
- c(th, semTheta(th, m.PCM, model = "PCM", method = "ML"))
+ th <- thetaEst(cat_pav, x, model = "GPCM", method = "ML")
+ c(th, semTheta(th, cat_pav, model = "GPCM", method = "ML"))
 
  # BM estimation, standard normal prior distribution
- th <- thetaEst(m.PCM, x, model = "PCM")
- c(th, semTheta(th, m.PCM, model = "PCM"))
+ th <- thetaEst(cat_pav, x, model = "GPCM")
+ c(th, semTheta(th, cat_pav, model = "GPCM"))
 
  # BM estimation, uniform prior distribution upon range [-2,2]
- th <- thetaEst(m.PCM, x, model = "PCM", method = "BM", priorDist = "unif", 
+ th <- thetaEst(cat_pav, x, model = "GPCM", method = "BM", priorDist = "unif", 
     priorPar = c(-2, 2))
- c(th, semTheta(th, m.PCM, model = "PCM", method = "BM", priorDist = "unif", 
+ c(th, semTheta(th, cat_pav, model = "GPCM", method = "BM", priorDist = "unif", 
   priorPar = c(-2, 2)))
 
  # BM estimation, Jeffreys' prior distribution  
- th <- thetaEst(m.PCM, x, model = "PCM", method = "BM", priorDist = "Jeffreys")
- c(th, semTheta(th, m.PCM, model = "PCM", method = "BM", priorDist = "Jeffreys"))
+ th <- thetaEst(cat_pav, x, model = "GPCM", method = "BM", priorDist = "Jeffreys")
+ c(th, semTheta(th, cat_pav, model = "GPCM", method = "BM", priorDist = "Jeffreys"))
 
  # EAP estimation, standard normal prior distribution
- th <- thetaEst(m.PCM, x, model = "PCM", method = "EAP")
- c(th, semTheta(th, m.PCM, x, model = "PCM", method = "EAP"))
+ th <- thetaEst(cat_pav, x, model = "GPCM", method = "EAP")
+ c(th, semTheta(th, cat_pav, x, model = "GPCM", method = "EAP"))
 
  # EAP estimation, uniform prior distribution upon range [-2,2]
- th <- thetaEst(m.PCM, x, model = "PCM", method = "EAP", priorDist = "unif", 
+ th <- thetaEst(cat_pav, x, model = "GPCM", method = "EAP", priorDist = "unif", 
     priorPar = c(-2, 2))
- c(th, semTheta(th, m.PCM, x, model = "PCM", method = "EAP", priorDist = "unif", 
+ c(th, semTheta(th, cat_pav, x, model = "GPCM", method = "EAP", priorDist = "unif", 
   priorPar = c(-2, 2)))
 
  # EAP estimation, Jeffreys' prior distribution  
- th <- thetaEst(m.PCM, x, model = "PCM", method = "EAP", priorDist = "Jeffreys")
- c(th, semTheta(th, m.PCM, x, model = "PCM", method = "EAP", priorDist = "Jeffreys"))
+ th <- thetaEst(cat_pav, x, model = "GPCM", method = "EAP", priorDist = "Jeffreys")
+ c(th, semTheta(th, cat_pav, x, model = "GPCM", method = "EAP", priorDist = "Jeffreys"))
 
  # WL estimation
- th <- thetaEst(m.PCM, x, model = "PCM", method = "WL")
- c(th, semTheta(th, m.PCM, model = "PCM", method = "WL"))
+ th <- thetaEst(cat_pav, x, model = "GPCM", method = "WL")
+ c(th, semTheta(th, cat_pav, model = "GPCM", method = "WL"))
 }
  }

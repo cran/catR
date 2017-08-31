@@ -102,10 +102,10 @@ Samejima, F. (1969). \emph{Estimation of latent ability using a response pattern
  # Computation of probabilities and derivatives for ability level 0
  Pi(0, m.GRM, model = "GRM")
 
- # Generation of a item bank under PCM with 20 items and at most 3 categories
- m.PCM <- genPolyMatrix(20, 3, "PCM")
- m.PCM <- as.matrix(m.PCM)
+ # Loading the cat_pav data
+ data(cat_pav)
+ cat_pav <- as.matrix(cat_pav)
 
  # Computation of probabilities and derivatives for ability level 1
- Pi(1, m.PCM, model = "PCM")
+ Pi(1, cat_pav, model = "GPCM")
  }

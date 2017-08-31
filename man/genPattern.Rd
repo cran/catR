@@ -93,13 +93,13 @@ Magis, D. and Barrada, J. R. (2017). Computerized Adaptive Testing with R: Recen
  # Generation of a single response for the first item only
  genPattern(0, m.GRM[1,], model = "GRM")
 
- # Generation of a item bank under PCM with 20 items and at most 3 categories
- m.PCM <- genPolyMatrix(20, 3, "PCM")
- m.PCM <- as.matrix(m.PCM)
+ # Loading the cat_pav data
+ data(cat_pav)
+ cat_pav <- as.matrix(cat_pav)
 
  # Generation of a response pattern for ability level 0
- genPattern(0, m.PCM, model = "PCM")
+ genPattern(0, cat_pav, model = "GPCM")
 
  # Generation of a single response for the first item only
- genPattern(0, m.PCM[1,], model = "PCM")
+ genPattern(0, cat_pav[1,], model = "GPCM")
  }

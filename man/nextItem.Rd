@@ -120,12 +120,13 @@ In case of content balancing control, three vectors of proportions are returned 
 
 
 \value{
- A list with eight arguments:
+ A list with nine arguments:
  \item{item}{the selected item (identified by its number in the item bank).}
  \item{par}{the vector of item parameters of the selected item.}
  \item{info}{the value of the MFI, Fisher's information, the MLWI, the MPWI, the MEI, the EPV, the unsigned distance between estimated ability and difficulty parameter (or the ability value were maximum Fisher information is provided) or NA (for \code{"random"} criterion) for the selected item and the current ability estimate.}
  \item{criterion}{the value of the \code{criterion} argument.}
  \item{randomesque}{the value of the \code{randomesque} argument.}
+\item{name}{either the name of the selected item (provided as the row name of the appropriate row in the item bank matrix) or \code{NULL}.}
  \item{prior.prop}{a vector with empirical proportions of items previously administered for each subgroup of items set by \code{cbControl}.}
  \item{post.prop}{a vector with empirical proportions of items previously administered, together with the one currently selected, for each subgroup
                   of items set by \code{cbControl}.}
@@ -368,29 +369,29 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
   cbControl = cbList, cbGroup = bank$cbGroup)
 
 
- # Generation of an item bank under PCM with 20 items and 4 categories
- m.PCM <- genPolyMatrix(20, 4, "PCM", same.nrCat = TRUE)
- m.PCM <- as.matrix(m.PCM)
+ # Loading the cat_pav data
+ data(cat_pav)
+ cat_pav <- as.matrix(cat_pav)
 
  # Current ability estimate is 0
  # Selecting the next item, current response pattern is 1 and item 15 was administered 
  # first
 
  ## MFI method
- nextItem(m.PCM, model = "PCM", theta = 0, criterion = "MFI", out = 15)
+ nextItem(cat_pav, model = "GPCM", theta = 0, criterion = "MFI", out = 15)
 
  ## Progressive method
- nextItem(m.PCM, model = "PCM", theta = 0, criterion = "progressive", out = 15)
+ nextItem(cat_pav, model = "GPCM", theta = 0, criterion = "progressive", out = 15)
 
  ## KL method
- nextItem(m.PCM, model = "PCM", theta = 0, criterion = "KL", out = 15, x = 1)
+ nextItem(cat_pav, model = "GPCM", theta = 0, criterion = "KL", out = 15, x = 1)
 
  ## MFI with content balancing
  cbList <- list(names = c("Audio1", "Audio2", "Written1", "Written2", "Written3"), 
         props = c(0.1, 0.2, 0.2, 0.2, 0.3))
- m.PCM<-genPolyMatrix(100, 4, model = "PCM", cbControl = cbList)
- bank<-breakBank(m.PCM)
- nextItem(bank$itemPar, model = "PCM", theta = 0, criterion = "MFI", out = 15, 
+ cat_pav<-genPolyMatrix(100, 4, model = "GPCM", cbControl = cbList)
+ bank<-breakBank(cat_pav)
+ nextItem(bank$itemPar, model = "GPCM", theta = 0, criterion = "MFI", out = 15, 
           cbControl = cbList, cbGroup = bank$cbGroup)
  }
 }

@@ -107,15 +107,15 @@ Magis, D., and Raiche, G. (2012). Random Generation of Response Patterns under C
  OIi(th = 0, m.GRM, x, model = "GRM")
  OIi(th = 1, m.GRM, x, model = "GRM")
 
- # Generation of an item bank under PCM with 20 items and 4 categories
- m.PCM <- genPolyMatrix(20, 4, "PCM", same.nrCat = TRUE)
- m.PCM <- as.matrix(m.PCM)
+ # Loading the cat_pav data
+ data(cat_pav)
+ cat_pav <- as.matrix(cat_pav)
 
  # Creation of a response pattern (true ability level 0)
  set.seed(1)
- x <- genPattern(0, m.PCM, model = "PCM")
+ x <- genPattern(0, cat_pav, model = "GPCM")
 
- # Observed information functions (various th values)
- OIi(th = 0, m.PCM, x, model = "PCM")
- OIi(th = 1, m.PCM, x, model = "PCM")
+ # Observed information functions (various 'th' values)
+ OIi(th = 0, cat_pav, x, model = "GPCM")
+ OIi(th = 1, cat_pav, x, model = "GPCM")
  }

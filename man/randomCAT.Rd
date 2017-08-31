@@ -58,6 +58,7 @@ randomCAT(trueTheta, itemBank, model = NULL, responses = NULL, genSeed = NULL,
 \item{model}{the value of the \code{model} argument.}
  \item{testItems}{a vector with the items that were administered during the test.}
  \item{itemPar}{a matrix with the parameters of the items administered during the test.}
+\item{itemNames}{either a vector wit the names of the selected items during the CAT, or \code{NULL}.}
  \item{pattern}{the generated response pattern (as vector of 0 and 1 entries).}
  \item{thetaProv}{a vector with the provisional ability estimates.}
  \item{seProv}{a vector with the standard errors of the provisional ability estimates.}
@@ -106,7 +107,7 @@ The function \code{print.cat} returns similar (but differently organized) result
 
 
 \details{
- The \code{randomCAT} function generates an adaptive test using an item bank specified by arguments \code{itemBank} and \code{model}, and for a given true ability level specified by argument \code{trueTheta}. The maximal length of the test can be fixed through the \code{maxItems} argument, with a default value of 50 items. 
+ The \code{randomCAT} function generates an adaptive test using an item bank specified by arguments \code{itemBank} and \code{model}, and for a given true ability level specified by argument \code{trueTheta}. 
 
 Dichotomous IRT models are considered whenever \code{model} is set to \code{NULL} (default value). In this case, \code{itemBank} must be a matrix with one row per item and four columns, with the values of the discrimination, the difficulty, the pseudo-guessing and the inattention parameters (in this order). These are the parameters of the four-parameter logistic (4PL) model (Barton and Lord, 1981). 
 
@@ -375,11 +376,13 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  	final = final, cbControl = cbList, allTheta = TRUE)
  res
 
- # Generation of an item bank under PCM with 100 items, 4 categories and groups
- m.PCM <- genPolyMatrix(100, 4, "PCM", same.nrCat = TRUE, cbControl = cbList)
+ # Loading the cat_pav data
+ data(cat_pav)
+ cat_pav <- as.matrix(cat_pav)
+
  stop <- list(rule = "length", thr = 10)
- res <- randomCAT(0, m.PCM, model = "PCM", start = start, test = test, stop = stop, 
- 	final = final, cbControl = cbList, allTheta = TRUE)
+ res <- randomCAT(0, cat_pav, model = "GPCM", start = start, test = test, stop = stop, 
+ 	final = final, allTheta = TRUE)
  res
  }
 }

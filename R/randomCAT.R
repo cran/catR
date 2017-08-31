@@ -1,12 +1,13 @@
 randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL, 
     genSeed = NULL, cbControl = NULL, nAvailable = NULL, start = list(fixItems = NULL, 
         seed = NULL, nrItems = 1, theta = 0, D = 1, randomesque = 1, 
-        random.seed = NULL, startSelect = "MFI",cb.control=FALSE,random.cb=NULL), test = list(method = "BM", 
-        priorDist = "norm", priorPar = c(0, 1), range = c(-4, 
-            4), D = 1, parInt = c(-4, 4, 33), itemSelect = "MFI", 
-        infoType = "observed", randomesque = 1, random.seed = NULL, 
-        AP = 1, proRule = "length", proThr = 20, constantPatt = NULL), 
-    stop = list(rule = "length", thr = 20, alpha = 0.05), final = list(method = "BM", 
+        random.seed = NULL, startSelect = "MFI", cb.control = FALSE, 
+        random.cb = NULL), test = list(method = "BM", priorDist = "norm", 
+        priorPar = c(0, 1), range = c(-4, 4), D = 1, parInt = c(-4, 
+            4, 33), itemSelect = "MFI", infoType = "observed", 
+        randomesque = 1, random.seed = NULL, AP = 1, proRule = "length", 
+        proThr = 20, constantPatt = NULL), stop = list(rule = "length", 
+        thr = 20, alpha = 0.05), final = list(method = "BM", 
         priorDist = "norm", priorPar = c(0, 1), range = c(-4, 
             4), D = 1, parInt = c(-4, 4, 33), alpha = 0.05), 
     allTheta = FALSE, save.output = FALSE, output = c("path", 
@@ -46,7 +47,8 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
     internalCAT <- function() {
         startList <- list(fixItems = start$fixItems, seed = start$seed, 
             nrItems = NULL, theta = start$theta, D = 1, randomesque = 1, 
-            random.seed = NULL, startSelect = "MFI",cbControl=NULL,cbGroup=NULL,random.cb=NULL)
+            random.seed = NULL, startSelect = "MFI", cbControl = NULL, 
+            cbGroup = NULL, random.cb = NULL)
         startList$nrItems <- ifelse(is.null(start$nrItems), 1, 
             start$nrItems)
         if (is.null(start$theta)) 
@@ -58,21 +60,22 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
             startList$random.seed <- start$random.seed
         startList$startSelect <- ifelse(is.null(start$startSelect), 
             "MFI", start$startSelect)
-stCB<-FALSE
-if (!is.null(start$cb.control)) stCB<-start$cb.control
-
-if (is.null(cbControl) | !stCB) {
-            startList$cbControl<-startList$cbGroup<-NULL
-startCB<-FALSE
-}
-else{
-startList$cbControl<-cbControl
-startList$cbGroup<-cbGroup
-startCB<-TRUE
-}
-if (startCB & is.null(startList$seed)) startCB<-FALSE
+        stCB <- FALSE
+        if (!is.null(start$cb.control)) 
+            stCB <- start$cb.control
+        if (is.null(cbControl) | !stCB) {
+            startList$cbControl <- startList$cbGroup <- NULL
+            startCB <- FALSE
+        }
+        else {
+            startList$cbControl <- cbControl
+            startList$cbGroup <- cbGroup
+            startCB <- TRUE
+        }
+        if (startCB & is.null(startList$seed)) 
+            startCB <- FALSE
         if (!is.null(start$random.cb)) 
-            startList$random.cb<- start$random.cb
+            startList$random.cb <- start$random.cb
         start <- startList
         stopList <- list(rule = stop$rule, thr = stop$thr, alpha = 0.05)
         stopList$alpha <- ifelse(is.null(stop$alpha), 0.05, stop$alpha)
@@ -148,8 +151,8 @@ if (startCB & is.null(startList$seed)) startCB<-FALSE
             fixItems = start$fixItems, seed = start$seed, nrItems = start$nrItems, 
             theta = start$theta, D = start$D, randomesque = start$randomesque, 
             random.seed = start$random.seed, startSelect = start$startSelect, 
-            nAvailable = nAvailable,cbControl=start$cbControl,cbGroup=start$cbGroup,
-            random.cb=start$random.cb)
+            nAvailable = nAvailable, cbControl = start$cbControl, 
+            cbGroup = start$cbGroup, random.cb = start$random.cb)
         ITEMS <- pr0$items
         PAR <- rbind(pr0$par)
         if (is.null(ITEMS)) 
@@ -192,16 +195,16 @@ if (startCB & is.null(startList$seed)) startCB<-FALSE
                 seFinal)
             endWarning <- FALSE
             RES <- list(trueTheta = trueTheta, model = model, 
-                testItems = ITEMS, itemPar = PAR, pattern = PATTERN, 
+                testItems = ITEMS, itemPar = PAR, itemNames=NULL, pattern = PATTERN, 
                 thetaProv = TH, seProv = SETH, ruleFinal = stop.cat$rule, 
                 thFinal = finalEst, seFinal = seFinal, ciFinal = confIntFinal, 
                 genSeed = genSeed, startFixItems = start$fixItems, 
                 startSeed = start$seed, startNrItems = start$nrItems, 
                 startTheta = start$theta, startD = start$D, startRandomesque = start$randomesque, 
                 startRandomSeed = start$random.seed, startSelect = start$startSelect, 
-                startCB=startCB, provMethod = test$method, provDist = test$priorDist, 
-                provPar = test$priorPar, provRange = test$range, 
-                provD = test$D, itemSelect = test$itemSelect, 
+                startCB = startCB, provMethod = test$method, 
+                provDist = test$priorDist, provPar = test$priorPar, 
+                provRange = test$range, provD = test$D, itemSelect = test$itemSelect, 
                 infoType = test$infoType, randomesque = test$randomesque, 
                 testRandomSeed = test$random.seed, AP = test$AP, 
                 constantPattern = test$constantPatt, cbControl = cbControl, 
@@ -262,16 +265,16 @@ if (startCB & is.null(startList$seed)) startCB<-FALSE
                 endWarning <- TRUE
             else endWarning <- FALSE
             RES <- list(trueTheta = trueTheta, model = model, 
-                testItems = ITEMS, itemPar = PAR, pattern = PATTERN, 
+                testItems = ITEMS, itemPar = PAR, itemNames=NULL, pattern = PATTERN, 
                 thetaProv = TH, seProv = SETH, ruleFinal = stop.cat$rule, 
                 thFinal = finalEst, seFinal = seFinal, ciFinal = confIntFinal, 
                 genSeed = genSeed, startFixItems = start$fixItems, 
                 startSeed = start$seed, startNrItems = start$nrItems, 
                 startTheta = start$theta, startD = start$D, startRandomesque = start$randomesque, 
                 startRandomSeed = start$random.seed, startSelect = start$startSelect, 
-                startCB=startCB, provMethod = test$method, provDist = test$priorDist, 
-                provPar = test$priorPar, provRange = test$range, 
-                provD = test$D, itemSelect = test$itemSelect, 
+                startCB = startCB, provMethod = test$method, 
+                provDist = test$priorDist, provPar = test$priorPar, 
+                provRange = test$range, provD = test$D, itemSelect = test$itemSelect, 
                 infoType = test$infoType, randomesque = test$randomesque, 
                 testRandomSeed = test$random.seed, AP = test$AP, 
                 constantPattern = test$constantPatt, cbControl = cbControl, 
@@ -306,6 +309,7 @@ if (startCB & is.null(startList$seed)) startCB<-FALSE
                 RES$seProv <- c(prov.se, RES$seProv)
             }
         }
+if (!is.null(row.names(itemBank))) RES$itemNames<-row.names(itemBank)[RES$testItems]
         return(RES)
     }
     resToReturn <- internalCAT()
@@ -322,9 +326,7 @@ if (startCB & is.null(startList$seed)) startCB<-FALSE
 }
 
 
-
-
-print.cat <- function (x, ...) 
+print.cat<-function (x, ...) 
 {
     if (!x$assigned.responses) {
         cat("Random generation of a CAT response pattern", "\n")
@@ -413,8 +415,11 @@ print.cat <- function (x, ...)
         if (nr1 == 1) 
             cat("   Early item selection:", met1, "\n")
         else cat("   Early items selection:", met1, "\n")
-if (x$startCB) cat("    Early items chosen to control for content balancing","\n")
-        else cat("    Early items not chosen to control for content balancing","\n")
+        if (x$startCB) 
+            cat("    Early items chosen to control for content balancing", 
+                "\n")
+        else cat("    Early items not chosen to control for content balancing", 
+            "\n")
         if (!is.null(x$startFixItems)) {
             if (length(x$startFixItems) == 1) 
                 met1bis <- paste("   Item administered: ", x$startFixItems, 
@@ -572,8 +577,10 @@ if (x$startCB) cat("    Early items chosen to control for content balancing","\n
         cat("\n")
     }
     cat("\n", "Adaptive test details:", "\n")
-    mat <- rbind(as.character(1:length(x$testItems)), as.character(x$testItems), 
-        round(x$pattern, 0))
+if (is.null(x$itemNames)) mat <- rbind(as.character(1:length(x$testItems)),
+ as.character(x$testItems), round(x$pattern, 0))
+else mat <- rbind(as.character(1:length(x$testItems)),
+ as.character(x$itemNames), round(x$pattern, 0))
     nra <- length(x$pattern) - length(x$thetaProv)
     if (nra < 0) 
         mat <- rbind(mat, c(round(x$thetaProv[2:length(x$thetaProv)], 
@@ -582,6 +589,7 @@ if (x$startCB) cat("    Early items chosen to control for content balancing","\n
         3)), c(rep(NA, nra), round(x$seProv, 3)))
     rownames(mat) <- c("Nr", "Item", "Resp.", "Est.", "SE")
     colnames(mat) <- rep("", ncol(mat))
+
     if (x$startSelect != "progressive" & x$startSelect != "proportional") {
         if (nra == 0 & x$startNrItems > 1) {
             numb <- x$startNrItems - 1
@@ -654,24 +662,25 @@ if (x$startCB) cat("    Early items chosen to control for content balancing","\n
         cat("   Final subject classification:", mess, "\n")
     }
     if (!is.null(x$cbControl)) {
-if (x$startCB){
- cat("\n", "   Proportions of starting items per subgroup (expected and observed):", 
-            "\n","\n")
-        mat <- rbind(round(x$cbControl$props/sum(x$cbControl$props), 
-            3))
-if (!is.null(x$startSeed)) NRIT<-x$startNrItems
-nr <- NULL
-        for (i in 1:length(x$cbControl$names)) nr[i] <- length(x$testItems[1:NRIT][x$cbGroup[x$testItems[1:NRIT]] == 
-            x$cbControl$names[i]])
-        nr <- nr/sum(nr)
-        mat <- rbind(mat, round(nr, 3))
-        rownames(mat) <- c("Exp.", "Obs.")
-        colnames(mat) <- x$cbControl$names
-        print(format(mat, justify = "right"), quote = FALSE)
-        cat("\n")
-}
-        cat("\n", "   Proportions of items per subgroup (expected and observed)", "\n",
-        "    at the end of the test:", "\n", "\n")
+        if (x$startCB) {
+            cat("\n", "   Proportions of starting items per subgroup (expected and observed):", 
+                "\n", "\n")
+            mat <- rbind(round(x$cbControl$props/sum(x$cbControl$props), 
+                3))
+            if (!is.null(x$startSeed)) 
+                NRIT <- x$startNrItems
+            nr <- NULL
+            for (i in 1:length(x$cbControl$names)) nr[i] <- length(x$testItems[1:NRIT][x$cbGroup[x$testItems[1:NRIT]] == 
+                x$cbControl$names[i]])
+            nr <- nr/sum(nr)
+            mat <- rbind(mat, round(nr, 3))
+            rownames(mat) <- c("Exp.", "Obs.")
+            colnames(mat) <- x$cbControl$names
+            print(format(mat, justify = "right"), quote = FALSE)
+            cat("\n")
+        }
+        cat("\n", "   Proportions of items per subgroup (expected and observed)", 
+            "\n", "    at the end of the test:", "\n", "\n")
         mat <- rbind(round(x$cbControl$props/sum(x$cbControl$props), 
             3))
         nr <- NULL
@@ -715,7 +724,6 @@ nr <- NULL
             "\n", "\n", sep = "")
     }
 }
-
 
 
 

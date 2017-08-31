@@ -80,10 +80,10 @@ Magis, D. and Barrada, J. R. (2017). Computerized Adaptive Testing with R: Recen
  # Computation of item information and derivatives for ability level 0
  Ii(0, m.GRM, model = "GRM")
 
- # Generation of a item bank under PCM with 20 items and at most 3 categories
- m.PCM <- genPolyMatrix(20, 3, "PCM")
- m.PCM <- as.matrix(m.PCM)
+ # Loading the cat_pav data
+ data(cat_pav)
+ cat_pav <- as.matrix(cat_pav)
 
  # Computation of item information and derivatives for ability level 1
- Ii(1, m.PCM, model = "PCM")
+ Ii(1, cat_pav, model = "GPCM")
  }

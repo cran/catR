@@ -13,7 +13,7 @@ d2Ii<-(2*P*Q*(d2P^2+dP*d3P)-2*dP^2*d2P*(Q-P))/(P^2*Q^2)-(3*P^2*Q*dP^2*d2P-P*dP^4
 else{
 pr0<-dP^2/P
 pr1<-2*dP*d2P/P-dP^3/P^2
-pr2<-(2*d2P^2+2*dP*d3P)/P-2*dP^2*d2P/-3*dP*d2P/P^2+2*dP^4/P^3
+pr2<-(2*d2P^2+2*dP*d3P)/P-5*dP^2*d2P/P^2+2*dP^4/P^3
 Ii<-as.numeric(rowSums(pr0,na.rm=TRUE))
 dIi<-as.numeric(rowSums(pr1,na.rm=TRUE))
 d2Ii<-as.numeric(rowSums(pr2,na.rm=TRUE))

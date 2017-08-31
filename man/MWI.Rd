@@ -143,26 +143,26 @@ Magis, D. and Barrada, J. R. (2017). Computerized Adaptive Testing with R: Recen
  priorPar = c(-2, 2))
 
 
- # Generation of an item bank under PCM with 20 items and 4 categories
- m.PCM <- genPolyMatrix(20, 4, "PCM", same.nrCat = TRUE)
- m.PCM <- as.matrix(m.PCM)
+ # Loading the cat_pav data
+ data(cat_pav)
+ cat_pav <- as.matrix(cat_pav)
 
  # Selection of two arbitrary items (15 and 20) 
- it.given <- m.PCM[c(15, 20),]
+ it.given <- cat_pav[c(15, 20),]
 
  # Generation of a response pattern (true ability level 0)
- x <- genPattern(0, it.given, model = "PCM")
+ x <- genPattern(0, it.given, model = "GPCM")
 
   # MLWI for item 1
- MWI(m.PCM, 1, x, it.given, model = "PCM")
+ MWI(cat_pav, 1, x, it.given, model = "GPCM")
 
  # MPWI for item 1
- MWI(m.PCM, 1, x, it.given, model = "PCM", type = "MPWI")
+ MWI(cat_pav, 1, x, it.given, model = "GPCM", type = "MPWI")
 
  # MLWI for item 1, different integration range
- MWI(m.PCM, 1, x, it.given, model = "PCM", lower = -2, upper = 2, nqp = 20)
+ MWI(cat_pav, 1, x, it.given, model = "GPCM", lower = -2, upper = 2, nqp = 20)
 
  # MPWI for item 1, uniform prior distribution on the range [-2,2]
- MWI(m.PCM, 1, x, it.given, model = "PCM", type = "MPWI", priorDist = "unif", 
+ MWI(cat_pav, 1, x, it.given, model = "GPCM", type = "MPWI", priorDist = "unif", 
  priorPar = c(-2, 2))
  }
