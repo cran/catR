@@ -14,13 +14,15 @@ simulateRespondents(thetas, itemBank, responsesMatrix = NULL, model = NULL,
   	genSeed = NULL, cbControl = NULL, rmax = 1, Mrmax = "restricted", 
   	start = list(fixItems = NULL, seed = NULL, nrItems = 1, theta = 0, 
   	D = 1, randomesque = 1, random.seed = NULL, startSelect = "MFI", 
-  	cb.control = FALSE, random.cb = NULL), 	test = list(method = "BM", 
-  	priorDist = "norm", priorPar = c(0,1), range = c(-4, 4), D = 1, 
-  	parInt = c(-4, 4, 33), itemSelect = "MFI", 	infoType = "observed", 
+  	cb.control = FALSE, random.cb = NULL), test = list(method = "BM", 
+  	priorDist = "norm", priorPar = c(0,1), weight = "Huber", tuCo = 1, 
+  	sem.type = "classic", sem.exact = FALSE, se.ase = 10, range = c(-4, 4), 
+  	D = 1, parInt = c(-4, 4, 33), itemSelect = "MFI", infoType = "observed", 
   	randomesque = 1, random.seed = NULL, AP = 1, proRule = "length", 
   	proThr = 20, constantPatt = NULL), stop = list(rule = "length", 
   	thr = 20, alpha = 0.05), final = list(method = "BM", priorDist = "norm", 
-  	priorPar = c(0,1), range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), 
+  	priorPar = c(0,1), weight = "Huber", tuCo = 1, sem.type = "classic", 
+  	sem.exact = FALSE, range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), 
   	alpha = 0.05), save.output = FALSE, output = c("", "catR", "csv"))
 \method{print}{catResult}(x, ...)
 \method{plot}{catResult}(x, type = "all", deciles = "theta", save.plot = FALSE, 
@@ -148,9 +150,9 @@ Juan Ramon Barrada \cr
 Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
 \email{barrada@unizar.es}
 
-David Magis \cr
-Department of Education, University of Liege, Belgium \cr
-\email{david.magis@ulg.ac.be}
+    David Magis \cr
+    Department of Psychology, University of Liege, Belgium \cr
+    \email{david.magis@uliege.be}
 
 Guido Corradi \cr
 Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
@@ -196,13 +198,6 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  res2 <- simulateRespondents(thetas, bank, start = start, test = test, stop = stop, 
   final = final, rmax = 0.8)
 
-\dontrun{
-
- # Output saved
- res3 <- simulateRespondents(thetas, bank, start = start, test = test, stop = stop, 
-  final = final, save.output = TRUE, output = c("C:/Program Files/", "out", "txt"))
-}
-
  # With content balancing #
 
  # Creation of an appropriate list for content balancing
@@ -219,12 +214,6 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  # Plotting all possible panels
  plot(res)
  plot(res, deciles = "deciles")
-
-\dontrun{
-
- # Saving the plot in the "fig" pdf file in "c:/Program Files/"
- plot(res, save.plot = TRUE, save.options = c("c:/Program Files/", "fig", "pdf"))
-}
 
  # Plotting the 'trueEst' type of plot
  plot(res, type = "trueEst")

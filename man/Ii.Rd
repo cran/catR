@@ -47,8 +47,8 @@ Magis, D. and Barrada, J. R. (2017). Computerized Adaptive Testing with R: Recen
 
 \author{
     David Magis \cr
-    Department of Education, University of Liege, Belgium \cr
-    \email{david.magis@ulg.ac.be}
+    Department of Psychology, University of Liege, Belgium \cr
+    \email{david.magis@uliege.be}
  }
 
 \seealso{

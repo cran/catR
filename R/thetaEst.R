@@ -1,6 +1,7 @@
 thetaEst<-function (it, x, model = NULL, D = 1, method = "BM", priorDist = "norm", 
-    priorPar = c(0, 1), range = c(-4, 4), parInt = c(-4, 4, 33), 
-    constantPatt = NULL, current.th = 0, bRange = c(-2, 2)) 
+    priorPar = c(0, 1), weight = "Huber", tuCo = 1, range = c(-4, 
+        4), parInt = c(-4, 4, 33), constantPatt = NULL, current.th = 0, 
+    bRange = c(-2, 2)) 
 {
     constantPattern <- function(t) ifelse(sum(t) == 0 | sum(t) == 
         length(t), TRUE, FALSE)
@@ -20,9 +21,9 @@ thetaEst<-function (it, x, model = NULL, D = 1, method = "BM", priorDist = "norm
                 bRange[2]))
         }
     }
-ind<-which(!is.na(x))
-it<-it[ind,]
-x<-x[ind]
+    ind <- which(!is.na(x))
+    it <- it[ind, ]
+    x <- x[ind]
     if (!is.null(METHOD)) {
         if (METHOD == "EAP") 
             res <- eapEst(it, x, model = model, D = D, priorDist = priorDist, 
@@ -53,20 +54,62 @@ x<-x[ind]
                   r0(th, it, D = D, method = method, priorDist = priorDist, 
                     priorPar = priorPar) + r(th, it, x, D = D)
                 }
+                T.rob <- function(th, it, x, weight = "Huber", 
+                  tuCo = 1, D = 1) {
+                  if (sum(weight == c("Huber", "Tukey")) == 0) {
+                    stop("'weight' must be either 'Huber' or 'Tukey'", 
+                      call. = FALSE)
+                  }
+it<-rbind(it)
+                  pr <- Pi(th, it, D = D)
+                  P <- pr$Pi
+                  Q <- 1 - P
+                  dP <- pr$dPi
+                  dli <- dP * (x - P)/(P * Q)
+                  ri <- it[, 1] * (th - it[, 2])
+                  if (weight == "Huber") {
+                    wi <- tuCo/abs(ri)
+                    wi[abs(ri) <= tuCo] <- 1
+                  }
+                  if (weight == "Tukey") {
+                    wi <- (1 - (ri/tuCo)^2)^2
+                    wi[abs(ri) > tuCo] <- 0
+                  }
+                  res <- sum(wi * dli)
+                  return(res)
+                }
                 if (METHOD == "BM" & priorDist == "unif") 
                   f <- function(th) T(th, it, x, D = D, method = "ML")
-                else f <- function(th) T(th, it, x, D = D, method = METHOD, 
-                  priorDist = priorDist, priorPar = priorPar)
+                else {
+                  if (METHOD == "ROB") {
+                    f <- function(th) {
+                      T.rob(th, it, x, weight = weight, tuCo = tuCo, 
+                        D = D)
+                    }
+                  }
+                  else {
+                    f <- function(th) {
+                      T(th, it, x, D = D, method = METHOD, priorDist = priorDist, 
+                        priorPar = priorPar)
+                    }
+                  }
+                }
                 if (METHOD == "BM" & priorDist == "unif") 
                   RANGE <- priorPar
                 else RANGE <- range
-                if (f(RANGE[1]) < 0 & f(RANGE[2]) < 0) 
-                  res <- RANGE[1]
-                else {
-                  if (f(RANGE[1]) > 0 & f(RANGE[2]) > 0) 
-                    res <- RANGE[2]
-                  else res <- uniroot(f, RANGE)$root
+                if ((f(RANGE[1]) < 0 & f(RANGE[2]) > 0) | (f(RANGE[1]) > 
+                  0 & f(RANGE[2]) < 0)) {
+                  res <- uniroot(f, RANGE)$root
                 }
+                else {
+                    pr <- optimize(f, RANGE)
+                    if (pr$objective > 0) res <- RANGE[2]
+                    else {
+                    pr2 <- optimize(f, RANGE, maximum = TRUE)
+                    if (pr2$objective < 0) res <- RANGE[1]
+                    else res <- uniroot(f, c(pr2$maximum, pr$minimum))$root
+                  }
+                  }
             }
             else {
                 met <- switch(METHOD, ML = 1, BM = 2, WL = 3, 
@@ -109,4 +152,3 @@ x<-x[ind]
     }
     return(res)
 }
-

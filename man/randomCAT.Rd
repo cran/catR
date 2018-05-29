@@ -14,13 +14,15 @@ randomCAT(trueTheta, itemBank, model = NULL, responses = NULL, genSeed = NULL,
  	cbControl = NULL, nAvailable = NULL, start = list(fixItems = NULL, 
  	seed = NULL, nrItems = 1, theta = 0, D = 1, randomesque = 1, 
  	random.seed = NULL, startSelect = "MFI", cb.control = FALSE, random.cb = NULL), 
- 	test = list(method = "BM", 	priorDist = "norm", priorPar = c(0, 1), 
- 	range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), itemSelect = "MFI", 
- 	infoType = "observed", randomesque = 1, random.seed = NULL, AP = 1, 
- 	proRule = "length", proThr = 20,constantPatt = NULL), 
- 	stop = list(rule = "length", thr = 20, alpha = 0.05),
- 	final = list(method = "BM", priorDist = "norm", 	priorPar = c(0, 1), 
- 	range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), 	alpha = 0.05), 
+ 	test = list(method = "BM", priorDist = "norm", priorPar = c(0, 1), 
+ 	weight = "Huber", tuCo = 1, sem.type = "classic", sem.exact = FALSE, 
+ 	se.ase = 10, range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), 
+ 	itemSelect = "MFI", infoType = "observed", randomesque = 1, 
+ 	random.seed = NULL, AP = 1, proRule = "length", proThr = 20, 
+ 	constantPatt = NULL), stop = list(rule = "length", thr = 20, alpha = 0.05), 
+ 	final = list(method = "BM", priorDist = "norm", priorPar = c(0, 1), 
+ 	weight = "Huber", tuCo = 1, sem.type = "classic", sem.exact = FALSE, 
+ 	range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), alpha = 0.05), 
  	allTheta = FALSE, save.output = FALSE, output = c("path", "name", "csv"))
 \method{print}{cat}(x, ...)
 \method{plot}{cat}(x, ci = FALSE, alpha = 0.05, trueTh = TRUE, classThr = NULL, 
@@ -79,6 +81,11 @@ randomCAT(trueTheta, itemBank, model = NULL, responses = NULL, genSeed = NULL,
  \item{provMethod}{the value of the \code{test$method} argument (or its default value if missing).}
  \item{provDist}{the value of the \code{test$priorDist} argument (or its default value if missing).}
  \item{provPar}{the value of the \code{test$priorPar} argument (or its default value if missing).}
+ \item{provWeight}{the value of the \code{test$weight} argument (or its default value if missing).}
+ \item{provTuCo}{the value of the \code{test$tuCo} argument (or its default value if missing).}
+ \item{provSemType}{the value of the \code{test$sem.type} argument (or its default value if missing).}
+ \item{provSemExact}{the value of the \code{test$sem.exact} argument (or its default value if missing).}
+\item{se.ase}{the value of the \code{test$se.ase} argument (or its default value if missing).}
  \item{provRange}{the value of the \code{test$range} argument (or its default value if missing).}
  \item{provD}{the value of the \code{test$D} argument (or its default value if missing)or \code{NA} if \code{model} is not \code{NULL}.}
  \item{itemSelect}{the value of the \code{test$itemSelect} argument (or its default value if missing).}
@@ -95,6 +102,10 @@ randomCAT(trueTheta, itemBank, model = NULL, responses = NULL, genSeed = NULL,
  \item{finalMethod}{the value of the \code{final$method} argument (or its default value if missing).}
  \item{finalDist}{the value of the \code{final$priorDist} argument (or its default value if missing).}
  \item{finalPar}{the value of the \code{final$priorPar} argument (or its default value if missing).}
+ \item{finalWeight}{the value of the \code{final$weight} argument (or its default value if missing).}
+ \item{finalTuCo}{the value of the \code{final$tuCo} argument (or its default value if missing).}
+ \item{finalSemType}{the value of the \code{final$sem.type} argument (or its default value if missing).}
+ \item{finalSemExact}{the value of the \code{final$sem.exact} argument (or its default value if missing).}
  \item{finalRange}{the value of the \code{final$range} argument (or its default value if missing).}
  \item{finalD}{the value of the \code{final$D} argument (or its default value if missing), or \code{NA} if \code{model} is not \code{NULL}.}
  \item{finalAlpha}{the value of the \code{final$alpha} argument (or its default value if missing).}
@@ -147,9 +158,14 @@ If the argument \code{nrItems} is set to zero, then no starting item is selected
 
  The \code{test} list can contain one or several of the following arguments:
  \itemize{
- \item{\code{method}: a character string to specify the method for ability estimation. Possible values are: \code{"BM"} (default) for Bayesian modal estimation (Birnbaum, 1969), \code{"ML"} for maximum likelihood estimation (Lord, 1980), \code{"EAP"} for expected a posteriori (EAP) estimation (Bock and Mislevy, 1982), and \code{"WL"} for weighted likelihood estimation (Warm, 1989).}
- \item{\code{priorDist}: a character string which sets the prior distribution. Possible values are: \code{"norm"} (default) for normal distribution, \code{"unif"} for uniform distribution, and \code{"Jeffreys"} for Jeffreys' noninformative prior distribution (Jeffreys, 1939, 1946). ignored if \code{method} is neither \code{"BM"} nor \code{"EAP"}.}
- \item{\code{priorPar}: a vector of two numeric components, which sets the parameters of the prior distribution. If (\code{method="BM"} or \code{method=="EAP"}) and \code{priorDist="norm"}, the components of \code{priorPar} are respectively the mean and the standard deviation of the prior normal density. If (\code{method="BM"} or \code{method="EAP"}) and \code{priorDist="unif"}, the components of \code{priorPar} are respectively the lower and upper bound of the prior uniform density. Ignored in all other cases. By default, \code{priorPar} takes the parameters of the prior standard normal distribution (i.e., \code{priorPar=c(0,1)}). In addition, \code{priorPar} also provides the prior parameters for the comoutation of MLWI and MPWI values for next item selection (see \code{\link{nextItem}} for further details).}
+ \item{\code{method}: a character string to specify the method for ability estimation. Possible values are: \code{"BM"} (default) for Bayesian modal estimation (Birnbaum, 1969), \code{"ML"} for maximum likelihood estimation (Lord, 1980), \code{"EAP"} for expected a posteriori (EAP) estimation (Bock and Mislevy, 1982), \code{"WL"} for weighted likelihood estimation (Warm, 1989) and \code{"ROB"} for robust estimation (Schuester and Yuan, 2011).}
+ \item{\code{priorDist}: a character string which sets the prior distribution. Possible values are: \code{"norm"} (default) for normal distribution, \code{"unif"} for uniform distribution, and \code{"Jeffreys"} for Jeffreys' noninformative prior distribution (Jeffreys, 1939, 1946). Ignored if \code{method} is neither \code{"BM"} nor \code{"EAP"}.}
+ \item{\code{priorPar}: a vector of two numeric components, which sets the parameters of the prior distribution. If (\code{method="BM"} or \code{method=="EAP"}) and \code{priorDist="norm"}, the components of \code{priorPar} are respectively the mean and the standard deviation of the prior normal density. If (\code{method="BM"} or \code{method="EAP"}) and \code{priorDist="unif"}, the components of \code{priorPar} are respectively the lower and upper bound of the prior uniform density. Ignored in all other cases. By default, \code{priorPar} takes the parameters of the prior standard normal distribution (i.e., \code{priorPar=c(0,1)}). In addition, \code{priorPar} also provides the prior parameters for the computation of MLWI and MPWI values for next item selection (see \code{\link{nextItem}} for further details).}
+\item{\code{weight}: the type of weight function for the robust estimator. Possible values are \code{"Huber"} (default) and \code{"Tukey"}. Ignored if \code{method} is not \code{"ROB"} or if \code{model} is not \code{NULL}.}
+\item{\code{tuCo}: the value of the tuning constant for the weight function (default is 1, suitable with \code{"Huber"} weight). Ignored if \code{method} is not \code{"ROB"} or if \code{model} is not \code{NULL}.}
+\item{\code{sem.type}: the type of ASE formula to be used, either \code{"classic"} (default) or \code{"new"}. Ignored if \code{method} is neither \code{"BM"} nor \code{"WL"}, or if \code{model} is not \code{NULL}.}
+\item{\code{sem.exact}: a logical value indicating whether \emph{exact} standard error should be computed instead of asymptotic standard error. (default is \code{FALSE}). Ignored if \code{model} is not \code{NULL}.}
+\item{\code{se.ase}: an integer value specifying the maximum number of item responses that are considered for computing the exact SE values, before switching to ASE values (due to computational time constraints). Default is 10; that is, ASE values are computed from the 11-th administered item on. Ignored if \code{model} is not \code{NULL} or if \code{sem.exact} id \code{FALSE}.}
  \item{\code{range}: the maximal range of ability levels, set as a vector of two numeric components. The ability estimate will always lie to this interval (set by default to [-4, 4]). Ignored if \code{method=="EAP"}.}
  \item{\code{D}: the value of the metric constant. Default is \code{D=1} for logistic metric. Setting \code{D=1.702} yields approximately the normal metric (Haley, 1952). Ignored if \code{model} is not \code{NULL}.}
  \item{\code{parInt}: a numeric vector of three components, holding respectively the values of the arguments \code{lower}, \code{upper} and \code{nqp} of the \code{\link{eapEst}}, \code{\link{eapSem}} and \code{MWI} commands. It specifies the range of quadrature points for numerical integration, and is used for computing the EAP estimate, its standard error, and the MLWI and MPWI values for next item selection. Default vector is (-4, 4, 33), thus setting the range from -4 to 4 by steps of 0.25. Ignored if \code{method} is not \code{"EAP"} and if \code{itemSelect} is neither \code{"MLWI"} nor \code{"MPWI"}.}
@@ -188,6 +204,12 @@ Usually the ability estimates and related standard errors are computed right aft
  Finally, the plot can be saved in an external file, either as PDF or JPEG format. First, the argument \code{save.plot} must be set to \code{TRUE} (default is \code{FALSE}). Then, the file path for figure storage, the name of the figure and its format are specified through the argument \code{save.options}, all as character strings. See the \code{Examples} section for further information and a practical example.
 }
 
+
+\note{
+When computing the exact standard errors, the number of test items should not be larger than 10 under the 2PL model or any more complex model. This constraint does not hold under the 1PL model.
+}
+
+
 \references{
  Barrada, J. R., Olea, J., Ponsoda, V., and Abad, F. J. (2010). A method for the comparison of item selection rules in computerized adaptive testing. \emph{Applied Psychological Measurement}, \emph{20}, 213-229. \doi{10.1177/0146621610370152}
 
@@ -214,6 +236,8 @@ Magis, D. and Barrada, J. R. (2017). Computerized Adaptive Testing with R: Recen
 
  Magis, D., and Raiche, G. (2012). Random Generation of Response Patterns under Computerized Adaptive Testing with the R Package \emph{catR}. \emph{Journal of Statistical Software}, \emph{48 (8)}, 1-31. \doi{10.18637/jss.v048.i08}
 
+Schuester, C., and Yuan, K.-H. (2011). Robust estimation of latent ability in item response models. \emph{Journal of Educational and Behavioral Statistics, 36}, 720)735.\doi{10.3102/1076998610396890}
+
 Thompson, N. A. (2009). Item selection in computerized classification testing. \emph{Educational and Psychological Measurement, 69}, 778-793. \doi{10.1177/0013164408324460}
 
  Urry, V. W. (1970). \emph{A Monte Carlo investigation of logistic test models.} Unpublished doctoral dissertation. West Lafayette, IN: Purdue University.
@@ -228,13 +252,12 @@ Thompson, N. A. (2009). Item selection in computerized classification testing. \
 
 \author{
     David Magis \cr
-    Department of Education, University of Liege, Belgium \cr
-    \email{david.magis@ulg.ac.be}
+    Department of Psychology, University of Liege, Belgium \cr
+    \email{david.magis@uliege.be}
 
  Juan Ramon Barrada \cr
 Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
 \email{barrada@unizar.es}
-
  }
 
 \seealso{
@@ -269,13 +292,19 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  # CAT test
  res <- randomCAT(0, bank, start = start, test = test, stop = stop, final = final)
 
-\dontrun{
- # Update of the stopping rule: by adding a length criterion, with threshold of 15 items
- stop <- list(rule = c("precision", "length"), thr = c(0.3, 15))
+\donttest{
+ # Update of the stopping rule: by adding a length criterion, with threshold of 10 items
+ stop <- list(rule = c("precision", "length"), thr = c(0.3, 10))
 
  # CAT test
  res <- randomCAT(0, bank, start = start, test = test, stop = stop, final = final)
 
+ # Modifying 'start', 'test' and 'final' lists to compute exact SEs
+ start.exact <- list(theta = c(-1, 1))
+ test.exact <- list(method = "WL", itemSelect = "MFI", sem.exact = TRUE)
+ final.exact <- list(method = "WL", sem.exact = TRUE)
+ res.exact <- randomCAT(0, bank, start = start.exact, test = test.exact, 
+                        stop = stop, final = final.exact)
 
  # Creation of a (purely artificial) response pattern for post-hoc simulation
  resp <- rbinom(nrow(bank), 1, 0.5)
@@ -326,21 +355,11 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  res6 <- randomCAT(0, tcals, start = start, test = test4, stop = stop4, final = final, 
       cbControl = cbList, allTheta = TRUE)
 
- # Saving the output in the external 'out' text file within folder 'Program Files' 
- # of hard drive 'C'
- res5 <- randomCAT(0, tcals, start = start, test = test, stop = stop4, final = final2, 
-      cbControl = cbList, save.output = TRUE, 
-      output = c("c:/Program Files/", "out", "txt"))
-
  # Plotting results
  plot(res)
  plot(res, ci = TRUE)
  plot(res, ci = TRUE, trueTh = FALSE)
  plot(res, ci = TRUE, classThr = 1)
-
- # Saving last figure into PDF file 'figure' within folder 'C:/Program Files/'
- plot(res, ci = TRUE, classThr = 1, save.plot = TRUE,
-      save.options = c("c:/Program Files/", "figure", "pdf"))
 
  # With mistake
  plot(res, ci = 0.05)

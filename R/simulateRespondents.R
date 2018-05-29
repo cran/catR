@@ -2,12 +2,14 @@ simulateRespondents<-function (thetas, itemBank, responsesMatrix = NULL, model =
     genSeed = NULL, cbControl = NULL, rmax = 1, Mrmax = "restricted", 
     start = list(fixItems = NULL, seed = NULL, nrItems = 1, theta = 0, 
         D=1,randomesque = 1, random.seed = NULL, startSelect = "MFI", cb.control=FALSE,random.cb=NULL), test = list(method = "BM", 
-        priorDist = "norm", priorPar = c(0, 1), range = c(-4, 
+        priorDist = "norm", priorPar = c(0, 1), weight = "Huber", tuCo = 1, sem.type = "classic", 
+        sem.exact = FALSE, se.ase = 10, range = c(-4, 
             4), D = 1, parInt = c(-4, 4, 33), itemSelect = "MFI", 
         infoType = "observed", randomesque = 1, random.seed = NULL, AP = 1, 
 proRule = "length", proThr = 20, constantPatt = NULL), 
     stop = list(rule = "length", thr = 20, alpha = 0.05), final = list(method = "BM", 
-        priorDist = "norm", priorPar = c(0, 1), range = c(-4, 
+        priorDist = "norm", priorPar = c(0, 1), weight = "Huber", 
+        tuCo = 1, sem.type = "classic", sem.exact = FALSE, range = c(-4, 
             4), D = 1, parInt = c(-4, 4, 33), alpha = 0.05), 
     save.output = FALSE, output = c("", "catR", "csv")) 
 {

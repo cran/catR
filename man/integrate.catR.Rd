@@ -32,8 +32,8 @@ Maechler, M. et al. (2012). \emph{sfsmisc: Utilities from Seminar fuer Statistik
 
 \author{
     David Magis \cr
-    Department of Education, University of Liege, Belgium \cr
-    \email{david.magis@ulg.ac.be}
+    Department of Psychology, University of Liege, Belgium \cr
+    \email{david.magis@uliege.be}
  }
 
 \seealso{
@@ -47,11 +47,5 @@ Maechler, M. et al. (2012). \emph{sfsmisc: Utilities from Seminar fuer Statistik
  y <- exp(x)
  integrate.catR(x, y) # 54.86381
 
-\dontrun{
- # Comparison with integrate.xy
- require(sfsmisc)
- integrate.xy(x, y, use.spline = FALSE) # 54.86381
- integrate.xy(x, y) # 54.58058
- }
  }
  

@@ -6,6 +6,66 @@
 
 
 -------------------------------------
+- Changes in catR 3.14 (2018-05-29) -
+-------------------------------------
+
+MAJOR UPDATES
+
+  o  The 'thetaEst()' function now supports the robust
+     estimator of ability. Two weight functions are 
+     allowed, Huber and Tukey weights. Tuning constants
+     can be set appropriately too. Note that the 
+     robust estimator is currently available only for
+     dichotomous IRT models.
+
+  o  The 'semTheta()' function holds new formulas for 
+     computing the ASE of the BM and WL estimators. 
+     These formulas arise from Magis (2016) and are made
+     available through the new 'sem.type' argument. 
+     Usual formulas are still available by default and
+     only dichotomous IRT models are concerned. 
+
+  o  A new function called 'fullDist()' is available. It
+     derives the full distribution of an ability 
+     estimator for a given set of items, a set of ability
+     estimates and several parameters to defined the 
+     estimation method. This function is routinely used
+     to compute exact standard errors.
+
+  o  The 'semTheta()' function allows now the computation
+     of exact standard errors for dichotomous IRT models.
+     Such exact values are computed according to Magis
+     (2014). This is activated by setting the new
+     argument 'sem.exact' to TRUE.
+
+  o  The 'test' list of the 'randomCAT()' function holds
+     now the 'se.ase' argument that specifies the maximum
+     number of items to be used for computing exact SE, 
+     before switching to ASEs for sake of computational 
+     effort.
+
+  o  Functions 'testList()', 'randomCAT()' and
+     'simulateRespondents()' were modified accordingly. 
+
+
+
+MINOR UPDATES
+
+  o  The 'dontrun{}' elements of .Rd files were replaced
+     by 'donttest{}' for CRAN policy issues.
+
+  o  Main author's affiliation and email address was 
+     updated.
+
+  o  The list of contributors of some functions was 
+     updated to include Lianne Ippel (University of Liege, 
+     Belgium).
+
+  o  Some typos were fixed.
+
+
+
+-------------------------------------
 - Changes in catR 3.13 (2017-08-31) -
 -------------------------------------
 
@@ -34,7 +94,7 @@ MAJOR UPDATES
      by the 'cat_pav' GPCM item bank.
 
   o  Item names can now be supplied as the row names of
-     the item bank. Otherwise no item ame is considered. 
+     the item bank. Otherwise no item name is considered. 
 
   o  Functions 'startItems()' and 'nextItem()' now 
      return the additional argument, called 'names' with

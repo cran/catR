@@ -14,12 +14,12 @@ testList<-function (list, type = "start")
                   "seed", "nrItems", "theta", "D", "randomesque", 
                   "random.seed", "startSelect", "nAvailable", 
                   "cb.control","random.cb"), test = c("method", 
-                  "priorDist", "priorPar", "range", "D", "parInt", 
+                  "priorDist", "priorPar", "weight", "tuCo", "sem.type", "sem.exact", "se.ase", "range", "D", "parInt", 
                   "itemSelect", "infoType", "randomesque", "random.seed", 
                   "AP", "proRule", "proThr", "constantPatt"), 
                   stop = c("rule", "thr", "alpha"), final = c("method", 
-                    "priorDist", "priorPar", "range", "D", "alpha", 
-                    "parInt"))
+                    "priorDist", "priorPar", "weight", "tuCo", "sem.type", "sem.exact",
+                  "range", "D", "alpha", "parInt"))
                 if (is.null(elements)) 
                   res <- list(test = FALSE, message = paste("invalid 'type' argument ('", 
                     type, "' is not allowed)", sep = ""))
@@ -57,7 +57,7 @@ testList<-function (list, type = "start")
                       seedNames <- c("seed", "random.seed","random.cb")
                       singleIntNames <- c("nrItems")
                       numNames <- c("alpha", "D", "SETH", "AP", 
-                        "proThr")
+                        "proThr", "tuCo")
                       metNames <- c("method")
                       priorNames <- c("priorDist")
                       parNames <- c("priorPar", "range")
@@ -66,12 +66,14 @@ testList<-function (list, type = "start")
                       itemSelectNames <- c("itemSelect")
                       infoTypeNames <- c("infoType")
                       startNames <- c("startSelect")
-                      intOnlyNames <- c("randomesque")
+                      intOnlyNames <- c("randomesque", "se.ase")
                       boolNames <- c("nAvailable")
                       constantNames <- c("constantPatt")
                       severalNumNames <- c("thr", "theta")
                       proRuleNames <- c("proRule")
-                      logicNames <- c("cb.control")
+                      logicNames <- c("cb.control", "sem.exact")
+                      weightNames<-c("weight")
+                      semNames<-c("sem.type")
                       i <- 0
                       repeat {
                         i <- i + 1
@@ -92,8 +94,10 @@ testList<-function (list, type = "start")
                             constantNames), sum(names(list)[i] == 
                             severalNumNames), sum(names(list)[i] == 
                             proRuleNames), sum(names(list)[i] == 
-                            logicNames))
-                        ind <- (1:18)[vect == 1]
+                            logicNames),sum(names(list)[i] == 
+                            weightNames),sum(names(list)[i] == 
+                            semNames))
+                        ind <- (1:20)[vect == 1]
                         prov <- switch(ind, `1` = ifelse(is.null(list[[i]]), 
                           TRUE, ifelse(is.numeric(list[[i]]), 
                             ifelse(max(abs(list[[i]] - round(list[[i]]))) <= 
@@ -107,7 +111,7 @@ testList<-function (list, type = "start")
                           FALSE), `4` = (is.numeric(list[[i]]) & 
                           length(list[[i]]) == 1), `5` = (is.list(list[[i]]) == 
                           FALSE & length(list[[i]]) == 1 & sum(list[[i]] == 
-                          c("ML", "BM", "WL", "EAP")) == 1), 
+                          c("ML", "BM", "WL", "EAP", "ROB")) == 1), 
                           `6` = (is.list(list[[i]]) == FALSE & 
                             length(list[[i]]) == 1 & sum(list[[i]] == 
                             c("norm", "unif", "Jeffreys")) == 
@@ -144,7 +148,11 @@ testList<-function (list, type = "start")
                               1, TRUE, FALSE)), `16` = ifelse(is.numeric(list[[i]]), 
                             TRUE, FALSE), `17` = ifelse(is.vector(list[[i]]) & 
                             sum(list[[i]] == c("length", "precision")) == 
-                              1, TRUE, FALSE),`18` = ifelse(is.logical(list[[i]]), TRUE, FALSE))
+                              1, TRUE, FALSE),`18` = ifelse(is.logical(list[[i]]), TRUE, FALSE), 
+                          `19` = (is.vector(list[[i]]) & length(list[[i]]) == 1 & 
+                            sum(list[[i]] == c("Huber", "Tukey")) == 1),
+                          `20` = (is.vector(list[[i]]) & length(list[[i]]) == 1 & 
+                            sum(list[[i]] == c("classic", "new")) == 1))
                         if (!prov) {
                           res$test <- FALSE
                           res$message <- switch(ind, `1` = paste("element '", 
@@ -161,7 +169,7 @@ testList<-function (list, type = "start")
                             "' must be a single numeric value", 
                             sep = ""), `5` = paste("element '", 
                             names(list)[i], "' of '", deparse(substitute(list)), 
-                            "' must be either 'ML', 'BM', 'EAP' or 'WL'", 
+                            "' must be either 'ML', 'BM', 'EAP', 'WL' or 'ROB'", 
                             sep = ""), `6` = paste("element '", 
                             names(list)[i], "' of '", deparse(substitute(list)), 
                             "' must be either 'norm', 'unif'or 'Jeffreys'", 
@@ -205,6 +213,12 @@ testList<-function (list, type = "start")
                             sep = ""), `18` = paste("element '", 
                             names(list)[i], "' of '", deparse(substitute(list)), 
                             "' must be either 'TRUE' or 'FALSE'", 
+                            sep = ""), `19` = paste("element '", 
+                            names(list)[i], "' of '", deparse(substitute(list)), 
+                            "' must be either 'Huber' or 'Tukey'", 
+                            sep = ""), `20` = paste("element '", 
+                            names(list)[i], "' of '", deparse(substitute(list)), 
+                            "' must be either 'classic' or 'new'", 
                             sep = ""))
                           break
                         }
