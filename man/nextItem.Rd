@@ -262,7 +262,7 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  nextItem(bank, x = c(0, 1), out = c(63, 19), criterion = "MLWI")
  nextItem(bank, x = c(0, 1), out = c(63, 19), criterion = "MPWI")
 
-\donttest{
+\dontrun{
 
  ## MEI method
 

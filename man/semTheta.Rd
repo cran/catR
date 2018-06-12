@@ -174,7 +174,7 @@ Schuester, C., and Yuan, K.-H. (2011). Robust estimation of latent ability in it
  th <- thetaEst(tcals, x, method = "EAP")
  c(th, semTheta(th, tcals, x, method = "EAP"))
 
-\donttest{
+\dontrun{
 
  # EAP estimation, uniform prior distribution upon range [-2,2]
  th <- thetaEst(tcals, x, method = "EAP", priorDist = "unif",
@@ -270,7 +270,7 @@ Schuester, C., and Yuan, K.-H. (2011). Robust estimation of latent ability in it
  th <- thetaEst(m.GRM, x, model = "GRM", method = "EAP")
  c(th, semTheta(th, m.GRM, x, model = "GRM", method = "EAP") )
 
-\donttest{
+\dontrun{
 
  # EAP estimation, uniform prior distribution upon range [-2,2]
  th <- thetaEst(m.GRM, x, model = "GRM", method = "EAP", priorDist = "unif", 

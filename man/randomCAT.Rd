@@ -10,13 +10,13 @@
  }
 
 \usage{
-randomCAT(trueTheta, itemBank, model = NULL, responses = NULL, genSeed = NULL, 
- 	cbControl = NULL, nAvailable = NULL, start = list(fixItems = NULL, 
- 	seed = NULL, nrItems = 1, theta = 0, D = 1, randomesque = 1, 
- 	random.seed = NULL, startSelect = "MFI", cb.control = FALSE, random.cb = NULL), 
- 	test = list(method = "BM", priorDist = "norm", priorPar = c(0, 1), 
- 	weight = "Huber", tuCo = 1, sem.type = "classic", sem.exact = FALSE, 
- 	se.ase = 10, range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), 
+randomCAT(trueTheta, itemBank, model = NULL, responses = NULL, min.length = 0, 
+ 	genSeed = NULL, cbControl = NULL, nAvailable = NULL, 
+ 	start = list(fixItems = NULL, seed = NULL, nrItems = 1, theta = 0, D = 1, 
+ 	randomesque = 1, random.seed = NULL, startSelect = "MFI", cb.control = FALSE, 
+ 	random.cb = NULL), test = list(method = "BM", priorDist = "norm", 
+ 	priorPar = c(0, 1), weight = "Huber", tuCo = 1, sem.type = "classic", 
+ 	sem.exact = FALSE, se.ase = 10, range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), 
  	itemSelect = "MFI", infoType = "observed", randomesque = 1, 
  	random.seed = NULL, AP = 1, proRule = "length", proThr = 20, 
  	constantPatt = NULL), stop = list(rule = "length", thr = 20, alpha = 0.05), 
@@ -34,6 +34,7 @@ randomCAT(trueTheta, itemBank, model = NULL, responses = NULL, genSeed = NULL,
  \item{itemBank}{numeric: a suitable matrix of item parameters (possibly augmented by group membership for content balancing). See \bold{Details}.}
 \item{model}{either \code{NULL} (default) for dichotomous models, or any suitable acronym for polytomous models. Possible values are \code{"GRM"}, \code{"MGRM"}, \code{"PCM"}, \code{"GPCM"}, \code{"RSM"} and \code{"NRM"}. See \bold{Details}.}
 \item{responses}{either \code{NULL} (default) or a vector of pre-specified item responses with as many components as the rows of \code{itemBank}. See \bold{Details}.}
+\item{min.length}{integer: the minimum number of items to administer default is zero so no minimum test length). The CAT will not stop before the number of administered items equals \code{min.length}, even if the stopping rule is satisfied.}
 \item{genSeed}{either a numeric value to fix the random generation of responses pattern or \code{NULL} (default). Ignored if \code{responses} is not \code{NULL}. See \bold{Details}.}
  \item{cbControl}{either a list of accurate format to control for content balancing, or \code{NULL}. See \bold{Details}.}
  \item{nAvailable}{either a boolean vector indicating which items (denoted by 1's) are available at the start of the test and which (denoted by 0's) are not, or \code{NULL} (default). See \bold{Details}.}
@@ -66,8 +67,9 @@ randomCAT(trueTheta, itemBank, model = NULL, responses = NULL, genSeed = NULL,
  \item{seProv}{a vector with the standard errors of the provisional ability estimates.}
  \item{ruleFinal}{either the stopping rule(s) that was (were) satisfied to make the CAT stop, or \code{NULL}.}
  \item{thFinal}{the final ability estimate.}
- \item{seFinal}{the standrad error of the final ability estimate.}
+ \item{seFinal}{the standard error of the final ability estimate.}
  \item{ciFinal}{the confidence interval of the final ability estimate.}
+\item{min.length}{the value of the \code{min.length} argument.}
 \item{genSeed}{the value of the \code{genSeed} argument.}
  \item{startFixItems}{the value of the \code{start$fixItems} argument (or its default value if missing).}
  \item{startSeed}{the value of the \code{start$seed} argument (or its default value if missing).}
@@ -292,7 +294,7 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  # CAT test
  res <- randomCAT(0, bank, start = start, test = test, stop = stop, final = final)
 
-\donttest{
+\dontrun{
  # Update of the stopping rule: by adding a length criterion, with threshold of 10 items
  stop <- list(rule = c("precision", "length"), thr = c(0.3, 10))
 
@@ -355,11 +357,21 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  res6 <- randomCAT(0, tcals, start = start, test = test4, stop = stop4, final = final, 
       cbControl = cbList, allTheta = TRUE)
 
+ # Saving the output in the external 'out' text file within folder 'Program Files' 
+ # of hard drive 'C'
+ res5 <- randomCAT(0, tcals, start = start, test = test, stop = stop4, final = final2, 
+      cbControl = cbList, save.output = TRUE, 
+      output = c("c:/Program Files/", "out", "txt"))
+
  # Plotting results
  plot(res)
  plot(res, ci = TRUE)
  plot(res, ci = TRUE, trueTh = FALSE)
  plot(res, ci = TRUE, classThr = 1)
+
+ # Saving last figure into PDF file 'figure' within folder 'C:/Program Files/'
+ plot(res, ci = TRUE, classThr = 1, save.plot = TRUE,
+      save.options = c("c:/Program Files/", "figure", "pdf"))
 
  # With mistake
  plot(res, ci = 0.05)

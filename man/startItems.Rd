@@ -162,7 +162,7 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  avail <- c(rep(1, 10), rep(0, nrow(bank)-10))
  startItems(bank, theta = c(-1, 0, 2), nAvailable = avail) 
 
-\donttest{
+\dontrun{
  # Selecting too many items among available ones
  startItems(bank, nrItems = 11, theta = 2, halfRange = 3, nAvailable = avail) 
 }
@@ -182,7 +182,7 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  # Selecting 3 starting items for theta values -1, 0 and 2
  startItems(m.GRM, model = "GRM", theta = c(-1, 0, 2))
 
-\donttest{
+\dontrun{
 
  # Idem but with 'bOpt' criterion
  startItems(m.GRM, model = "GRM", nrItems = 3, theta = 1, halfRange = 2, 
@@ -194,7 +194,7 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  startItems(m.GRM, model = "GRM", theta = c(-1, 0, 2), 
             nAvailable = avail) 
 
-\donttest{
+\dontrun{
 
  # Selecting too many items among available ones
  startItems(m.GRM, model = "GRM", theta = seq(from = -2, to = 2, length = 11), 
@@ -214,7 +214,7 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  # Selecting 3 starting items for theta values -1, 0 and 2
  startItems(cat_pav, model = "GPCM", theta = c(-1, 0, 2)) 
 
-\donttest{
+\dontrun{
 
  # Idem but with 'bOpt' criterion
  startItems(cat_pav, model = "GPCM", theta = c(-1, 0, 2), startSelect = "bOpt")
@@ -224,7 +224,7 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  avail <- c(rep(1, 10), rep(0, nrow(cat_pav)-10))
  startItems(cat_pav, model = "GPCM", theta = c(-1, 0, 2), nAvailable = avail) 
 
-\donttest{
+\dontrun{
 
  # Selecting too many items among available ones
  startItems(cat_pav, model = "GPCM", theta = seq(from = -2, to = 2, length = 11), 

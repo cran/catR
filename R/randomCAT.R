@@ -1,4 +1,4 @@
-randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL, 
+randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL, min.length=0,
     genSeed = NULL, cbControl = NULL, nAvailable = NULL, start = list(fixItems = NULL, 
         seed = NULL, nrItems = 1, theta = 0, D = 1, randomesque = 1, 
         random.seed = NULL, startSelect = "MFI", cb.control = FALSE, 
@@ -84,10 +84,10 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
         stop <- stopList
         testList <- list(method = NULL, priorDist = NULL, priorPar = c(0, 
             1), weight = "Huber", tuCo = 1, sem.type = "classic", 
-            sem.exact = FALSE, se.ase = 10, range = c(-4, 4), D = 1, parInt = c(-4, 
-                4, 33), itemSelect = "MFI", infoType = "observed", 
-            randomesque = 1, random.seed = NULL, AP = 1, rule = test$proRule, 
-            thr = test$proThr, constantPatt = NULL)
+            sem.exact = FALSE, se.ase = 10, range = c(-4, 4), 
+            D = 1, parInt = c(-4, 4, 33), itemSelect = "MFI", 
+            infoType = "observed", randomesque = 1, random.seed = NULL, 
+            AP = 1, rule = test$proRule, thr = test$proThr, constantPatt = NULL)
         testList$method <- ifelse(is.null(test$method), "BM", 
             test$method)
         testList$rule <- ifelse(is.null(test$proRule), "length", 
@@ -106,8 +106,7 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
             test$sem.type)
         testList$sem.exact <- ifelse(is.null(test$sem.exact), 
             FALSE, TRUE)
-        testList$se.ase <- ifelse(is.null(test$se.ase), 
-            10, test$se.ase)
+        testList$se.ase <- ifelse(is.null(test$se.ase), 10, test$se.ase)
         if (!is.null(test$range)) {
             testList$range[1] <- test$range[1]
             testList$range[2] <- test$range[2]
@@ -192,25 +191,28 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL,
                 bRange = range(itemBank[, 2]))
         else TH <- start$theta
         if (!is.null(ITEMS)) {
-SE.EXACT <- ifelse((test$sem.exact & length(PATTERN)<=test$se.ase), TRUE, FALSE)
+            SE.EXACT <- ifelse((test$sem.exact & length(PATTERN) <= 
+                test$se.ase), TRUE, FALSE)
             SETH <- semTheta(TH, PAR, x = PATTERN, model = model, 
                 D = test$D, method = test$method, priorDist = test$priorDist, 
                 priorPar = test$priorPar, weight = test$weight, 
                 tuCo = test$tuCo, sem.type = test$sem.type, sem.exact = SE.EXACT, 
                 parInt = test$parInt, constantPatt = test$constantPatt)
-}
+        }
         else SETH <- NA
         thProv <- TH
         if (!is.na(SETH)) 
             stop.cat <- checkStopRule(th = TH, se = SETH, N = length(PATTERN), 
                 it = itemBank[-ITEMS, ], model = model, stop = stop)
         else stop.cat <- list(decision = FALSE, rule = NULL)
+if (length(PATTERN)==0 | length(PATTERN)<min.length) stop.cat$decision<-FALSE
         if (stop.cat$decision) {
             finalEst <- thetaEst(PAR, PATTERN, model = model, 
                 D = final$D, method = final$method, priorDist = final$priorDist, 
                 priorPar = final$priorPar, weight = final$weight, 
                 tuCo = final$tuCo, range = final$range, parInt = final$parInt)
-SE.EXACT <- ifelse((final$sem.exact & length(PATTERN)<=test$se.ase), TRUE, FALSE)
+            SE.EXACT <- ifelse((final$sem.exact & length(PATTERN) <= 
+                test$se.ase), TRUE, FALSE)
             seFinal <- semTheta(finalEst, PAR, x = PATTERN, model = model, 
                 D = final$D, method = final$method, priorDist = final$priorDist, 
                 priorPar = final$priorPar, weight = final$weight, 
@@ -224,7 +226,7 @@ SE.EXACT <- ifelse((final$sem.exact & length(PATTERN)<=test$se.ase), TRUE, FALSE
                 testItems = ITEMS, itemPar = PAR, itemNames = NULL, 
                 pattern = PATTERN, thetaProv = TH, seProv = SETH, 
                 ruleFinal = stop.cat$rule, thFinal = finalEst, 
-                seFinal = seFinal, ciFinal = confIntFinal, genSeed = genSeed, 
+                seFinal = seFinal, ciFinal = confIntFinal, min.length=min.length,genSeed = genSeed, 
                 startFixItems = start$fixItems, startSeed = start$seed, 
                 startNrItems = start$nrItems, startTheta = start$theta, 
                 startD = start$D, startRandomesque = start$randomesque, 
@@ -233,8 +235,8 @@ SE.EXACT <- ifelse((final$sem.exact & length(PATTERN)<=test$se.ase), TRUE, FALSE
                 provDist = test$priorDist, provPar = test$priorPar, 
                 provWeight = test$weight, provTuCo = test$tuCo, 
                 provSemType = test$sem.type, provSemExact = test$sem.exact, 
-                se.ase = test$se.ase,
-                provRange = test$range, provD = test$D, itemSelect = test$itemSelect, 
+                se.ase = test$se.ase, provRange = test$range, 
+                provD = test$D, itemSelect = test$itemSelect, 
                 infoType = test$infoType, randomesque = test$randomesque, 
                 testRandomSeed = test$random.seed, AP = test$AP, 
                 constantPattern = test$constantPatt, cbControl = cbControl, 
@@ -272,7 +274,8 @@ SE.EXACT <- ifelse((final$sem.exact & length(PATTERN)<=test$se.ase), TRUE, FALSE
                   current.th = TH[length(TH)], constantPatt = test$constantPatt, 
                   bRange = range(itemBank[, 2]))
                 TH <- c(TH, thProv)
-SE.EXACT <- ifelse((test$sem.exact & length(PATTERN)<=test$se.ase), TRUE, FALSE)
+                SE.EXACT <- ifelse((test$sem.exact & length(PATTERN) <= 
+                  test$se.ase), TRUE, FALSE)
                 seProv <- semTheta(thProv, PAR, x = PATTERN, 
                   model = model, D = test$D, method = test$method, 
                   priorDist = test$priorDist, priorPar = test$priorPar, 
@@ -283,6 +286,7 @@ SE.EXACT <- ifelse((test$sem.exact & length(PATTERN)<=test$se.ase), TRUE, FALSE)
                 stop.cat <- checkStopRule(th = thProv, se = seProv, 
                   N = length(PATTERN), it = itemBank[-ITEMS, 
                     ], model = model, stop = stop)
+if (length(PATTERN)==0 | length(PATTERN)<min.length) stop.cat$decision<-FALSE
                 if (stop.cat$decision | length(PATTERN) == nrow(itemBank)) 
                   break
             }
@@ -290,7 +294,8 @@ SE.EXACT <- ifelse((test$sem.exact & length(PATTERN)<=test$se.ase), TRUE, FALSE)
                 D = final$D, method = final$method, priorDist = final$priorDist, 
                 priorPar = final$priorPar, weight = final$weight, 
                 tuCo = final$tuCo, range = final$range, parInt = final$parInt)
-SE.EXACT <- ifelse((final$sem.exact & length(PATTERN)<=test$se.ase), TRUE, FALSE)
+            SE.EXACT <- ifelse((final$sem.exact & length(PATTERN) <= 
+                test$se.ase), TRUE, FALSE)
             seFinal <- semTheta(finalEst, PAR, x = PATTERN, model = model, 
                 D = final$D, method = final$method, priorDist = final$priorDist, 
                 priorPar = final$priorPar, weight = final$weight, 
@@ -306,7 +311,7 @@ SE.EXACT <- ifelse((final$sem.exact & length(PATTERN)<=test$se.ase), TRUE, FALSE
                 testItems = ITEMS, itemPar = PAR, itemNames = NULL, 
                 pattern = PATTERN, thetaProv = TH, seProv = SETH, 
                 ruleFinal = stop.cat$rule, thFinal = finalEst, 
-                seFinal = seFinal, ciFinal = confIntFinal, genSeed = genSeed, 
+                seFinal = seFinal, ciFinal = confIntFinal,  min.length=min.length,genSeed = genSeed, 
                 startFixItems = start$fixItems, startSeed = start$seed, 
                 startNrItems = start$nrItems, startTheta = start$theta, 
                 startD = start$D, startRandomesque = start$randomesque, 
@@ -314,9 +319,9 @@ SE.EXACT <- ifelse((final$sem.exact & length(PATTERN)<=test$se.ase), TRUE, FALSE
                 startCB = startCB, provMethod = test$method, 
                 provDist = test$priorDist, provPar = test$priorPar, 
                 provWeight = test$weight, provTuCo = test$tuCo, 
-                provSemType = test$sem.type, provSemExact = test$sem.exact,
-                se.ase = test$se.ase, 
-                provRange = test$range, provD = test$D, itemSelect = test$itemSelect, 
+                provSemType = test$sem.type, provSemExact = test$sem.exact, 
+                se.ase = test$se.ase, provRange = test$range, 
+                provD = test$D, itemSelect = test$itemSelect, 
                 infoType = test$infoType, randomesque = test$randomesque, 
                 testRandomSeed = test$random.seed, AP = test$AP, 
                 constantPattern = test$constantPatt, cbControl = cbControl, 
@@ -343,7 +348,8 @@ SE.EXACT <- ifelse((final$sem.exact & length(PATTERN)<=test$se.ase), TRUE, FALSE
                     weight = test$weight, tuCo = test$tuCo, range = test$range, 
                     parInt = test$parInt, constantPatt = test$constantPatt, 
                     bRange = range(itemBank[, 2]))
-SE.EXACT <- ifelse((test$sem.exact & k<=test$se.ase), TRUE, FALSE)
+                  SE.EXACT <- ifelse((test$sem.exact & k <= test$se.ase), 
+                    TRUE, FALSE)
                   prov.se[k] <- semTheta(prov.th[k], prov.par, 
                     RES$pattern[1:k], model = model, D = test$D, 
                     method = test$method, priorDist = test$priorDist, 
@@ -419,6 +425,8 @@ print.cat<-function (x, ...)
         cat(" True ability level:", round(x$trueTheta, 2), "\n", 
             "\n")
     else cat(" True ability level was not provided", "\n", "\n")
+if (x$min.length>0) cat("Minimum CAT length set to",x$min.length,"items","\n","\n")
+else cat("No pre-specified minimum CAT length","\n","\n")
     cat(" Starting parameters:", "\n")
     if (x$startNrItems == 0) {
         cat("   No early item was selected", "\n")

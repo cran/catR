@@ -62,6 +62,7 @@ Magis, D. and Barrada, J. R. (2017). Computerized Adaptive Testing with R: Recen
 
 \examples{
 
+
  # Creation and test of a 'start' list
  start <- list(nrItems = 3, theta = c(-1, 0, 2, -2), randomesque = 2)
  testList(start, type = "start")

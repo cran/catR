@@ -6,12 +6,33 @@
 
 
 -------------------------------------
-- Changes in catR 3.14 (2018-05-29) -
+- Changes in catR 3.15 (2018-06-12) -
 -------------------------------------
 
 MAJOR UPDATES
 
-  o  The 'thetaEst()' function now supports the robust
+  o  The 'randomCAT()' function holds a new argument
+     called 'min.length' that specifies the minimum
+     length of the CAT (i.e., minimum number of items
+     to administer). Checks that minimum length is
+     fulfiled in addition to the 'checkStopRule()'
+     function. Default value is zero so no lower 
+     limit is set for the test length. 
+
+
+MINOR UPDATES
+
+  o  Some typos were fixed.
+
+
+
+-------------------------------------
+- Changes in catR 3.14 (2018-03-24) -
+-------------------------------------
+
+MAJOR UPDATES
+
+  o  The 'thetaEst(') function now supports the robust
      estimator of ability. Two weight functions are 
      allowed, Huber and Tukey weights. Tuning constants
      can be set appropriately too. Note that the 
@@ -50,9 +71,6 @@ MAJOR UPDATES
 
 
 MINOR UPDATES
-
-  o  The 'dontrun{}' elements of .Rd files were replaced
-     by 'donttest{}' for CRAN policy issues.
 
   o  Main author's affiliation and email address was 
      updated.

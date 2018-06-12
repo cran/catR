@@ -103,7 +103,7 @@ Magis, D. and Barrada, J. R. (2017). Computerized Adaptive Testing with R: Recen
  th <- eapEst(tcals, x, priorDist = "Jeffreys")
  c(th, eapSem(th, tcals, x, priorDist = "Jeffreys"))
 
-\donttest{
+\dontrun{
 
 ## Polytomous models ##
 

@@ -2,8 +2,8 @@ Package: catR
 Type: Package
 Title: Generation of IRT Response Patterns under Computerized Adaptive
         Testing
-Version: 3.14
-Date: 2018-05-29
+Version: 3.15
+Date: 2018-06-12
 Author: David Magis (U Liege, Belgium), Gilles Raiche (UQAM, Canada), Juan Ramon Barrada (U Zaragoza, Spain)
 Maintainer: David Magis <david.magis@uliege.be>
 Depends: R (>= 2.8.0)
@@ -11,6 +11,6 @@ Description: Provides routines for the generation of response patterns under uni
 License: GPL (>= 2)
 LazyLoad: yes
 NeedsCompilation: no
-Packaged: 2018-05-29 12:40:01 UTC; David
+Packaged: 2018-06-12 08:33:00 UTC; David
 Repository: CRAN
-Date/Publication: 2018-05-29 17:22:11 UTC
+Date/Publication: 2018-06-12 13:33:36 UTC

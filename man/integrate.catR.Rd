@@ -47,5 +47,11 @@ Maechler, M. et al. (2012). \emph{sfsmisc: Utilities from Seminar fuer Statistik
  y <- exp(x)
  integrate.catR(x, y) # 54.86381
 
+\dontrun{
+ # Comparison with integrate.xy
+ require(sfsmisc)
+ integrate.xy(x, y, use.spline = FALSE) # 54.86381
+ integrate.xy(x, y) # 54.58058
+ }
  }
  

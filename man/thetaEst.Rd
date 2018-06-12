@@ -175,7 +175,7 @@ Schuester, C., and Yuan, K.-H. (2011). Robust estimation of latent ability in it
  thetaEst(tcals, x0, constantPatt = "var") 
  thetaEst(tcals, x1, constantPatt = "var") 
 
-\donttest{
+\dontrun{
 
 ## Polytomous models ##
 
