@@ -6,6 +6,43 @@
 
 
 -------------------------------------
+- Changes in catR 3.16 (2018-07-28) -
+-------------------------------------
+
+MAJOR UPDATES
+
+  o  The 'randomCAT()' function holds a new argument
+     called 'a.stratified' that allows a-stratified 
+     sampling for dichotomous IRT and GRM, MGRM and
+     GPCM polytomous models. This argument sets 
+     either the number of strata or the number of
+     items per strata (as a vector of integer values).
+     The item bank is split into strata by increasing
+     values of the discrimination (a) parameters and
+     content balancing is then applied with equiprobable
+     strata.
+
+  o  The new function 'aStratified()' was included to
+     return a vector of stratum membership that is used
+     for a-stratified content balancing. 
+
+  o  The 'print.cat()' function was updated accordingly.
+
+  o  The email address of the maintainer has been 
+     updated.
+
+  o  The email addresses and affiliations of some authors
+     have been updated.
+
+
+
+MINOR UPDATES
+
+  o  Some typos were fixed.
+
+
+
+-------------------------------------
 - Changes in catR 3.15 (2018-06-12) -
 -------------------------------------
 

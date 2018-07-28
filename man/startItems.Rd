@@ -99,8 +99,7 @@ Magis, D. and Barrada, J. R. (2017). Computerized Adaptive Testing with R: Recen
 
 \author{
     David Magis \cr
-    Department of Psychology, University of Liege, Belgium \cr
-    \email{david.magis@uliege.be}
+    \email{david.magis@gmail.com}
 
  Juan Ramon Barrada \cr
 Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
@@ -194,7 +193,7 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  startItems(m.GRM, model = "GRM", theta = c(-1, 0, 2), 
             nAvailable = avail) 
 
-\dontrun{
+\donttest{
 
  # Selecting too many items among available ones
  startItems(m.GRM, model = "GRM", theta = seq(from = -2, to = 2, length = 11), 

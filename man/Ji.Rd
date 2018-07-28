@@ -55,8 +55,7 @@ Warm, T.A. (1989). Weighted likelihood estimation of ability in item response mo
 
 \author{
     David Magis \cr
-    Department of Psychology, University of Liege, Belgium \cr
-    \email{david.magis@uliege.be}
+    \email{david.magis@gmail.com}
  }
 
 \seealso{

@@ -1,14 +1,14 @@
-randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL, min.length=0,
-    genSeed = NULL, cbControl = NULL, nAvailable = NULL, start = list(fixItems = NULL, 
-        seed = NULL, nrItems = 1, theta = 0, D = 1, randomesque = 1, 
-        random.seed = NULL, startSelect = "MFI", cb.control = FALSE, 
-        random.cb = NULL), test = list(method = "BM", priorDist = "norm", 
-        priorPar = c(0, 1), weight = "Huber", tuCo = 1, sem.type = "classic", 
-        sem.exact = FALSE, se.ase = 10, range = c(-4, 4), D = 1, 
-        parInt = c(-4, 4, 33), itemSelect = "MFI", infoType = "observed", 
-        randomesque = 1, random.seed = NULL, AP = 1, proRule = "length", 
-        proThr = 20, constantPatt = NULL), stop = list(rule = "length", 
-        thr = 20, alpha = 0.05), final = list(method = "BM", 
+randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL, 
+    min.length = 0, a.stratified=NULL,genSeed = NULL, cbControl = NULL, nAvailable = NULL, 
+    start = list(fixItems = NULL, seed = NULL, nrItems = 1, theta = 0, 
+        D = 1, randomesque = 1, random.seed = NULL, startSelect = "MFI", 
+        cb.control = FALSE, random.cb = NULL), test = list(method = "BM", 
+        priorDist = "norm", priorPar = c(0, 1), weight = "Huber", 
+        tuCo = 1, sem.type = "classic", sem.exact = FALSE, se.ase = 10, 
+        range = c(-4, 4), D = 1, parInt = c(-4, 4, 33), itemSelect = "MFI", 
+        infoType = "observed", randomesque = 1, random.seed = NULL, 
+        AP = 1, proRule = "length", proThr = 20, constantPatt = NULL), 
+    stop = list(rule = "length", thr = 20, alpha = 0.05), final = list(method = "BM", 
         priorDist = "norm", priorPar = c(0, 1), weight = "Huber", 
         tuCo = 1, sem.type = "classic", sem.exact = FALSE, range = c(-4, 
             4), D = 1, parInt = c(-4, 4, 33), alpha = 0.05), 
@@ -35,6 +35,12 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL, min.le
     if (!is.null(responses)) 
         assigned.responses <- TRUE
     else assigned.responses <- FALSE
+if (!is.null(a.stratified)){
+cbGroup<-aStratified(itemBank,a.stratified,model=model)
+cbControl<-list(names=sort(unique(cbGroup)),props=rep(1,length(unique(cbGroup))))
+cbControl$props<-cbControl$props/sum(cbControl$props)
+}
+else{
     if (!is.null(cbControl)) {
         prov <- breakBank(itemBank)
         itemBank <- prov$itemPar
@@ -46,6 +52,7 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL, min.le
         cbGroup <- NULL
         itemBank <- as.matrix(itemBank)
     }
+}
     internalCAT <- function() {
         startList <- list(fixItems = start$fixItems, seed = start$seed, 
             nrItems = NULL, theta = start$theta, D = 1, randomesque = 1, 
@@ -205,7 +212,8 @@ randomCAT<-function (trueTheta, itemBank, model = NULL, responses = NULL, min.le
             stop.cat <- checkStopRule(th = TH, se = SETH, N = length(PATTERN), 
                 it = itemBank[-ITEMS, ], model = model, stop = stop)
         else stop.cat <- list(decision = FALSE, rule = NULL)
-if (length(PATTERN)==0 | length(PATTERN)<min.length) stop.cat$decision<-FALSE
+        if (length(PATTERN) == 0 | length(PATTERN) < min.length) 
+            stop.cat$decision <- FALSE
         if (stop.cat$decision) {
             finalEst <- thetaEst(PAR, PATTERN, model = model, 
                 D = final$D, method = final$method, priorDist = final$priorDist, 
@@ -226,10 +234,11 @@ if (length(PATTERN)==0 | length(PATTERN)<min.length) stop.cat$decision<-FALSE
                 testItems = ITEMS, itemPar = PAR, itemNames = NULL, 
                 pattern = PATTERN, thetaProv = TH, seProv = SETH, 
                 ruleFinal = stop.cat$rule, thFinal = finalEst, 
-                seFinal = seFinal, ciFinal = confIntFinal, min.length=min.length,genSeed = genSeed, 
-                startFixItems = start$fixItems, startSeed = start$seed, 
-                startNrItems = start$nrItems, startTheta = start$theta, 
-                startD = start$D, startRandomesque = start$randomesque, 
+                seFinal = seFinal, ciFinal = confIntFinal, min.length = min.length, 
+                a.stratified = a.stratified, genSeed = genSeed, 
+                startFixItems = start$fixItems, 
+                startSeed = start$seed, startNrItems = start$nrItems, 
+                startTheta = start$theta, startD = start$D, startRandomesque = start$randomesque, 
                 startRandomSeed = start$random.seed, startSelect = start$startSelect, 
                 startCB = startCB, provMethod = test$method, 
                 provDist = test$priorDist, provPar = test$priorPar, 
@@ -286,7 +295,9 @@ if (length(PATTERN)==0 | length(PATTERN)<min.length) stop.cat$decision<-FALSE
                 stop.cat <- checkStopRule(th = thProv, se = seProv, 
                   N = length(PATTERN), it = itemBank[-ITEMS, 
                     ], model = model, stop = stop)
-if (length(PATTERN)==0 | length(PATTERN)<min.length) stop.cat$decision<-FALSE
+                if (length(PATTERN) == 0 | length(PATTERN) < 
+                  min.length) 
+                  stop.cat$decision <- FALSE
                 if (stop.cat$decision | length(PATTERN) == nrow(itemBank)) 
                   break
             }
@@ -311,10 +322,11 @@ if (length(PATTERN)==0 | length(PATTERN)<min.length) stop.cat$decision<-FALSE
                 testItems = ITEMS, itemPar = PAR, itemNames = NULL, 
                 pattern = PATTERN, thetaProv = TH, seProv = SETH, 
                 ruleFinal = stop.cat$rule, thFinal = finalEst, 
-                seFinal = seFinal, ciFinal = confIntFinal,  min.length=min.length,genSeed = genSeed, 
-                startFixItems = start$fixItems, startSeed = start$seed, 
-                startNrItems = start$nrItems, startTheta = start$theta, 
-                startD = start$D, startRandomesque = start$randomesque, 
+                seFinal = seFinal, ciFinal = confIntFinal, min.length = min.length, 
+                a.stratified = a.stratified, genSeed = genSeed, 
+                startFixItems = start$fixItems, 
+                startSeed = start$seed, startNrItems = start$nrItems, 
+                startTheta = start$theta, startD = start$D, startRandomesque = start$randomesque, 
                 startRandomSeed = start$random.seed, startSelect = start$startSelect, 
                 startCB = startCB, provMethod = test$method, 
                 provDist = test$priorDist, provPar = test$priorPar, 
@@ -380,6 +392,7 @@ if (length(PATTERN)==0 | length(PATTERN)<min.length) stop.cat$decision<-FALSE
 }
 
 
+
 ###
 
 print.cat<-function (x, ...) 
@@ -425,14 +438,16 @@ print.cat<-function (x, ...)
         cat(" True ability level:", round(x$trueTheta, 2), "\n", 
             "\n")
     else cat(" True ability level was not provided", "\n", "\n")
-if (x$min.length>0) cat("Minimum CAT length set to",x$min.length,"items","\n","\n")
-else cat("No pre-specified minimum CAT length","\n","\n")
+    if (x$min.length > 0) 
+        cat("Minimum CAT length set to", x$min.length, "items", 
+            "\n", "\n")
+    else cat("No pre-specified minimum CAT length", "\n", "\n")
     cat(" Starting parameters:", "\n")
     if (x$startNrItems == 0) {
         cat("   No early item was selected", "\n")
         cat("   Starting ability level:", round(x$startTheta, 
             3), "\n")
-nr1<-0
+        nr1 <- 0
     }
     else {
         if (is.null(x$startFixItems)) {
@@ -593,13 +608,16 @@ nr1<-0
         fixed7 = "fixed .7 stepsize", var = "variable stepsize")
     cat("   Ability estimation adjustment for constant pattern:", 
         adj, "\n")
-seType<-ifelse(x$provSemExact,"exact SE", "asymptotic SE (ASE)")
-cat("   Type of standard error:", seType, "\n")
-if (x$provSemExact) {
-ase.length<-ifelse(x$se.ase==1, "item", "items")
-cat("   Maximum test length for exact SE computation:",x$se.ase,ase.length,"\n")
-}
-if (!x$provSemExact) cat("   Type of ASE formula:", x$provSemType, "formula","\n")
+    seType <- ifelse(x$provSemExact, "exact SE", "asymptotic SE (ASE)")
+    cat("   Type of standard error:", seType, "\n")
+    if (x$provSemExact) {
+        ase.length <- ifelse(x$se.ase == 1, "item", "items")
+        cat("   Maximum test length for exact SE computation:", 
+            x$se.ase, ase.length, "\n")
+    }
+    if (!x$provSemExact) 
+        cat("   Type of ASE formula:", x$provSemType, "formula", 
+            "\n")
     cat("\n")
     if (length(x$stopRule) == 1) 
         cat(" Stopping rule:", "\n")
@@ -633,6 +651,17 @@ if (!x$provSemExact) cat("   Type of ASE formula:", x$provSemType, "formula","\n
     if (is.null(x$cbControl)) 
         cat("   No control for content balancing", "\n")
     else {
+if (!is.null(x$a.stratified)){
+cat("   Method: a-stratified sampling", 
+            "\n")
+if (length(x$a.stratified)==1) nrstrat<-x$a.stratified
+else nrstrat<-length(x$a.stratified)
+cat("   Number of strata:",nrstrat, "\n")
+}
+else{
+cat("   Method: starta defined by user", 
+            "\n")
+}
         cat("   Expected proportions of items per subgroup:", 
             "\n", "\n")
         mat <- rbind(round(x$cbControl$props/sum(x$cbControl$props), 
@@ -643,10 +672,11 @@ if (!x$provSemExact) cat("   Type of ASE formula:", x$provSemType, "formula","\n
         cat("\n")
     }
     cat("\n", "Adaptive test details:", "\n")
-if (is.null(x$itemNames)) mat <- rbind(as.character(1:length(x$testItems)),
- as.character(x$testItems), round(x$pattern, 0))
-else mat <- rbind(as.character(1:length(x$testItems)),
- as.character(x$itemNames), round(x$pattern, 0))
+    if (is.null(x$itemNames)) 
+        mat <- rbind(as.character(1:length(x$testItems)), as.character(x$testItems), 
+            round(x$pattern, 0))
+    else mat <- rbind(as.character(1:length(x$testItems)), as.character(x$itemNames), 
+        round(x$pattern, 0))
     nra <- length(x$pattern) - length(x$thetaProv)
     if (nra < 0) 
         mat <- rbind(mat, c(round(x$thetaProv[2:length(x$thetaProv)], 
@@ -655,11 +685,11 @@ else mat <- rbind(as.character(1:length(x$testItems)),
         3)), c(rep(NA, nra), round(x$seProv, 3)))
     rownames(mat) <- c("Nr", "Item", "Resp.", "Est.", "SE")
     colnames(mat) <- rep("", ncol(mat))
-
-if (x$provSemExact & x$se.ase>nra){
-ind.ex<-(nra+1):(min(c(x$se.ase,length(x$pattern))))
-for (tt in ind.ex) mat[5,tt]<-paste(mat[5,tt],"*",sep="")
-}
+    if (x$provSemExact & x$se.ase > nra) {
+        ind.ex <- (nra + 1):(min(c(x$se.ase, length(x$pattern))))
+        for (tt in ind.ex) mat[5, tt] <- paste(mat[5, tt], "*", 
+            sep = "")
+    }
     if (x$startSelect != "progressive" & x$startSelect != "proportional") {
         if (nra == 0 & nr1 > 1) {
             numb <- x$startNrItems - 1
@@ -672,7 +702,8 @@ for (tt in ind.ex) mat[5,tt]<-paste(mat[5,tt],"*",sep="")
     }
     print(format(mat, justify = "right"), quote = FALSE)
     cat("\n")
-if (x$provSemExact & x$se.ase>nra) cat("(*: Exact SE)","\n")
+    if (x$provSemExact & x$se.ase > nra) 
+        cat("(*: Exact SE)", "\n")
     cat("\n")
     if (x$endWarning) 
         if (length(x$stopRule) == 1) 
@@ -714,12 +745,16 @@ if (x$provSemExact & x$se.ase>nra) cat("(*: Exact SE)","\n")
         cat("   Final prior distribution:", met2, "\n")
     if (x$finalMethod == "ML") 
         cat("   Final range of ability values:", ra1, "\n")
-seType<-ifelse((x$finalSemExact & length(x$pattern)<=x$se.ase),"exact SE", "asymptotic SE (ASE)")
-cat("   Final standard error:", seType, "\n")
-if (!x$finalSemExact | length(x$pattern)>x$se.ase) cat("   Type of ASE formula:", x$finalSemType, "formula","\n")
-setyp<-ifelse(x$finalSemExact,"SE","ASE")
-    cat("   Final ability estimate (",setyp,"): ", round(x$thFinal, 3), 
-        paste(" (", round(x$seFinal, 3), ")", sep = ""), "\n", sep="")
+    seType <- ifelse((x$finalSemExact & length(x$pattern) <= 
+        x$se.ase), "exact SE", "asymptotic SE (ASE)")
+    cat("   Final standard error:", seType, "\n")
+    if (!x$finalSemExact | length(x$pattern) > x$se.ase) 
+        cat("   Type of ASE formula:", x$finalSemType, "formula", 
+            "\n")
+    setyp <- ifelse(x$finalSemExact, "SE", "ASE")
+    cat("   Final ability estimate (", setyp, "): ", round(x$thFinal, 
+        3), paste(" (", round(x$seFinal, 3), ")", sep = ""), 
+        "\n", sep = "")
     cat(paste("   ", (1 - x$finalAlpha) * 100, "% confidence interval: [", 
         round(x$ciFinal[1], 3), ",", round(x$ciFinal[2], 3), 
         "]", sep = ""), "\n")

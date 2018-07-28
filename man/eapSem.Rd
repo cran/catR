@@ -68,8 +68,7 @@ Magis, D. and Barrada, J. R. (2017). Computerized Adaptive Testing with R: Recen
 
 \author{
     David Magis \cr
-    Department of Psychology, University of Liege, Belgium \cr
-    \email{david.magis@uliege.be}
+    \email{david.magis@gmail.com}
  }
 
 \seealso{
@@ -103,7 +102,7 @@ Magis, D. and Barrada, J. R. (2017). Computerized Adaptive Testing with R: Recen
  th <- eapEst(tcals, x, priorDist = "Jeffreys")
  c(th, eapSem(th, tcals, x, priorDist = "Jeffreys"))
 
-\dontrun{
+\donttest{
 
 ## Polytomous models ##
 

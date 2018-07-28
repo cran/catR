@@ -151,8 +151,7 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
 \email{barrada@unizar.es}
 
     David Magis \cr
-    Department of Psychology, University of Liege, Belgium \cr
-    \email{david.magis@uliege.be}
+    \email{david.magis@gmail.com}
 
 Guido Corradi \cr
 Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
@@ -198,13 +197,6 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  res2 <- simulateRespondents(thetas, bank, start = start, test = test, stop = stop, 
   final = final, rmax = 0.8)
 
-\dontrun{
-
- # Output saved
- res3 <- simulateRespondents(thetas, bank, start = start, test = test, stop = stop, 
-  final = final, save.output = TRUE, output = c("C:/Program Files/", "out", "txt"))
-}
-
  # With content balancing #
 
  # Creation of an appropriate list for content balancing
@@ -221,12 +213,6 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  # Plotting all possible panels
  plot(res)
  plot(res, deciles = "deciles")
-
-\dontrun{
-
- # Saving the plot in the "fig" pdf file in "c:/Program Files/"
- plot(res, save.plot = TRUE, save.options = c("c:/Program Files/", "fig", "pdf"))
-}
 
  # Plotting the 'trueEst' type of plot
  plot(res, type = "trueEst")
