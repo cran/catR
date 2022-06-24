@@ -185,7 +185,8 @@ Segall, D. O. (2004). A sharing item response theory model for computerized adap
 
 \author{
     David Magis \cr
-    \email{david.magis@gmail.com}
+    Department of Psychology, University of Liege, Belgium \cr
+    \email{david.magis@uliege.be}
  
  Juan Ramon Barrada \cr
 Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
@@ -261,7 +262,7 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  nextItem(bank, x = c(0, 1), out = c(63, 19), criterion = "MLWI")
  nextItem(bank, x = c(0, 1), out = c(63, 19), criterion = "MPWI")
 
-\donttest{
+\dontrun{
 
  ## MEI method
 

@@ -8,7 +8,7 @@
  }
 
 \usage{
-MWI(itemBank, item, x, it.given, model = NULL, lower = -4, upper = 4, nqp = 33, 
+MWI(itemBank, item, x, it.given, model = NULL, lower = -4, upper = 4, nqp = 33,
  	type = "MLWI", priorDist = "norm", priorPar = c(0, 1), D = 1)
  }
 
@@ -24,38 +24,38 @@ MWI(itemBank, item, x, it.given, model = NULL, lower = -4, upper = 4, nqp = 33,
  \item{type}{character: the type of information to be computed. Possible values are \code{"MLWI"} (default) and \code{"MPWI"}. See \bold{Details}.}
  \item{priorDist}{character: the prior ability distribution. Possible values are \code{"norm"} (default) for the normal distribution, and \code{"unif"} for the uniform distribution. Ignored if \code{type} is not \code{"MPWI"}.}
  \item{priorPar}{numeric: a vector of two components with the prior parameters. If \code{priorDist} is \code{"norm"}, then \code{priorPar} contains the mean and the standard deviation of the normal distribution. If \code{priorDist} is \code{"unif"}, then \code{priorPar} contains the bounds of the uniform distribution. The default values are 0 and 1 respectively. Ignored if \code{type} is not \code{"MPWI"}.}
- \item{D}{numeric: the metric constant. Default is \code{D=1} (for logistic metric); \code{D=1.702} yields approximately the normal metric (Haley, 1952). Ignored if \code{model} is not \code{NULL}.} 
+ \item{D}{numeric: the metric constant. Default is \code{D=1} (for logistic metric); \code{D=1.702} yields approximately the normal metric (Haley, 1952). Ignored if \code{model} is not \code{NULL}.}
 }
 
 \value{
  The required (likelihood or posterior) weighted information for the selected item.
  }
- 
+
 \details{
  Both the MLWI (Veerkamp and Berger, 1997) and the MPWI (van der Linden, 1998; van der Linden and Pashley, 2000) can be used as rules for selecting the next item in the CAT process (see also Choi and Swartz, 2009), both under dichotomous and polytomous IRT models. This command serves as a subroutine for the \code{\link{nextItem}} function.
 
-Dichotomous IRT models are considered whenever \code{model} is set to \code{NULL} (default value). In this case, \code{itemBank} must be a matrix with one row per item and four columns, with the values of the discrimination, the difficulty, the pseudo-guessing and the inattention parameters (in this order). These are the parameters of the four-parameter logistic (4PL) model (Barton and Lord, 1981). 
+Dichotomous IRT models are considered whenever \code{model} is set to \code{NULL} (default value). In this case, \code{itemBank} must be a matrix with one row per item and four columns, with the values of the discrimination, the difficulty, the pseudo-guessing and the inattention parameters (in this order). These are the parameters of the four-parameter logistic (4PL) model (Barton and Lord, 1981).
 
 Polytomous IRT models are specified by their respective acronym: \code{"GRM"} for Graded Response Model, \code{"MGRM"} for Modified Graded Response Model, \code{"PCM"} for Partical Credit Model, \code{"GPCM"} for Generalized Partial Credit Model, \code{"RSM"} for Rating Scale Model and \code{"NRM"} for Nominal Response Model. The \code{itemBank} still holds one row per item, end the number of columns and their content depends on the model. See \code{\link{genPolyMatrix}} for further information and illustrative examples of suitable polytomous item banks.
 
 Under polytomous IRT models, let \emph{k} be the number of administered items, and set \eqn{x_1, ..., x_k} as the provisional response pattern (where each response \eqn{x_l} takes values in \eqn{\{0, 1, ..., g_l\}}). Set also
  \eqn{I_j(\theta)} as the information function of item \emph{j} evaluated at \eqn{\theta}, and set \eqn{L(\theta | x_1, ..., x_k)} as the likelihood function evaluated at \eqn{\theta}, given the provisional response pattern. Then, the LWI for item \emph{j} is given by
- \deqn{LWI_j = \int I_j(\theta) L(\theta | x_1, ..., x_k) d\theta} and the PWI by  
- \deqn{PWI_j = \int I_j(\theta) \pi(\theta) L(\theta | x_1, ..., x_k) d\theta} 
- where \eqn{\pi(\theta)} is the prior distribution of the ability level. 
+ \deqn{LWI_j = \int I_j(\theta) L(\theta | x_1, ..., x_k) d\theta} and the PWI by
+ \deqn{PWI_j = \int I_j(\theta) \pi(\theta) L(\theta | x_1, ..., x_k) d\theta}
+ where \eqn{\pi(\theta)} is the prior distribution of the ability level.
 
 In case of dichotomous IRT models, all \eqn{g_l} values reduce to 1, so that item responses \eqn{x_l} equal either 0 or 1. But except from this difference, the previous definitions of LWI and PWI remain valid.
 
- These integrals are approximated by the \code{\link{integrate.catR}} function. The range of integration is set up 
+ These integrals are approximated by the \code{\link{integrate.catR}} function. The range of integration is set up
  by the arguments \code{lower}, \code{upper} and \code{nqp}, giving respectively the lower bound, the upper bound and the number of quadrature points. The default range goes from -4 to 4 with length 33 (that is, by steps of 0.25).
 
- The argument \code{type} defines the type of information to be computed. The default value, \code{"MLWI"}, computes the MLWI value, while the MPWI value is obtained with \code{type="MPWI"}. For the latter, the \code{priorDist} and \code{priorPar} arguments fix the prior ability distribution. 
- The normal distribution is set up by \code{priorDist="norm"} and then, \code{priorPar} contains the mean and the standard deviation of the normal distribution. If \code{priorDist} is \code{"unif"}, then the uniform distribution is considered, and \code{priorPar} fixes the lower and upper bounds of that 
+ The argument \code{type} defines the type of information to be computed. The default value, \code{"MLWI"}, computes the MLWI value, while the MPWI value is obtained with \code{type="MPWI"}. For the latter, the \code{priorDist} and \code{priorPar} arguments fix the prior ability distribution.
+ The normal distribution is set up by \code{priorDist="norm"} and then, \code{priorPar} contains the mean and the standard deviation of the normal distribution. If \code{priorDist} is \code{"unif"}, then the uniform distribution is considered, and \code{priorPar} fixes the lower and upper bounds of that
  uniform distribution. By default, the standard normal prior distribution is assumed. This argument is ignored whenever \code{method} is not \code{"MPWI"}.
 
-The provisional response pattern and the related item parameters are provided by the arguments \code{x} and \code{it.given} respectively. The target item (for which the maximum information is computed) is given by its rank number in the item bank, through the \code{item} argument. 
+The provisional response pattern and the related item parameters are provided by the arguments \code{x} and \code{it.given} respectively. The target item (for which the maximum information is computed) is given by its rank number in the item bank, through the \code{item} argument.
 
-Note that the provisional response pattern \code{x} can also be set to \code{NULL} (which is useful when the number \code{nrItems} of starting items is set to zero). In this case, \code{it.given} must be a matrix with zero rows, such as e.g., \code{itemBank[NULL,]}. In this very specific configuration, the likelihood function \eqn{L(\theta | x_1, ..., x_k)} reduces to the constant value 1 on the whole \eqn{\theta} range (that is, a uniform likelihood). 
+Note that the provisional response pattern \code{x} can also be set to \code{NULL} (which is useful when the number \code{nrItems} of starting items is set to zero). In this case, \code{it.given} must be a matrix with zero rows, such as e.g., \code{itemBank[NULL,]}. In this very specific configuration, the likelihood function \eqn{L(\theta | x_1, ..., x_k)} reduces to the constant value 1 on the whole \eqn{\theta} range (that is, a uniform likelihood).
  }
 
 \references{
@@ -64,7 +64,7 @@ Note that the provisional response pattern \code{x} can also be set to \code{NUL
 
  Choi, S. W., and Swartz, R. J. (2009). Comparison of CAT item selection criteria for polytomous items. \emph{Applied Psychological Measurement, 32}, 419-440. \doi{10.1177/0146621608327801}
 
- Haley, D.C. (1952). \emph{Estimation of the dosage mortality relationship when the dose is subject to error}. Technical report no 15. Palo Alto, CA: Applied Mathematics and Statistics Laboratory, Stanford University. 
+ Haley, D.C. (1952). \emph{Estimation of the dosage mortality relationship when the dose is subject to error}. Technical report no 15. Palo Alto, CA: Applied Mathematics and Statistics Laboratory, Stanford University.
 
 Magis, D. and Barrada, J. R. (2017). Computerized Adaptive Testing with R: Recent Updates of the Package \emph{catR}. \emph{Journal of Statistical Software}, \emph{Code Snippets}, \emph{76(1)}, 1-18. \doi{10.18637/jss.v076.c01}
 
@@ -72,30 +72,31 @@ Magis, D. and Barrada, J. R. (2017). Computerized Adaptive Testing with R: Recen
 
  van der Linden, W. J. (1998). Bayesian item selection criteria for adaptive testing. \emph{Psychometrika, 63}, 201-216. \doi{10.1007/BF02294775}
 
- van der Linden, W. J., and Pashley, P. J. (2000). Item selection and ability estimation in adaptive testing. In W. J. van der Linden and C. A. W. Glas (Eds.), \emph{Computerized adaptive testing. Theory and practice} (pp. 1-25). Boston, MA: Kluwer. 
+ van der Linden, W. J., and Pashley, P. J. (2000). Item selection and ability estimation in adaptive testing. In W. J. van der Linden and C. A. W. Glas (Eds.), \emph{Computerized adaptive testing. Theory and practice} (pp. 1-25). Boston, MA: Kluwer.
 
  Veerkamp, W. J. J., and Berger, M. P. F. (1997). Some new item selection criteria for adaptive testing. \emph{Journal of Educational and Behavioral Statistics, 22}, 203-226. \doi{10.3102/10769986022002203}
  }
 
 \author{
     David Magis \cr
-    \email{david.magis@gmail.com}
+    Department of Psychology, University of Liege, Belgium \cr
+    \email{david.magis@uliege.be}
  }
 
 \seealso{
 \code{\link{Ii}}, \code{\link{nextItem}}, \code{\link{integrate.catR}}, \code{\link{genPolyMatrix}}
-} 
+}
 
 \examples{
 
 ## Dichotomous models ##
 
- # Loading the 'tcals' parameters 
+ # Loading the 'tcals' parameters
  data(tcals)
 
  # Selecting item parameters only
  bank <- as.matrix(tcals[,1:4])
- 
+
   # Selection of two arbitrary items (15 and 20) of the
  # 'tcals' data set
  it.given <- bank[c(15, 20),]
@@ -122,7 +123,7 @@ Magis, D. and Barrada, J. R. (2017). Computerized Adaptive Testing with R: Recen
  m.GRM <- genPolyMatrix(100, 4, "GRM")
  m.GRM <- as.matrix(m.GRM)
 
- # Selection of two arbitrary items (15 and 20) 
+ # Selection of two arbitrary items (15 and 20)
  it.given <- m.GRM[c(15, 20),]
 
  # Generation of a response pattern (true ability level 0)
@@ -138,7 +139,7 @@ Magis, D. and Barrada, J. R. (2017). Computerized Adaptive Testing with R: Recen
  MWI(m.GRM, 1, x, it.given, model = "GRM", lower = -2, upper = 2, nqp = 20)
 
  # MPWI for item 1, uniform prior distribution on the range [-2,2]
- MWI(m.GRM, 1, x, it.given, model = "GRM", type = "MPWI", priorDist = "unif", 
+ MWI(m.GRM, 1, x, it.given, model = "GRM", type = "MPWI", priorDist = "unif",
  priorPar = c(-2, 2))
 
 
@@ -146,7 +147,7 @@ Magis, D. and Barrada, J. R. (2017). Computerized Adaptive Testing with R: Recen
  data(cat_pav)
  cat_pav <- as.matrix(cat_pav)
 
- # Selection of two arbitrary items (15 and 20) 
+ # Selection of two arbitrary items (15 and 20)
  it.given <- cat_pav[c(15, 20),]
 
  # Generation of a response pattern (true ability level 0)
@@ -162,6 +163,6 @@ Magis, D. and Barrada, J. R. (2017). Computerized Adaptive Testing with R: Recen
  MWI(cat_pav, 1, x, it.given, model = "GPCM", lower = -2, upper = 2, nqp = 20)
 
  # MPWI for item 1, uniform prior distribution on the range [-2,2]
- MWI(cat_pav, 1, x, it.given, model = "GPCM", type = "MPWI", priorDist = "unif", 
+ MWI(cat_pav, 1, x, it.given, model = "GPCM", type = "MPWI", priorDist = "unif",
  priorPar = c(-2, 2))
  }

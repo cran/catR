@@ -67,7 +67,8 @@ Magis, D., and Raiche, G. (2012). Random Generation of Response Patterns under C
 
 \author{
     David Magis \cr
-    \email{david.magis@gmail.com}
+    Department of Psychology, University of Liege, Belgium \cr
+    \email{david.magis@uliege.be}
  }
 
 \seealso{

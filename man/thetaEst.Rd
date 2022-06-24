@@ -98,10 +98,11 @@ Schuester, C., and Yuan, K.-H. (2011). Robust estimation of latent ability in it
 
 \author{
     David Magis \cr
-    \email{david.magis@gmail.com}
+    Department of Psychology, University of Liege, Belgium \cr
+    \email{david.magis@uliege.be}
 
     Lianne Ippel \cr
-    Maastricht University, The Netherlands \cr
+    Department of Psychology, University of Liege, Belgium \cr
     \email{g.j.e.ippel@gmail.com}
  }
 
@@ -174,7 +175,7 @@ Schuester, C., and Yuan, K.-H. (2011). Robust estimation of latent ability in it
  thetaEst(tcals, x0, constantPatt = "var") 
  thetaEst(tcals, x1, constantPatt = "var") 
 
-\donttest{
+\dontrun{
 
 ## Polytomous models ##
 

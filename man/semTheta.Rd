@@ -114,10 +114,11 @@ Schuester, C., and Yuan, K.-H. (2011). Robust estimation of latent ability in it
 
 \author{
     David Magis \cr
-    \email{david.magis@gmail.com}
+    Department of Psychology, University of Liege, Belgium \cr
+    \email{david.magis@uliege.be}
 
     Lianne Ippel \cr
-    Maastricht University, The Netherlands\cr
+    Department of Psychology, University of Liege, Belgium \cr
     \email{g.j.e.ippel@gmail.com}
  }
 
@@ -269,7 +270,7 @@ Schuester, C., and Yuan, K.-H. (2011). Robust estimation of latent ability in it
  th <- thetaEst(m.GRM, x, model = "GRM", method = "EAP")
  c(th, semTheta(th, m.GRM, x, model = "GRM", method = "EAP") )
 
-\donttest{
+\dontrun{
 
  # EAP estimation, uniform prior distribution upon range [-2,2]
  th <- thetaEst(m.GRM, x, model = "GRM", method = "EAP", priorDist = "unif", 

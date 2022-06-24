@@ -102,7 +102,8 @@ Samejima, F. (1969). \emph{Estimation of latent ability using a response pattern
 
 \author{
     David Magis \cr
-    \email{david.magis@gmail.com}
+    Department of Psychology, University of Liege, Belgium \cr
+    \email{david.magis@uliege.be}
  }
 
 \seealso{

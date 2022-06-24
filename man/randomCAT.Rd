@@ -260,7 +260,8 @@ Thompson, N. A. (2009). Item selection in computerized classification testing. \
 
 \author{
     David Magis \cr
-    \email{david.magis@gmail.com}
+    Department of Psychology, University of Liege, Belgium \cr
+    \email{david.magis@uliege.be}
 
  Juan Ramon Barrada \cr
 Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
@@ -299,7 +300,7 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  # CAT test
  res <- randomCAT(0, bank, start = start, test = test, stop = stop, final = final)
 
-\donttest{
+\dontrun{
  # Update of the stopping rule: by adding a length criterion, with threshold of 10 items
  stop <- list(rule = c("precision", "length"), thr = c(0.3, 10))
 
@@ -362,11 +363,21 @@ Department of Psychology and Sociology, Universidad Zaragoza, Spain \cr
  res6 <- randomCAT(0, tcals, start = start, test = test4, stop = stop4, final = final, 
       cbControl = cbList, allTheta = TRUE)
 
+ # Saving the output in the external 'out' text file within folder 'Program Files' 
+ # of hard drive 'C'
+ res5 <- randomCAT(0, tcals, start = start, test = test, stop = stop4, final = final2, 
+      cbControl = cbList, save.output = TRUE, 
+      output = c("c:/Program Files/", "out", "txt"))
+
  # Plotting results
  plot(res)
  plot(res, ci = TRUE)
  plot(res, ci = TRUE, trueTh = FALSE)
  plot(res, ci = TRUE, classThr = 1)
+
+ # Saving last figure into PDF file 'figure' within folder 'C:/Program Files/'
+ plot(res, ci = TRUE, classThr = 1, save.plot = TRUE,
+      save.options = c("c:/Program Files/", "figure", "pdf"))
 
  # With mistake
  plot(res, ci = 0.05)

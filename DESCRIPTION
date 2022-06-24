@@ -2,15 +2,16 @@ Package: catR
 Type: Package
 Title: Generation of IRT Response Patterns under Computerized Adaptive
         Testing
-Version: 3.16
-Date: 2018-07-28
-Author: David Magis (Belgium), Gilles Raiche (UQAM, Canada), Juan Ramon Barrada (U Zaragoza, Spain)
-Maintainer: David Magis <david.magis@gmail.com>
-Depends: R (>= 2.8.0)
+Version: 3.17
+Date: 2022-06-23
+Author: David Magis (U Liege, Belgium), Gilles Raiche (UQAM, Canada), Juan Ramon Barrada (U Zaragoza, Spain)
+Maintainer: Cheng Hua <chuabest@gmail.com>
+Depends: R (>= 4.0.0)
 Description: Provides routines for the generation of response patterns under unidimensional dichotomous and polytomous computerized adaptive testing (CAT) framework. It holds many standard functions to estimate ability, select the first item(s) to administer and optimally select the next item, as well as several stopping rules. Options to control for item exposure and content balancing are also available (Magis and Barrada (2017) <doi:10.18637/jss.v076.c01>).
-License: GPL (>= 2)
+License: GPL (>= 3)
 LazyLoad: yes
+RoxygenNote: 7.2.0
 NeedsCompilation: no
-Packaged: 2018-07-28 07:03:52 UTC; David
+Packaged: 2022-06-24 00:03:18 UTC; chenghua
 Repository: CRAN
-Date/Publication: 2018-07-28 14:40:07 UTC
+Date/Publication: 2022-06-24 08:00:02 UTC
